@@ -16,6 +16,7 @@ class IngredientResourse extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'quantity' => $this->whenPivotLoaded(IngredientRecipe::class, function() {
                 return $this->pivot->quantity;
@@ -23,8 +24,17 @@ class IngredientResourse extends JsonResource
             'unit_measure' => $this->whenPivotLoaded(IngredientRecipe::class, function() {
                 return $this->pivot->unit_measure;
             }),
+            'unit_measure' => $this->nutritional->unit_measure,
+            'kcal' => $this->nutritional->kcal,
+            'fat' => $this->nutritional->fat,
+            'saturates' => $this->nutritional->saturates,
+            'carbs' => $this->nutritional->carbs,
+            'sugars' => $this->nutritional->sugars,
+            'fibre' => $this->nutritional->fibre,
+            'protein' => $this->nutritional->protein,
+            'salt' => $this->nutritional->salt,
             'nutritional' => new NutricionalResourse($this->nutritional),
-            'url_image' => $this->image->url
+            'url_image' => $this->image->url,
         ];
     }
 }

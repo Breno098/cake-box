@@ -24,7 +24,17 @@ class IngredientUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|string',
+            'image' => 'nullable|image',
+            'nutritional.unit_measure' => 'nullable',
+            'nutritional.kcal' => 'nullable',
+            'nutritional.fat' => 'nullable',
+            'nutritional.saturates' => 'nullable',
+            'nutritional.carbs' => 'nullable',
+            'nutritional.sugars' => 'nullable',
+            'nutritional.fibre' => 'nullable',
+            'nutritional.protein' => 'nullable',
+            'nutritional.salt' => 'nullable',
         ];
     }
 }
