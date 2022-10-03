@@ -18,7 +18,7 @@ class CreateRecipesTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->text('info')->nullable();
-            $table->enum('difficulty', ['very easy', 'easy', 'medium', 'hard', 'very hard']);
+            $table->enum('difficulty', [1, 2, 3, 4, 5]);
             $table->integer('time_to_cook')->nullable();
             $table->integer('time_to_prepare')->nullable();
             $table->integer('rating')->nullable();

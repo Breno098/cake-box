@@ -54,11 +54,13 @@ class RecipeController extends Controller
 
     /**
      * @param Recipe $recipe
-     * @return RecipeResourse
+     * @return Response
      */
-    public function show(Recipe $recipe): RecipeResourse
+    public function edit(Recipe $recipe): Response
     {
-        return new RecipeResourse($recipe);
+        return Inertia::render('Admin/Recipe/Edit', [
+            'recipe' => $recipe
+        ]);
     }
 
     /**

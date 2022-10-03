@@ -122,7 +122,9 @@
         </q-drawer>
 
         <q-page-container>
-            <slot />
+            <q-page padding>
+                <slot />
+            </q-page>
         </q-page-container>
 
         <!-- <q-footer bordered class="bg-grey-8 text-white">

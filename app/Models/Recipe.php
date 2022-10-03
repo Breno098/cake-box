@@ -43,6 +43,10 @@ class Recipe extends Model
         'yield_unit_measure',
     ];
 
+    protected $casts = [
+        'difficulty' => 'integer'
+    ];
+
     /**
      * @return Ingredient[]|Collection|BelongsToMany
      */

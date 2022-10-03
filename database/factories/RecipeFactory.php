@@ -20,7 +20,7 @@ class RecipeFactory extends Factory
             'title' => fake()->text(15),
             'description' => fake()->text(100),
             'info' => fake()->text(100),
-            'difficulty' => fake()->randomElement(['very easy', 'easy', 'medium', 'hard', 'very hard']),
+            'difficulty' => fake()->randomElement([1, 2, 3, 4, 5]),
             'time_to_cook' => fake()->numberBetween(0, 50000),
             'time_to_prepare' => fake()->numberBetween(0, 50000),
             'rating' => fake()->numberBetween(0, 5),
