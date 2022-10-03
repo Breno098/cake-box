@@ -1,18 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/inertia-vue3';
-
-const showingNavigationDropdown = ref(false);
+    import { Link } from '@inertiajs/inertia-vue3';
 </script>
 
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div style="background: rgba(242, 243, 245, 0.1)" class="vh-100">
+        <nav class="navbar navbar-expand-lg navbar-light my-color">
             <div class="container">
                 <Link :href="route('admin.dashboard')" class="navbar-brand">
                     LOGO
@@ -33,7 +25,15 @@ const showingNavigationDropdown = ref(false);
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="#">
+                                Exemplo
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" :href="route('admin.recipe.index')">
+                                Receitas
+                            </a>
                         </li>
                     </ul>
 
@@ -72,7 +72,7 @@ const showingNavigationDropdown = ref(false);
             </div>
         </header>
 
-        <main>
+        <main >
             <slot />
         </main>
     </div>

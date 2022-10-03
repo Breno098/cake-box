@@ -46,7 +46,7 @@ class AuthController extends Controller
             $request->validated()
         );
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->route(RouteServiceProvider::ADMIN_HOME);
     }
 
     /**

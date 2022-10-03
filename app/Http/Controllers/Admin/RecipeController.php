@@ -10,7 +10,8 @@ use App\Http\Resources\Admin\RecipeResourse;
 use App\Services\Admin\RecipeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RecipeController extends Controller
 {
@@ -29,13 +30,15 @@ class RecipeController extends Controller
 
     /**
      * @param Request $request
-     * @return AnonymousResourceCollection
+     * @return Response
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): Response
     {
         $recipes = $this->recipeService->index($request->all());
 
-        return RecipeResourse::collection($recipes);
+        return Inertia::render('Admin/Recipe/Index', [
+            'recipes' => RecipeResourse::collection($recipes)
+        ]);
     }
 
     /**

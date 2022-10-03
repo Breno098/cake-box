@@ -1,5 +1,7 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
+import BInput from '@/Components/BInput.vue';
+import BCheckbox from '@/Components/BCheckbox.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 
 defineProps({
@@ -34,41 +36,32 @@ const submit = () => {
                 Login <fa icon="right-to-bracket"/>
             </h1>
 
-            <div class="form-floating mb-3">
-                <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    v-model="form.email"
-                    required
-                />
-                <label for="email">
-                    E-mail
-                </label>
+            <BInput
+                :errorMessage="form.errors.email"
+                labelText="E-mail"
+                v-model="form.email"
+                type="email"
+                class="mb-3"
+                required
+            />
 
-                <div class="form-text text-danger" v-show="form.errors.email">
-                    {{ form.errors.email }}
-                </div>
-            </div>
+            <BInput
+                :errorMessage="form.errors.password"
+                labelText="Senha"
+                v-model="form.password"
+                required
+                type="password"
+                class="mb-3"
+            />
 
-            <div class="form-floating">
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    name="password"
-                    v-model="form.password"
-                    required
-                />
-                <label for="password">
-                    Senha
-                </label>
+            <BCheckbox
+                labelText="Me lembre"
+                v-model="form.remember"
+            />
 
-                <div class="form-text text-danger" v-show="form.errors.password">
-                    {{ form.errors.password }}
-                </div>
-            </div>
+            <pre>
+                {{ form }}
+            </pre>
 
             <div class="form-check">
                 <input

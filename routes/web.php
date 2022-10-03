@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
+use App\Http\Controllers\Admin\RecipeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -49,10 +50,17 @@ Route::middleware('guest:admin')
     ->name('password.reset');
 
 Route::get('/admin/dashboard', function () {
-        return Inertia::render('Admin/Dashboard');
-    })
-    // ->middleware(['auth', 'verified'])
-    ->name('admin.dashboard');
+    return Inertia::render('Admin/Dashboard');
+})->name('admin.dashboard');
+
+
+
+Route::middleware('auth:admin')
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function() {
+        Route::resource('recipe', RecipeController::class);
+    });
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
