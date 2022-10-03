@@ -48,11 +48,11 @@ Route::middleware('guest:admin')
     ->get('admin/auth/reset-password/{token}', [PasswordResetController::class, 'form'])
     ->name('password.reset');
 
-Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+Route::get('/admin/dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
     })
     // ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    ->name('admin.dashboard');
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [

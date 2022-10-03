@@ -29,7 +29,7 @@ class PasswordSendLinkController extends Controller
      */
     public function form(): Response
     {
-        return Inertia::render('Auth/ForgotPassword');
+        return Inertia::render('Admin/Auth/ForgotPassword');
     }
 
     /**
@@ -41,7 +41,7 @@ class PasswordSendLinkController extends Controller
         $responseOk = $this->authService->passwordSendLink($request->get('email'));
 
         if ($responseOk) {
-            return Inertia::render('Auth/ForgotPassword', [
+            return Inertia::render('Admin/Auth/ForgotPassword', [
                 'status' =>"Email para redefinição enviado para {$request->get('email')}"
             ]);
         }

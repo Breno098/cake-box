@@ -32,7 +32,7 @@ class PasswordResetController extends Controller
      */
     public function form(Request $request): Response
     {
-        return Inertia::render('Auth/ResetPassword', [
+        return Inertia::render('Admin/Auth/ResetPassword', [
             'token' => $request->route('token'),
             'email' => $request->get('email')
         ]);
