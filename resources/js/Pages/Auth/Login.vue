@@ -8,8 +8,8 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
-    password: '',
+    email: 'breno@email.com',
+    password: 'passwords',
     remember: false
 });
 
@@ -22,28 +22,99 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head title="Entrar" />
 
-        <!-- <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="text-center">
             {{ status }}
-        </div> -->
+        </div>
 
         <form
-            class="text-center w-50"
+            class="w-50"
             @submit.prevent="submit"
         >
-            <i class="bi bi-person-workspace" style="font-size: 3rem;"></i>
 
-            <div class="card">
+            <h1 class="mb-3 fw-normal text-center">
+                Login <fa icon="right-to-bracket"/>
+            </h1>
+
+            <div class="form-floating mb-3">
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    v-model="form.email"
+                    required
+                />
+                <label for="email">
+                    E-mail
+                </label>
+
+                <div class="form-text text-danger" v-show="form.errors.email">
+                    {{ form.errors.email }}
+                </div>
+            </div>
+
+            <div class="form-floating">
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    v-model="form.password"
+                    required
+                />
+                <label for="password">
+                    Senha
+                </label>
+
+                <div class="form-text text-danger" v-show="form.errors.password">
+                    {{ form.errors.password }}
+                </div>
+            </div>
+
+            <div class="form-check">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    v-model="form.remember"
+                    id="remember"
+                >
+                <label class="form-check-label" for="remember">
+                    Lembrar
+                </label>
+            </div>
+
+            <a
+                class="btn text-primary mt-2"
+                href="#"
+                v-if="canResetPassword"
+            >
+                Esqueceu a senha? Clique aqui
+            </a>
+
+            <button
+                class="w-100 btn btn-lg btn-primary mt-3"
+                type="submit"
+            >
+                Entrar
+            </button>
+
+            <p class="mt-5 mb-3 text-muted">
+                <!-- © {{ now()->format('Y') }} -->
+            </p>
+
+            <!-- <div class="card">
                 <div class="card-header">
                     Featured
+                    <fa icon="home"/>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">Special title treatment</h5>
                     <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
-            </div>
+            </div> -->
 
             <!-- <div>
                 <InputLabel for="email" value="Email" />
