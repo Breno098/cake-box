@@ -1,9 +1,5 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
 
 defineProps({
@@ -11,38 +7,59 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
+    email: 'breno@email.com',
 });
 
 const submit = () => {
-    form.post(route('password.email'));
+    form.post(route('admin.auth.forgot-password-send-link'));
 };
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Forgot Password" />
+        <Head title="Esqueci minha senha"/>
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
+        <div class="text-center mb-4">
+            Esqueceu sua senha? Sem problemas. <br/> Basta nos informar seu endereço de e-mail e nós lhe enviaremos um link de
+            redefinição de senha que permitirá que você escolha uma nova.
         </div>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="text-center mb-3 text-success">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus autocomplete="username" />
-                <InputError class="mt-2" :message="form.errors.email" />
+        <form class="w-50" @submit.prevent="submit">
+            <div class="form-floating mb-3">
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    v-model="form.email"
+                    required
+                    autofocus
+                />
+                <label for="email">
+                    E-mail
+                </label>
+
+                <div class="form-text text-danger" v-show="form.errors.email">
+                    {{ form.errors.email }}
+                </div>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
+            <button
+                class="w-100 btn btn-dark mt-3"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                type="submit"
+            >
+                Enviar
+            </button>
+
+            <p class="mt-5 mb-3 text-muted text-center">
+                {{ (new Date()).getFullYear() }}
+            </p>
         </form>
     </GuestLayout>
 </template>

@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Admin\Auth\AuthController;
+use App\Http\Controllers\Admin\Auth\PasswordResetController;
+use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,17 +17,50 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::redirect('/', '/admin/auth/sing-in');
+Route::redirect('/admin', '/admin/auth/sing-in');
+
+Route::middleware('guest:admin')
+    ->get('admin/auth/sing-in', [AuthController::class, 'form'])
+    ->name('admin.auth.sing-in');
+
+Route::middleware('guest:admin')
+    ->post('admin/auth/login', [AuthController::class, 'login'])
+    ->name('admin.auth.login');
+
+Route::middleware('guest:admin')
+    ->get('admin/auth/forgot-password', [PasswordSendLinkController::class, 'form'])
+    ->name('admin.auth.forgot-password-form');
+
+Route::middleware('guest:admin')
+    ->post('admin/auth/forgot-password-send-link', [PasswordSendLinkController::class, 'sendLink'])
+    ->name('admin.auth.forgot-password-send-link');
+
+Route::middleware('guest:admin')
+    ->post('admin/auth/reset-password', [PasswordResetController::class, 'reset'])
+    ->name('admin.auth.password.reset');
+
+Route::middleware('auth:admin')
+    ->post('admin/auth/logout', [AuthController::class, 'logout'])
+    ->name('admin.auth.logout');
+
+Route::middleware('guest:admin')
+    ->get('admin/auth/reset-password/{token}', [PasswordResetController::class, 'form'])
+    ->name('password.reset');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+        return Inertia::render('Dashboard');
+    })
+    // ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-require __DIR__.'/auth.php';
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
+
+// require __DIR__.'/auth.php';
