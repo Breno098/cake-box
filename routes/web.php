@@ -49,10 +49,9 @@ Route::middleware('guest:admin')
     ->get('admin/auth/reset-password/{token}', [PasswordResetController::class, 'form'])
     ->name('password.reset');
 
-Route::get('/admin/dashboard', function () {
+Route::get('/admin/home', function () {
     return Inertia::render('Admin/Dashboard');
-})->name('admin.dashboard');
-
+})->name('admin.home');
 
 
 Route::middleware('auth:admin')

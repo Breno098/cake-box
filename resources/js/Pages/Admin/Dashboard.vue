@@ -7,10 +7,8 @@ import { Head } from '@inertiajs/inertia-vue3';
     <Head title="Dashboard"/>
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="">
-                Dashboard
-            </h2>
-        </template>
+        <div class="container mb-3">
+            aaaaa
+        </div>
     </AuthenticatedLayout>
 </template>

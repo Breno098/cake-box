@@ -22,11 +22,11 @@
                         <td>{{ recipe.title }}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-sm btn-dark me-2">
-                                <fa icon="edit"/>
+                                <!-- <fa icon="edit"/> -->
                             </button>
 
                             <button type="button" class="btn btn-sm btn-danger">
-                                <fa icon="trash"/>
+                                <!-- <fa icon="trash"/> -->
                             </button>
                         </td>
                     </tr>

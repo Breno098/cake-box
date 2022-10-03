@@ -1,79 +1,140 @@
 <script setup>
-    import { Link } from '@inertiajs/inertia-vue3';
+    import { Link, Head } from '@inertiajs/inertia-vue3';
+    import { ref } from 'vue'
+
+    const leftDrawerOpen = ref(true)
+    const miniState = ref(false)
+    const rightDrawerOpen = ref(false)
+
+    const toggleLeftDrawer = () => {
+        leftDrawerOpen.value = !leftDrawerOpen.value
+    }
+
+    const toggleRightDrawer = () => {
+        rightDrawerOpen.value = !rightDrawerOpen.value
+    }
+
+    const drawerClick = (e) => {
+        if (miniState.value) {
+          miniState.value = false
+          e.stopPropagation()
+        }
+    }
 </script>
 
 <template>
-    <div style="background: rgba(242, 243, 245, 0.1)" class="vh-100">
-        <nav class="navbar navbar-expand-lg navbar-light my-color">
-            <div class="container">
-                <Link :href="route('admin.dashboard')" class="navbar-brand">
-                    LOGO
-                </Link>
+    <Head title="Home"/>
 
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    ria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <q-layout view="hHh lpR lFf">
+        <q-header bordered class="bg-primary text-white">
+            <q-toolbar>
+                <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">
-                                Exemplo
-                            </a>
-                        </li>
+                <q-toolbar-title>
+                    {{ $page.props.title }}
+                </q-toolbar-title>
 
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" :href="route('admin.recipe.index')">
+                <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+            </q-toolbar>
+        </q-header>
+
+        <q-drawer
+            v-model="leftDrawerOpen"
+            :mini="!leftDrawerOpen || miniState"
+            @click.capture="drawerClick"
+            :width="250"
+            :breakpoint="500"
+            bordered
+            class="bg-grey-3"
+        >
+            <q-scroll-area class="fit">
+                <q-list padding>
+                    <q-item
+                        clickable
+                        v-ripple
+                        :active="route().current('admin.home')"
+                    >
+                        <q-item-section avatar>
+                            <q-icon name="home" />
+                        </q-item-section>
+
+                        <q-item-section>
+                            <Link
+                                :href="route('admin.home')"
+                                :class="route().current('admin.home') ? 'text-primary' : 'text-dark'"
+                                style="text-decoration: none"
+                            >
+                                Home
+                            </Link>
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item
+                        clickable
+                        v-ripple
+                        :active="route().current('admin.recipe.*')"
+                    >
+                        <q-item-section avatar>
+                            <q-icon name="menu_book" />
+                        </q-item-section>
+
+                        <q-item-section>
+                            <Link
+                                :href="route('admin.recipe.index')"
+                                style="text-decoration: none"
+                                :class="route().current('admin.recipe.*') ? 'text-primary' : 'text-dark'"
+                            >
                                 Receitas
-                            </a>
-                        </li>
-                    </ul>
+                            </Link>
+                        </q-item-section>
+                    </q-item>
 
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Perfil
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        {{ $page.props.auth.user.name }}
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <Link
-                                        :href="route('admin.auth.logout')"
-                                        class="dropdown-item"
-                                        method="post"
-                                        as="button"
-                                    >
-                                       Sair
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                    <q-item
+                        clickable
+                        v-ripple
+                        :active="route().current('ingrdient*')"
+                    >
+                        <q-item-section avatar>
+                            <q-icon name="egg" />
+                        </q-item-section>
+
+                        <q-item-section>
+                            Ingredientes
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+            </q-scroll-area>
+
+            <div class="absolute" style="top: 15px; right: -17px">
+                <q-btn
+                    dense
+                    round
+                    unelevated
+                    color="primary"
+                    :icon="miniState ? 'chevron_right' : 'chevron_left' "
+                    @click="miniState = true"
+                />
             </div>
-        </nav>
+        </q-drawer>
 
-        <header class="container py-2 px-2" v-if="$slots.header">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <slot name="header"/>
-            </div>
-        </header>
+        <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
+        <!-- drawer content -->
+        </q-drawer>
 
-        <main >
+        <q-page-container>
             <slot />
-        </main>
-    </div>
+        </q-page-container>
+
+        <!-- <q-footer bordered class="bg-grey-8 text-white">
+        <q-toolbar>
+            <q-toolbar-title>
+            <q-avatar>
+                <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+            </q-avatar>
+            <div>Title</div>
+            </q-toolbar-title>
+        </q-toolbar>
+        </q-footer> -->
+
+    </q-layout>
 </template>

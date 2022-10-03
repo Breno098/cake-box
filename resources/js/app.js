@@ -1,6 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
-import '../sass/app.scss';
+// import '../sass/app.scss';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
@@ -10,10 +10,20 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas } from '@fortawesome/free-solid-svg-icons'
-library.add(fas);
+import { Quasar } from 'quasar'
+import quasarLang from 'quasar/lang/pt-BR'
+
+import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
+import '@quasar/extras/material-icons/material-icons.css'
+import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
+import '@quasar/extras/material-icons-round/material-icons-round.css'
+
+import 'quasar/src/css/index.sass'
+
+// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+// import { library } from "@fortawesome/fontawesome-svg-core";
+// import { fas } from '@fortawesome/free-solid-svg-icons'
+// library.add(fas);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -22,7 +32,11 @@ createInertiaApp({
          createApp({ render: () => h(app, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .component("fa", FontAwesomeIcon)
+            .use(Quasar, {
+                plugins: {}, // import Quasar plugins and add here
+                lang: quasarLang,
+            })
+            // .component("fa", FontAwesomeIcon)
             .mount(el);
     },
 });
