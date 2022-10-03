@@ -88,11 +88,11 @@
                     </q-td>
                     <q-td key="time_to_cook" :props="props">
                         <q-icon name="schedule" class="q-mr-sm" size="sm"/>
-                        {{ moment(props.row.time_to_cook * 1000).format("hh:mm:ss") }}
+                        {{ props.row.time_to_cook }}
                     </q-td>
                     <q-td key="time_to_prepare" :props="props">
                         <q-icon name="schedule" class="q-mr-sm" size="sm"/>
-                        {{ moment(props.row.time_to_prepare * 1000).format("hh:mm:ss") }}
+                        {{ props.row.time_to_prepare }}
                     </q-td>
                     <q-td key="difficulty" :props="props">
                         <q-badge rounded :color="color(props.row.difficulty)" />

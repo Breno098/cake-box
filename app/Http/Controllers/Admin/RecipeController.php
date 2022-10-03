@@ -7,8 +7,10 @@ use App\Models\Recipe;
 use App\Http\Requests\Admin\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Admin\Recipe\RecipeUpdateRequest;
 use App\Http\Resources\Admin\RecipeResourse;
+use App\Models\Ingredient;
 use App\Services\Admin\RecipeService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -58,21 +60,33 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe): Response
     {
+        $ingredientsForSelect = Ingredient::orderBy('name')
+            ->get()
+            ->map(function(Ingredient $ingredient) {
+                return [
+                    'label' => $ingredient->name,
+                    'value' => $ingredient->id
+                ];
+            });
+
         return Inertia::render('Admin/Recipe/Edit', [
-            'recipe' => $recipe
+            'recipe' => new RecipeResourse($recipe),
+            'ingredients' => $ingredientsForSelect
         ]);
     }
 
     /**
      * @param RecipeUpdateRequest $recipeUpdateRequest
      * @param Recipe $recipe
-     * @return RecipeResourse
+     * @return RedirectResponse
      */
-    public function update(RecipeUpdateRequest $recipeUpdateRequest, Recipe $recipe): RecipeResourse
+    public function update(RecipeUpdateRequest $recipeUpdateRequest, Recipe $recipe): RedirectResponse
     {
+        dd($recipeUpdateRequest->validated());
+
         $recipe = $this->recipeService->update($recipe, $recipeUpdateRequest->validated());
 
-        return new RecipeResourse($recipe);
+        return redirect()->route('admin.recipe.index');
     }
 
     /**

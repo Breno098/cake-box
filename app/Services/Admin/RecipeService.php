@@ -55,13 +55,10 @@ class RecipeService
      */
     private function transformData(array $requestData): array
     {
-        $startAt = Arr::get($requestData, 'start_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'start_at')) : null;
-        $endAt = Arr::get($requestData, 'end_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'end_at')) : null;
+        // $startAt = Arr::get($requestData, 'start_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'start_at')) : null;
+        // $endAt = Arr::get($requestData, 'end_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'end_at')) : null;
 
-        return array_merge($requestData, [
-            'start_at' => $startAt,
-            'end_at' => $endAt
-        ]);
+        return array_merge($requestData);
     }
 
     /**

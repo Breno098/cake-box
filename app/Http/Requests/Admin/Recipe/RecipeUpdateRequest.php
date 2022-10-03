@@ -24,7 +24,18 @@ class RecipeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'nullable',
+            'description' => 'nullable',
+            'info' => 'nullable',
+            'difficulty' => 'nullable',
+            'time_to_cook' => 'nullable',
+            'time_to_prepare' => 'nullable',
+            'rating' => 'nullable',
+            'yield_quantity' => 'nullable',
+            'yield_unit_measure' => 'nullable',
+            'ingredients.*.id' => 'nullable|exists:ingredients,id',
+            'ingredients.*.quantity' => 'nullable',
+            'ingredients.*.iunit_measured' => 'nullable',
         ];
     }
 }

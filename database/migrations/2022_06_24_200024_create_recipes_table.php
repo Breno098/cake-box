@@ -19,11 +19,11 @@ class CreateRecipesTable extends Migration
             $table->text('description')->nullable();
             $table->text('info')->nullable();
             $table->enum('difficulty', [1, 2, 3, 4, 5]);
-            $table->integer('time_to_cook')->nullable();
-            $table->integer('time_to_prepare')->nullable();
+            $table->time('time_to_cook')->nullable();
+            $table->time('time_to_prepare')->nullable();
             $table->integer('rating')->nullable();
             $table->integer('yield_quantity')->nullable();
-            $table->string('yield_unit_measure')->nullable();
+            $table->enum('yield_unit_measure', ['Pedaço', 'Fatia', 'Gramas'])->nullable();
             $table->timestamps();
         });
     }
