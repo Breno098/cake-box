@@ -24,7 +24,32 @@ class RecipeStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'required',
+            'description' => 'nullable',
+            'info' => 'nullable',
+            'difficulty' => 'nullable',
+            'time_to_cook' => 'nullable|date_format:H:i:s',
+            'time_to_prepare' => 'nullable|date_format:H:i:s',
+            'yield_quantity' => 'nullable',
+            'yield_unit_measure' => 'nullable',
+            'ingredients.*.id' => 'nullable|exists:ingredients,id',
+            'ingredients.*.quantity' => 'nullable',
+            'ingredients.*.unit_measure' => 'nullable',
+            'ingredients.*.iunit_measured' => 'nullable',
+            'directions.*.description' => 'nullable',
+            'directions.*.order' => 'nullable',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'O título é obrigatório',
+            'time_to_cook.date_format' => 'O tempo para cozinhar deve estar no formato hh:mm',
+            'time_to_prepare.date_format' => 'O tempo de preparo deve estar no formato hh:mm',
         ];
     }
 }

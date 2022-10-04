@@ -23,7 +23,6 @@ class RecipeUpdateRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             'title' => 'required',
             'description' => 'nullable',
@@ -37,9 +36,14 @@ class RecipeUpdateRequest extends FormRequest
             'ingredients.*.quantity' => 'nullable',
             'ingredients.*.unit_measure' => 'nullable',
             'ingredients.*.iunit_measured' => 'nullable',
+            'directions.*.description' => 'nullable',
+            'directions.*.order' => 'nullable',
         ];
     }
 
+    /**
+     * @return array
+     */
     public function messages(): array
     {
         return [

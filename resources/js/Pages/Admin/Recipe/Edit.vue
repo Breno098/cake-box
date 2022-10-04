@@ -22,7 +22,8 @@
         rating: props.recipe.data.rating,
         yield_quantity: props.recipe.data.yield_quantity,
         yield_unit_measure: props.recipe.data.yield_unit_measure,
-        ingredients: props.recipe.data.ingredients
+        ingredients: props.recipe.data.ingredients,
+        directions: props.recipe.data.directions,
     });
 
     const submit = () => {
@@ -32,10 +33,6 @@
                     type: 'positive',
                     message: 'Produto atualizado com sucesso',
                     position: 'top',
-                    actions: [{
-                        label: 'Fechar',
-                        color: 'white',
-                    }]
                 })
             },
         })
@@ -142,6 +139,60 @@
             modalIngredient.value.data.id = null;
         },
     });
+
+    const columnsDirectionsTable = [{
+        name: 'order',
+        field: 'order',
+        align: 'left',
+        label: 'Ordem'
+    }, {
+        name: 'description',
+        field: 'description',
+        align: 'left',
+        label: 'Passo'
+    }, {
+        name: 'actios',
+        field: 'actios',
+        align: 'left',
+    }];
+
+    const modalDirection = ref({
+        show: false,
+        showConfirmDelete: false,
+        data: {
+            description: '',
+            order: null
+        },
+        initData: {
+            description: '',
+            order: null
+        },
+        add: () => {
+            form.directions.push({
+                description: modalDirection.value.data.description,
+                order: form.directions.length + 1,
+            });
+
+            modalDirection.value.data = { ...modalDirection.value.initData };
+            modalDirection.value.show = false;
+        },
+        delete: (order) => {
+            modalDirection.value.data.order = order;
+            modalDirection.value.showConfirmDelete = true;
+        },
+        confirmDelete: () => {
+            form.directions = form.directions.filter((dir) => dir.order != modalDirection.value.data.order);
+
+            var order = 1;
+            form.directions.map(dir => {
+                dir.order = order++;
+                return dir;
+            })
+
+            modalDirection.value.showConfirmDelete = false;
+            modalDirection.value.data.order = null;
+        },
+    });
 </script>
 
 <template>
@@ -150,8 +201,9 @@
 
         <form @submit.prevent="submit">
             <div class="row">
-                <div class="col-6 q-mb-md q-px-sm">
-                    <div class="text-h6"> Receita | Editar </div>
+                <div class="row col-6 q-mb-md items-center q-px-sm">
+                    <q-icon name="menu_book" size="sm"/>
+                    <div class="text-h6 q-ml-sm"> Receita | Editar </div>
                 </div>
 
                 <div class="col-6 q-mb-md q-px-sm row justify-end">
@@ -281,6 +333,7 @@
                 hide-bottom
                 :rows="form.ingredients"
                 :columns="columnsIngredientsTable"
+                class="q-mt-lg"
             >
                 <template v-slot:top-right>
                     <q-btn
@@ -327,77 +380,159 @@
                     </q-tr>
                 </template>
             </q-table>
+
+            <q-dialog v-model="modalIngredient.show" >
+                <q-card style="min-width: 600px">
+                    <q-card-section>
+                        <div class="text-h6"> Ingrediente </div>
+                    </q-card-section>
+
+                    <q-card-section class="q-pt-none">
+                        <div class="row">
+                            <div class="col-5 q-mb-md q-px-sm">
+                                <q-select
+                                    v-model="modalIngredient.data.id"
+                                    label="Ingrediente"
+                                    transition-show="flip-up"
+                                    transition-hide="flip-down"
+                                    filled
+                                    :options="ingredientForSelect"
+                                    emit-value
+                                    map-options
+                                />
+                            </div>
+
+                            <div class="col-3 q-mb-md q-px-sm">
+                                <q-input
+                                    filled
+                                    v-model="modalIngredient.data.quantity"
+                                    label="Quantidade"
+                                    type="number"
+                                />
+                            </div>
+
+                            <div class="col-4 q-mb-md q-px-sm">
+                                <q-select
+                                    v-model="modalIngredient.data.unit_measure"
+                                    label="Ingrediente"
+                                    transition-show="flip-up"
+                                    transition-hide="flip-down"
+                                    filled
+                                    :options="unitIngrientMeasures"
+                                    emit-value
+                                    map-options
+                                />
+                            </div>
+                        </div>
+                    </q-card-section>
+
+                    <q-card-actions align="right" class="text-primary">
+                        <q-btn flat label="Cancelar" @click="modalIngredient.show = false"/>
+                        <q-btn flat label="Adicionar" @click="modalIngredient.add" />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
+
+            <q-dialog v-model="modalIngredient.showConfirmDelete">
+                <q-card>
+                    <q-card-section class="text-center">
+                        <div class="text-h6"> Excluir ingrediente? </div>
+                    </q-card-section>
+
+                    <q-card-section class="text-center">
+                        Ao confirmar você irá tirar o ingrediente da receita. <br/>
+                        Tem certeza disso?
+                    </q-card-section>
+
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancelar" color="green" v-close-popup />
+                        <q-btn flat label="Confirmar" color="red" @click="modalIngredient.confirmDelete" />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
+
+            <q-table
+                title="Instruções"
+                flat
+                hide-bottom
+                :rows="form.directions"
+                :columns="columnsDirectionsTable"
+                class="q-mt-lg"
+            >
+                <template v-slot:top-right>
+                    <q-btn
+                        color="primary"
+                        icon="add"
+                        @click="modalDirection.show = true"
+                        round
+                        size="sm"
+                    />
+                </template>
+
+                <template v-slot:body="props">
+                    <q-tr :props="props">
+                        <q-td key="order" :props="props">
+                            {{ props.row.order }}
+                        </q-td>
+                        <q-td key="description" :props="props">
+                            <div v-html="props.row.description"></div>
+
+                            <q-popup-edit v-model="props.row.description" title="Passo" buttons v-slot="scope">
+                                <q-editor v-model="scope.value"/>
+                            </q-popup-edit>
+                        </q-td>
+                        <q-td key="actios" :props="props">
+                            <q-btn
+                                round
+                                color="red"
+                                icon="close"
+                                size="sm"
+                                class="q-mr-sm"
+                                @click="modalDirection.delete(props.row.order)"
+                            />
+                        </q-td>
+                    </q-tr>
+                </template>
+            </q-table>
+
+            <q-dialog v-model="modalDirection.show" >
+                <q-card style="min-width: 800px">
+                    <q-card-section>
+                        <div class="text-h6"> Instrução </div>
+                    </q-card-section>
+
+                    <q-card-section class="q-pt-none">
+                        <div class="row">
+                            <div class="col-12 q-mb-md q-px-sm">
+                                <q-editor v-model="modalDirection.data.description"/>
+                            </div>
+                        </div>
+                    </q-card-section>
+
+                    <q-card-actions align="right" class="text-primary">
+                        <q-btn flat label="Cancelar" @click="modalDirection.show = false"/>
+                        <q-btn flat label="Adicionar" @click="modalDirection.add" />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
+
+            <q-dialog v-model="modalDirection.showConfirmDelete">
+                <q-card>
+                    <q-card-section class="text-center">
+                        <div class="text-h6"> Excluir instrução? </div>
+                    </q-card-section>
+
+                    <q-card-section class="text-center">
+                        Ao confirmar você irá apagar a intrução da receita. <br/>
+                        Tem certeza disso?
+                    </q-card-section>
+
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancelar" color="green" v-close-popup />
+                        <q-btn flat label="Confirmar" color="red" @click="modalDirection.confirmDelete" />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
         </form>
-
-        <q-dialog v-model="modalIngredient.show" >
-            <q-card style="min-width: 600px">
-                <q-card-section>
-                    <div class="text-h6"> Ingrediente </div>
-                </q-card-section>
-
-                <q-card-section class="q-pt-none">
-                    <div class="row">
-                        <div class="col-5 q-mb-md q-px-sm">
-                            <q-select
-                                v-model="modalIngredient.data.id"
-                                label="Ingrediente"
-                                transition-show="flip-up"
-                                transition-hide="flip-down"
-                                filled
-                                :options="ingredientForSelect"
-                                emit-value
-                                map-options
-                            />
-                        </div>
-
-                        <div class="col-3 q-mb-md q-px-sm">
-                            <q-input
-                                filled
-                                v-model="modalIngredient.data.quantity"
-                                label="Quantidade"
-                                type="number"
-                            />
-                        </div>
-
-                        <div class="col-4 q-mb-md q-px-sm">
-                            <q-select
-                                v-model="modalIngredient.data.unit_measure"
-                                label="Ingrediente"
-                                transition-show="flip-up"
-                                transition-hide="flip-down"
-                                filled
-                                :options="unitIngrientMeasures"
-                                emit-value
-                                map-options
-                            />
-                        </div>
-                    </div>
-                </q-card-section>
-
-                <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancelar" @click="modalIngredient.show = false"/>
-                    <q-btn flat label="Adicionar" @click="modalIngredient.add" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-
-        <q-dialog v-model="modalIngredient.showConfirmDelete">
-            <q-card>
-                <q-card-section class="text-center">
-                    <div class="text-h6"> Excluir ingrediente? </div>
-                </q-card-section>
-
-                <q-card-section>
-                    Ao confirmar você irá tirar o ingrediente da receita. Tem certeza disso?
-                </q-card-section>
-
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancelar" color="green" v-close-popup />
-                    <q-btn flat label="Confirmar" color="red" @click="modalIngredient.confirmDelete" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
     </AuthenticatedLayout>
 </template>
-
-

@@ -75,6 +75,8 @@ class RecipeController extends Controller
      */
     public function update(RecipeUpdateRequest $recipeUpdateRequest, Recipe $recipe): RedirectResponse
     {
+        // dd( $recipeUpdateRequest->validated() );
+
         $recipe = $this->recipeService->update($recipe, $recipeUpdateRequest->validated());
 
         return redirect()->route('admin.recipe.edit', $recipe);
@@ -82,14 +84,12 @@ class RecipeController extends Controller
 
     /**
      * @param Recipe $recipe
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function destroy(Recipe $recipe): JsonResponse
+    public function destroy(Recipe $recipe): RedirectResponse
     {
-        $deleted = $this->recipeService->delete($recipe);
+        $this->recipeService->delete($recipe);
 
-        return response()->json([
-            'deleted' => $deleted
-        ]);
+        return redirect()->route('admin.recipe.index');
     }
 }

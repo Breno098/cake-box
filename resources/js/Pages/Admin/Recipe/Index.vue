@@ -2,13 +2,14 @@
     import { ref } from 'vue';
     import { Head, useForm, Link } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import moment from 'moment';
+    import { Inertia } from '@inertiajs/inertia';
+    import { useQuasar } from 'quasar'
+
+    const $q = useQuasar()
 
     const props = defineProps({
         recipes: Object,
     });
-
-    const current = ref(1)
 
     const columns = [{
         name: 'title',
@@ -57,20 +58,47 @@
             default: return 'black';
         }
     }
+
+    const modalDelete = ref({
+        show: false,
+        deleteId: null,
+        delete: (id) => {
+            modalDelete.value.deleteId = id;
+            modalDelete.value.show = true;
+        },
+        confirmDelete: () => {
+            Inertia.delete(route('admin.recipe.destroy', modalDelete.value.deleteId), {
+                onSuccess: () => {
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Produto deletado com sucesso',
+                        position: 'top',
+                    })
+
+                    modalDelete.value.show = false;
+                }
+            })
+        }
+    })
 </script>
 
 <template>
     <AuthenticatedLayout>
         <Head title="Receitas" />
 
+        <div class="row items-center q-pb-sm q-px-sm">
+            <q-icon name="menu_book" size="sm"/>
+            <div class="text-h6 q-ml-sm"> Receitas </div>
+        </div>
+
         <q-table
-            title="Receitas"
             :rows="recipes.data"
             :columns="columns"
             row-key="id"
             :pagination.sync="{
                 rowsPerPage: 10
             }"
+            hide-bottom
         >
             <template v-slot:body="props">
                 <q-tr :props="props">
@@ -107,14 +135,23 @@
                                 color="primary"
                                 icon="edit"
                                 size="sm"
+                                class="q-mr-sm"
                             />
                         </Link>
+
+                        <q-btn
+                            round
+                            color="red"
+                            icon="delete"
+                            size="sm"
+                            @click="modalDelete.delete(props.row.id)"
+                        />
                     </q-td>
                 </q-tr>
             </template>
         </q-table>
 
-        <div class="q-pa-lg flex flex-center">
+        <div class="q-pa-lg" v-show="recipes.meta.last_page > 1">
             <q-pagination
                 v-model="recipes.meta.current_page"
                 :max="recipes.meta.last_page"
@@ -122,6 +159,23 @@
                 @update:model-value="teste"
             />
         </div>
+
+        <q-dialog v-model="modalDelete.show">
+            <q-card>
+                <q-card-section class="text-center">
+                    <div class="text-h6"> Excluir receita? </div>
+                </q-card-section>
+
+                <q-card-section>
+                    Ao confirmar você irá deletar a receita. Tem certeza disso?
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancelar" color="green" v-close-popup />
+                    <q-btn flat label="Confirmar" color="red" @click="modalDelete.confirmDelete" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </AuthenticatedLayout>
 </template>
 

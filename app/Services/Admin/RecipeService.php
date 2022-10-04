@@ -6,7 +6,6 @@ use App\Models\Recipe;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class RecipeService
@@ -36,6 +35,8 @@ class RecipeService
 
         $this->syncIngredients($recipe, Arr::get($requestData, 'ingredients', []));
 
+        $this->syncDirections($recipe, Arr::get($requestData, 'directions', []));
+
         return $recipe;
     }
 
@@ -50,26 +51,22 @@ class RecipeService
 
         $this->syncIngredients($recipe, Arr::get($requestData, 'ingredients', []));
 
+        $this->syncDirections($recipe, Arr::get($requestData, 'directions', []));
+
         return $recipe;
     }
 
-    /**
+     /**
      * @param Recipe $recipe
-     * @param array $ingredients
-     * @return void
+     * @return boolean|null
      */
-    public function syncIngredients(Recipe $recipe, array $ingredients = []): void
+    public function delete(Recipe $recipe): ?bool
     {
-        $ingredientsSync = [];
+        $recipe->ingredients()->detach();
 
-        foreach ($ingredients as $ingredient) {
-            $ingredientsSync[$ingredient['id']] = [
-                'quantity' => $ingredient['quantity'],
-                'unit_measure' => $ingredient['unit_measure'],
-            ];
-        }
+        $recipe->directions()->delete();
 
-        $recipe->ingredients()->sync($ingredientsSync);
+        return $recipe->delete();
     }
 
     /**
@@ -83,10 +80,38 @@ class RecipeService
 
     /**
      * @param Recipe $recipe
-     * @return boolean|null
+     * @param array $ingredients
+     * @return void
      */
-    public function delete(Recipe $recipe): ?bool
+    public function syncIngredients(Recipe $recipe, array $ingredients = []): void
     {
-        return $recipe->delete();
+        $ingredientsSync = [];
+
+        foreach ($ingredients as $ingredient) {
+            $ingredientsSync[$ingredient['id']] = [
+                'quantity' => Arr::get($ingredient, 'quantity', 1),
+                'unit_measure' => Arr::get($ingredient, 'unit_measure'),
+            ];
+        }
+
+        $recipe->ingredients()->sync($ingredientsSync);
     }
+
+    /**
+     * @param Recipe $recipe
+     * @param array $directions
+     * @return void
+     */
+    public function syncDirections(Recipe $recipe, array $directions = []): void
+    {
+        $recipe->directions()->delete();
+
+        foreach ($directions as $direction) {
+            $recipe->directions()->create([
+                'description' => Arr::get($direction, 'description'),
+                'order' => Arr::get($direction, 'order'),
+            ]);
+        }
+    }
+
 }
