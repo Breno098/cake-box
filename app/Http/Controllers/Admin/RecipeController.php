@@ -44,6 +44,18 @@ class RecipeController extends Controller
     }
 
     /**
+     * @return Response
+     */
+    public function create(): Response
+    {
+        $ingredientsForSelect = Ingredient::orderBy('name')->get();
+
+        return Inertia::render('Admin/Recipe/Create', [
+            'ingredients' => $ingredientsForSelect
+        ]);
+    }
+
+    /**
      * @param RecipeStoreRequest $recipeStoreRequest
      * @return RecipeResourse
      */
@@ -75,8 +87,6 @@ class RecipeController extends Controller
      */
     public function update(RecipeUpdateRequest $recipeUpdateRequest, Recipe $recipe): RedirectResponse
     {
-        // dd( $recipeUpdateRequest->validated() );
-
         $recipe = $this->recipeService->update($recipe, $recipeUpdateRequest->validated());
 
         return redirect()->route('admin.recipe.edit', $recipe);

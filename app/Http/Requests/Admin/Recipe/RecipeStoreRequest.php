@@ -38,7 +38,13 @@ class RecipeStoreRequest extends FormRequest
             'ingredients.*.iunit_measured' => 'nullable',
             'directions.*.description' => 'nullable',
             'directions.*.order' => 'nullable',
-            'avatar' => 'nullable'
+            'wallpaper' => 'nullable|image',
+            'image_1' => 'nullable|image',
+            'image_2' => 'nullable|image',
+            'image_3' => 'nullable|image',
+            'image_4' => 'nullable|image',
+            'image_5' => 'nullable|image',
+            'image_6' => 'nullable|image',
         ];
     }
 

@@ -29,15 +29,43 @@
         image_2: null,
         image_3: null,
         image_4: null,
-        image_5: null,
-        image_6: null,
     });
 
-    const wallpaperSrc = ref(props.recipe.data.wallpaper);
+    const defaultImg = 'https://www.defensoria.to.def.br/no_image.jpg';
 
-    const changeWallpaper = (event) => {
+    const wallpaperRef = ref('wallpaperRef')
+    const wallpaperSrc = ref(props.recipe.data.wallpaper ?? defaultImg)
+    const wallpaperChange = (event) => {
         form.wallpaper = event.target.files[0];
         wallpaperSrc.value = URL.createObjectURL(event.target.files[0]);
+    }
+
+    const image1Ref = ref('image1Ref')
+    const image1Src = ref(props.recipe.data.image_1 ?? defaultImg)
+    const image1Change = (event) => {
+        form.image_1 = event.target.files[0];
+        image1Src.value = URL.createObjectURL(event.target.files[0]);
+    }
+
+    const image2Ref = ref('image2Ref')
+    const image2Src = ref(props.recipe.data.image_2 ?? defaultImg)
+    const image2Change = (event) => {
+        form.image_2 = event.target.files[0];
+        image2Src.value = URL.createObjectURL(event.target.files[0]);
+    }
+
+    const image3Ref = ref('image3Ref')
+    const image3Src = ref(props.recipe.data.image_3 ?? defaultImg)
+    const image3Change = (event) => {
+        form.image_3 = event.target.files[0];
+        image3Src.value = URL.createObjectURL(event.target.files[0]);
+    }
+
+    const image4Ref = ref('image4Ref')
+    const image4Src = ref(props.recipe.data.image_4 ?? defaultImg)
+    const image4Change = (event) => {
+        form.image_4 = event.target.files[0];
+        image4Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const submit = () => {
@@ -210,376 +238,502 @@
         },
     });
 
-
+    const tab = ref('images');
 </script>
 
 <template>
     <AuthenticatedLayout>
         <Head title="Receita" />
 
-        <form @submit.prevent="submit">
-            <div class="row">
-                <div class="row col-6 q-mb-md items-center q-px-sm">
-                    <q-icon name="menu_book" size="sm"/>
-                    <div class="text-h6 q-ml-sm"> Receita | Editar </div>
-                </div>
-
-                <div class="col-6 q-mb-md q-px-sm row justify-end">
-                    <q-btn
-                        color="primary"
-                        label="Salvar"
-                        type="submit"
-                        icon="save"
-                        :disabled="form.processing"
-                        :class="{ 'opacity-25': form.processing }"
-                    />
-                </div>
-
-                <div class="col-12 q-pt-lg ">
-                    <!-- :src="form.wallpaper_src" -->
-                    <q-img
-                        :src="wallpaperSrc"
-                    />
-                </div>
-
-                <div class="col-12 q-py-sm ">
-                    <q-file
-                        filled
-                        label="Principal"
-                        @input="changeWallpaper"
-                    >
-                        <template v-slot:prepend>
-                            <q-icon name="attach_file" />
-                        </template>
-                    </q-file>
-                </div>
-
-
-                <div class="col-12 q-py-lg q-my-md">
-                </div>
-                <div class="col-12 q-py-lg q-my-md">
-                </div>
-                <div class="col-12 q-py-lg q-my-md">
-                </div>
-
-
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.title"
-                        label="Título"
-                        :bottom-slots="Boolean(form.errors.title)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ form.errors.title }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-select
-                        label="Dificuldade"
-                        transition-show="flip-up"
-                        transition-hide="flip-down"
-                        filled
-                        v-model="form.difficulty"
-                        :options="difficulties"
-                        emit-value
-                        map-options
-                        :bottom-slots="Boolean(form.errors.difficulty)"
-                    >
-                        <template v-slot:option="scope">
-                            <q-item v-bind="scope.itemProps">
-                                <q-item-section avatar>
-                                    <q-badge rounded :color="color(scope.opt.value)" />
-                                </q-item-section>
-                                <q-item-section>
-                                    <q-item-label>{{ scope.opt.label }}</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </template>
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ form.errors.difficulty }} </div>
-                        </template>
-                    </q-select>
-                </div>
-
-                <div class="col-12 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.description"
-                        label="Descrição"
-                        type="textarea"
-                    />
-                </div>
-
-                <div class="col-12 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.info"
-                        label="Informação"
-                        type="textarea"
-                    />
-                </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.time_to_cook"
-                        label="Tempo para cozinhar"
-                        mask="time"
-                        :bottom-slots="Boolean(form.errors.time_to_cook)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ form.errors.time_to_cook }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.time_to_prepare"
-                        label="Tempo de preparo"
-                        mask="time"
-                        :bottom-slots="Boolean(form.errors.time_to_prepare)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ form.errors.time_to_prepare }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-input
-                        filled
-                        v-model="form.yield_quantity"
-                        label="Rendimento"
-                        type="number"
-                    />
-                </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-select
-                        label="Medida de rendimento"
-                        transition-show="flip-up"
-                        transition-hide="flip-down"
-                        filled
-                        v-model="form.yield_unit_measure"
-                        :options="unitMeasures"
-                        emit-value
-                        map-options
-                    />
-                </div>
+        <div class="row">
+            <div class="row col-6 q-mb-md items-center q-px-sm">
+                <q-icon name="menu_book" size="sm"/>
+                <div class="text-h6 q-ml-sm"> Receita | Editar </div>
             </div>
 
-            <q-table
-                title="Ingredientes"
-                flat
-                hide-bottom
-                :rows="form.ingredients"
-                :columns="columnsIngredientsTable"
-                class="q-mt-lg"
-            >
-                <template v-slot:top-right>
-                    <q-btn
-                        color="primary"
-                        icon="add"
-                        @click="modalIngredient.show = true"
-                        round
-                        size="sm"
-                    />
-                </template>
+            <div class="col-6 q-mb-md q-px-sm row justify-end">
+                <q-btn
+                    color="green"
+                    label="Salvar"
+                    icon="save"
+                    :disabled="form.processing"
+                    :class="{ 'opacity-25': form.processing }"
+                    @click="submit"
+                />
+            </div>
+        </div>
 
-                <template v-slot:body="props">
-                    <q-tr :props="props">
-                        <q-td key="name" :props="props">
-                            {{ props.row.name }}
-                        </q-td>
-                        <q-td key="quantity" :props="props">
-                            {{ props.row.quantity }}
-                            <q-popup-edit v-model="props.row.quantity" title="Atualizar quantidade" buttons v-slot="scope">
-                                <q-input type="number" v-model="scope.value" dense autofocus />
-                            </q-popup-edit>
-                        </q-td>
-                        <q-td key="unit_measure" :props="props">
-                            {{ props.row.unit_measure }}
-                            <q-popup-edit v-model="props.row.unit_measure" title="Atualizar quantidade" buttons v-slot="scope">
-                                <q-select
-                                    v-model="scope.value"
-                                    label="Ingrediente"
-                                    filled
-                                    :options="unitIngrientMeasures"
+        <q-tabs
+            v-model="tab"
+            class="text-primary"
+            inline-label
+        >
+            <q-tab name="recipe" icon="menu_book" label="Receita" />
+            <q-tab name="ingredients" icon="egg" label="Ingredientes" />
+            <q-tab name="directions" icon="format_list_numbered" label="Intruções" />
+            <q-tab name="images" icon="image" label="Imagens" />
+        </q-tabs>
+
+        <q-tab-panels
+            v-model="tab"
+            animated
+            transition-prev="jump-up"
+            transition-next="jump-up"
+        >
+            <q-tab-panel name="recipe">
+                <div class="row">
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.title"
+                            label="Título"
+                            :bottom-slots="Boolean(form.errors.title)"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ form.errors.title }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-select
+                            label="Dificuldade"
+                            transition-show="flip-up"
+                            transition-hide="flip-down"
+                            filled
+                            v-model="form.difficulty"
+                            :options="difficulties"
+                            emit-value
+                            map-options
+                            :bottom-slots="Boolean(form.errors.difficulty)"
+                        >
+                            <template v-slot:option="scope">
+                                <q-item v-bind="scope.itemProps">
+                                    <q-item-section avatar>
+                                        <q-badge rounded :color="color(scope.opt.value)" />
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <q-item-label>{{ scope.opt.label }}</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </template>
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ form.errors.difficulty }} </div>
+                            </template>
+                        </q-select>
+                    </div>
+
+                    <div class="col-12 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.description"
+                            label="Descrição"
+                            type="textarea"
+                        />
+                    </div>
+
+                    <div class="col-12 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.info"
+                            label="Informação"
+                            type="textarea"
+                        />
+                    </div>
+
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.time_to_cook"
+                            label="Tempo para cozinhar"
+                            mask="time"
+                            :bottom-slots="Boolean(form.errors.time_to_cook)"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ form.errors.time_to_cook }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.time_to_prepare"
+                            label="Tempo de preparo"
+                            mask="time"
+                            :bottom-slots="Boolean(form.errors.time_to_prepare)"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ form.errors.time_to_prepare }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-input
+                            filled
+                            v-model="form.yield_quantity"
+                            label="Rendimento"
+                            type="number"
+                        />
+                    </div>
+
+                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                        <q-select
+                            label="Medida de rendimento"
+                            transition-show="flip-up"
+                            transition-hide="flip-down"
+                            filled
+                            v-model="form.yield_unit_measure"
+                            :options="unitMeasures"
+                            emit-value
+                            map-options
+                        />
+                    </div>
+                </div>
+            </q-tab-panel>
+            <q-tab-panel name="ingredients">
+                <q-table
+                    title="Ingredientes"
+                    flat
+                    hide-bottom
+                    :rows="form.ingredients"
+                    :columns="columnsIngredientsTable"
+                    class="q-mt-lg"
+                >
+                    <template v-slot:top-right>
+                        <q-btn
+                            color="primary"
+                            icon="add"
+                            @click="modalIngredient.show = true"
+                            round
+                            size="sm"
+                        />
+                    </template>
+
+                    <template v-slot:body="props">
+                        <q-tr :props="props">
+                            <q-td key="name" :props="props">
+                                {{ props.row.name }}
+                            </q-td>
+                            <q-td key="quantity" :props="props">
+                                {{ props.row.quantity }}
+                                <q-popup-edit v-model="props.row.quantity" title="Atualizar quantidade" buttons v-slot="scope">
+                                    <q-input type="number" v-model="scope.value" dense autofocus />
+                                </q-popup-edit>
+                            </q-td>
+                            <q-td key="unit_measure" :props="props">
+                                {{ props.row.unit_measure }}
+                                <q-popup-edit v-model="props.row.unit_measure" title="Atualizar quantidade" buttons v-slot="scope">
+                                    <q-select
+                                        v-model="scope.value"
+                                        label="Ingrediente"
+                                        filled
+                                        :options="unitIngrientMeasures"
+                                    />
+                                </q-popup-edit>
+                            </q-td>
+                            <q-td key="unit_measure" :props="props">
+                                <q-btn
+                                    round
+                                    color="red"
+                                    icon="close"
+                                    size="sm"
+                                    class="q-mr-sm"
+                                    @click="modalIngredient.delete(props.row.id)"
                                 />
-                            </q-popup-edit>
-                        </q-td>
-                        <q-td key="unit_measure" :props="props">
+                            </q-td>
+                        </q-tr>
+                    </template>
+                </q-table>
+
+                <q-dialog v-model="modalIngredient.show" >
+                    <q-card style="min-width: 600px">
+                        <q-card-section>
+                            <div class="text-h6"> Ingrediente </div>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none">
+                            <div class="row">
+                                <div class="col-5 q-mb-md q-px-sm">
+                                    <q-select
+                                        v-model="modalIngredient.data.id"
+                                        label="Ingrediente"
+                                        transition-show="flip-up"
+                                        transition-hide="flip-down"
+                                        filled
+                                        :options="ingredientForSelect"
+                                        emit-value
+                                        map-options
+                                    />
+                                </div>
+
+                                <div class="col-3 q-mb-md q-px-sm">
+                                    <q-input
+                                        filled
+                                        v-model="modalIngredient.data.quantity"
+                                        label="Quantidade"
+                                        type="number"
+                                    />
+                                </div>
+
+                                <div class="col-4 q-mb-md q-px-sm">
+                                    <q-select
+                                        v-model="modalIngredient.data.unit_measure"
+                                        label="Ingrediente"
+                                        transition-show="flip-up"
+                                        transition-hide="flip-down"
+                                        filled
+                                        :options="unitIngrientMeasures"
+                                        emit-value
+                                        map-options
+                                    />
+                                </div>
+                            </div>
+                        </q-card-section>
+
+                        <q-card-actions align="right" class="text-primary">
+                            <q-btn flat label="Cancelar" @click="modalIngredient.show = false"/>
+                            <q-btn flat label="Adicionar" @click="modalIngredient.add" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+
+                <q-dialog v-model="modalIngredient.showConfirmDelete">
+                    <q-card>
+                        <q-card-section class="text-center">
+                            <div class="text-h6"> Excluir ingrediente? </div>
+                        </q-card-section>
+
+                        <q-card-section class="text-center">
+                            Ao confirmar você irá tirar o ingrediente da receita. <br/>
+                            Tem certeza disso?
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                            <q-btn flat label="Cancelar" color="green" v-close-popup />
+                            <q-btn flat label="Confirmar" color="red" @click="modalIngredient.confirmDelete" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+            </q-tab-panel>
+            <q-tab-panel name="directions">
+                <q-table
+                    title="Instruções"
+                    flat
+                    hide-bottom
+                    :rows="form.directions"
+                    :columns="columnsDirectionsTable"
+                    class="q-mt-lg"
+                >
+                    <template v-slot:top-right>
+                        <q-btn
+                            color="primary"
+                            icon="add"
+                            @click="modalDirection.show = true"
+                            round
+                            size="sm"
+                        />
+                    </template>
+
+                    <template v-slot:body="props">
+                        <q-tr :props="props">
+                            <q-td key="order" :props="props">
+                                {{ props.row.order }}
+                            </q-td>
+                            <q-td key="description" :props="props">
+                                <div v-html="props.row.description"></div>
+
+                                <q-popup-edit v-model="props.row.description" title="Passo" buttons v-slot="scope">
+                                    <q-editor v-model="scope.value"/>
+                                </q-popup-edit>
+                            </q-td>
+                            <q-td key="actios" :props="props">
+                                <q-btn
+                                    round
+                                    color="red"
+                                    icon="close"
+                                    size="sm"
+                                    class="q-mr-sm"
+                                    @click="modalDirection.delete(props.row.order)"
+                                />
+                            </q-td>
+                        </q-tr>
+                    </template>
+                </q-table>
+
+                <q-dialog v-model="modalDirection.show" >
+                    <q-card style="min-width: 800px">
+                        <q-card-section>
+                            <div class="text-h6"> Instrução </div>
+                        </q-card-section>
+
+                        <q-card-section class="q-pt-none">
+                            <div class="row">
+                                <div class="col-12 q-mb-md q-px-sm">
+                                    <q-editor v-model="modalDirection.data.description"/>
+                                </div>
+                            </div>
+                        </q-card-section>
+
+                        <q-card-actions align="right" class="text-primary">
+                            <q-btn flat label="Cancelar" @click="modalDirection.show = false"/>
+                            <q-btn flat label="Adicionar" @click="modalDirection.add" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+
+                <q-dialog v-model="modalDirection.showConfirmDelete">
+                    <q-card>
+                        <q-card-section class="text-center">
+                            <div class="text-h6"> Excluir instrução? </div>
+                        </q-card-section>
+
+                        <q-card-section class="text-center">
+                            Ao confirmar você irá apagar a intrução da receita. <br/>
+                            Tem certeza disso?
+                        </q-card-section>
+
+                        <q-card-actions align="right">
+                            <q-btn flat label="Cancelar" color="green" v-close-popup />
+                            <q-btn flat label="Confirmar" color="red" @click="modalDirection.confirmDelete" />
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
+            </q-tab-panel>
+            <q-tab-panel name="images">
+                <div class="row">
+                    <div class="col-12 q-mb-md q-px-sm text-center">
+                        <q-img
+                            :src="wallpaperSrc"
+                            style="max-width: 800px"
+                            class="relative-position"
+                        >
                             <q-btn
                                 round
-                                color="red"
-                                icon="close"
-                                size="sm"
-                                class="q-mr-sm"
-                                @click="modalIngredient.delete(props.row.id)"
+                                color="primary"
+                                icon="attach_file"
+                                class="absolute all-pointer-events"
+                                style="top: 8px; left: 8px"
+                                @click="wallpaperRef.click()"
                             />
-                        </q-td>
-                    </q-tr>
-                </template>
-            </q-table>
 
-            <q-dialog v-model="modalIngredient.show" >
-                <q-card style="min-width: 600px">
-                    <q-card-section>
-                        <div class="text-h6"> Ingrediente </div>
-                    </q-card-section>
-
-                    <q-card-section class="q-pt-none">
-                        <div class="row">
-                            <div class="col-5 q-mb-md q-px-sm">
-                                <q-select
-                                    v-model="modalIngredient.data.id"
-                                    label="Ingrediente"
-                                    transition-show="flip-up"
-                                    transition-hide="flip-down"
-                                    filled
-                                    :options="ingredientForSelect"
-                                    emit-value
-                                    map-options
-                                />
-                            </div>
-
-                            <div class="col-3 q-mb-md q-px-sm">
-                                <q-input
-                                    filled
-                                    v-model="modalIngredient.data.quantity"
-                                    label="Quantidade"
-                                    type="number"
-                                />
-                            </div>
-
-                            <div class="col-4 q-mb-md q-px-sm">
-                                <q-select
-                                    v-model="modalIngredient.data.unit_measure"
-                                    label="Ingrediente"
-                                    transition-show="flip-up"
-                                    transition-hide="flip-down"
-                                    filled
-                                    :options="unitIngrientMeasures"
-                                    emit-value
-                                    map-options
-                                />
-                            </div>
-                        </div>
-                    </q-card-section>
-
-                    <q-card-actions align="right" class="text-primary">
-                        <q-btn flat label="Cancelar" @click="modalIngredient.show = false"/>
-                        <q-btn flat label="Adicionar" @click="modalIngredient.add" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-
-            <q-dialog v-model="modalIngredient.showConfirmDelete">
-                <q-card>
-                    <q-card-section class="text-center">
-                        <div class="text-h6"> Excluir ingrediente? </div>
-                    </q-card-section>
-
-                    <q-card-section class="text-center">
-                        Ao confirmar você irá tirar o ingrediente da receita. <br/>
-                        Tem certeza disso?
-                    </q-card-section>
-
-                    <q-card-actions align="right">
-                        <q-btn flat label="Cancelar" color="green" v-close-popup />
-                        <q-btn flat label="Confirmar" color="red" @click="modalIngredient.confirmDelete" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-
-            <q-table
-                title="Instruções"
-                flat
-                hide-bottom
-                :rows="form.directions"
-                :columns="columnsDirectionsTable"
-                class="q-mt-lg"
-            >
-                <template v-slot:top-right>
-                    <q-btn
-                        color="primary"
-                        icon="add"
-                        @click="modalDirection.show = true"
-                        round
-                        size="sm"
-                    />
-                </template>
-
-                <template v-slot:body="props">
-                    <q-tr :props="props">
-                        <q-td key="order" :props="props">
-                            {{ props.row.order }}
-                        </q-td>
-                        <q-td key="description" :props="props">
-                            <div v-html="props.row.description"></div>
-
-                            <q-popup-edit v-model="props.row.description" title="Passo" buttons v-slot="scope">
-                                <q-editor v-model="scope.value"/>
-                            </q-popup-edit>
-                        </q-td>
-                        <q-td key="actios" :props="props">
-                            <q-btn
+                            <!-- <q-btn
                                 round
                                 color="red"
-                                icon="close"
+                                icon="delete"
+                                class="absolute all-pointer-events"
+                                style="top: 60px; left: 15px"
                                 size="sm"
-                                class="q-mr-sm"
-                                @click="modalDirection.delete(props.row.order)"
+                                @click="wallpaperSrc = defaultImg"
+                            /> -->
+                        </q-img>
+
+                        <input
+                            type="file"
+                            ref="wallpaperRef"
+                            style="display: none"
+                            @input="wallpaperChange"
+                        />
+                    </div>
+
+                    <div class="col-6 q-mb-md q-px-sm text-center">
+                        <q-img
+                            :src="image1Src"
+                            style="max-width: 800px"
+                            class="relative-position"
+                        >
+                            <q-btn
+                                round
+                                color="primary"
+                                icon="attach_file"
+                                class="absolute all-pointer-events"
+                                style="top: 8px; left: 8px"
+                                @click="image1Ref.click()"
                             />
-                        </q-td>
-                    </q-tr>
-                </template>
-            </q-table>
+                        </q-img>
 
-            <q-dialog v-model="modalDirection.show" >
-                <q-card style="min-width: 800px">
-                    <q-card-section>
-                        <div class="text-h6"> Instrução </div>
-                    </q-card-section>
+                        <input
+                            type="file"
+                            ref="image1Ref"
+                            style="display: none"
+                            @input="image1Change"
+                        />
+                    </div>
 
-                    <q-card-section class="q-pt-none">
-                        <div class="row">
-                            <div class="col-12 q-mb-md q-px-sm">
-                                <q-editor v-model="modalDirection.data.description"/>
-                            </div>
-                        </div>
-                    </q-card-section>
+                    <div class="col-6 q-mb-md q-px-sm text-center">
+                        <q-img
+                            :src="image2Src"
+                            style="max-width: 800px"
+                            class="relative-position"
+                        >
+                            <q-btn
+                                round
+                                color="primary"
+                                icon="attach_file"
+                                class="absolute all-pointer-events"
+                                style="top: 8px; left: 8px"
+                                @click="image2Ref.click()"
+                            />
+                        </q-img>
 
-                    <q-card-actions align="right" class="text-primary">
-                        <q-btn flat label="Cancelar" @click="modalDirection.show = false"/>
-                        <q-btn flat label="Adicionar" @click="modalDirection.add" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
+                        <input
+                            type="file"
+                            ref="image2Ref"
+                            style="display: none"
+                            @input="image2Change"
+                        />
+                    </div>
 
-            <q-dialog v-model="modalDirection.showConfirmDelete">
-                <q-card>
-                    <q-card-section class="text-center">
-                        <div class="text-h6"> Excluir instrução? </div>
-                    </q-card-section>
+                    <div class="col-6 q-mb-md q-px-sm text-center">
+                        <q-img
+                            :src="image3Src"
+                            style="max-width: 800px"
+                            class="relative-position"
+                        >
+                            <q-btn
+                                round
+                                color="primary"
+                                icon="attach_file"
+                                class="absolute all-pointer-events"
+                                style="top: 8px; left: 8px"
+                                @click="image3Ref.click()"
+                            />
+                        </q-img>
 
-                    <q-card-section class="text-center">
-                        Ao confirmar você irá apagar a intrução da receita. <br/>
-                        Tem certeza disso?
-                    </q-card-section>
+                        <input
+                            type="file"
+                            ref="image3Ref"
+                            style="display: none"
+                            @input="image3Change"
+                        />
+                    </div>
 
-                    <q-card-actions align="right">
-                        <q-btn flat label="Cancelar" color="green" v-close-popup />
-                        <q-btn flat label="Confirmar" color="red" @click="modalDirection.confirmDelete" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-        </form>
+                    <div class="col-6 q-mb-md q-px-sm text-center">
+                        <q-img
+                            :src="image4Src"
+                            style="max-width: 800px"
+                            class="relative-position"
+                        >
+                            <q-btn
+                                round
+                                color="primary"
+                                icon="attach_file"
+                                class="absolute all-pointer-events"
+                                style="top: 8px; left: 8px"
+                                @click="image4Ref.click()"
+                            />
+                        </q-img>
+
+                        <input
+                            type="file"
+                            ref="image4Ref"
+                            style="display: none"
+                            @input="image4Change"
+                        />
+                    </div>
+                </div>
+            </q-tab-panel>
+        </q-tab-panels>
     </AuthenticatedLayout>
 </template>

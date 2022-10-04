@@ -141,10 +141,12 @@ class RecipeService
             $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
         }
 
-        foreach (range(1, 6) as $keyImage) {
+        foreach (range(1, 4) as $keyImage) {
             $image = Arr::get($requestData, "image_{$keyImage}");
             if ($image instanceof UploadedFile) {
-                Storage::disk('public')->delete($recipe->{"image_{$keyImage}"});
+                if ($recipe->{"image_{$keyImage}"}) {
+                    Storage::disk('public')->delete($recipe->{"image_{$keyImage}"});
+                }
 
                 $recipe->update(["image_{$keyImage}" => Storage::disk('public')->put('recipe', $image)]);
             }
