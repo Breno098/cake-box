@@ -238,7 +238,7 @@
         },
     });
 
-    const tab = ref('images');
+    const tab = ref('recipe');
 </script>
 
 <template>
