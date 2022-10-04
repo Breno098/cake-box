@@ -24,18 +24,34 @@
         yield_unit_measure: props.recipe.data.yield_unit_measure,
         ingredients: props.recipe.data.ingredients,
         directions: props.recipe.data.directions,
+        wallpaper: null,
+        image_1: null,
+        image_2: null,
+        image_3: null,
+        image_4: null,
+        image_5: null,
+        image_6: null,
     });
 
+    const wallpaperSrc = ref(props.recipe.data.wallpaper);
+
+    const changeWallpaper = (event) => {
+        form.wallpaper = event.target.files[0];
+        wallpaperSrc.value = URL.createObjectURL(event.target.files[0]);
+    }
+
     const submit = () => {
-        form.put(route("admin.recipe.update", form.id),{
-            onSuccess: () => {
-                $q.notify({
-                    type: 'positive',
-                    message: 'Produto atualizado com sucesso',
-                    position: 'top',
-                })
-            },
-        })
+        form
+            .transform((data) => ({...data, _method: 'put' }))
+            .post(route("admin.recipe.update", form.id), {
+                onSuccess: () => {
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Produto atualizado com sucesso',
+                        position: 'top',
+                    })
+                },
+            })
     };
 
     const color = (difficulty) => {
@@ -193,6 +209,8 @@
             modalDirection.value.data.order = null;
         },
     });
+
+
 </script>
 
 <template>
@@ -216,6 +234,35 @@
                         :class="{ 'opacity-25': form.processing }"
                     />
                 </div>
+
+                <div class="col-12 q-pt-lg ">
+                    <!-- :src="form.wallpaper_src" -->
+                    <q-img
+                        :src="wallpaperSrc"
+                    />
+                </div>
+
+                <div class="col-12 q-py-sm ">
+                    <q-file
+                        filled
+                        label="Principal"
+                        @input="changeWallpaper"
+                    >
+                        <template v-slot:prepend>
+                            <q-icon name="attach_file" />
+                        </template>
+                    </q-file>
+                </div>
+
+
+                <div class="col-12 q-py-lg q-my-md">
+                </div>
+                <div class="col-12 q-py-lg q-my-md">
+                </div>
+                <div class="col-12 q-py-lg q-my-md">
+                </div>
+
+
 
                 <div class="col-12 col-md-6 q-mb-md q-px-sm">
                     <q-input

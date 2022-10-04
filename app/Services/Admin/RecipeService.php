@@ -5,8 +5,10 @@ namespace App\Services\Admin;
 use App\Models\Recipe;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class RecipeService
 {
@@ -53,6 +55,8 @@ class RecipeService
 
         $this->syncDirections($recipe, Arr::get($requestData, 'directions', []));
 
+        $this->uploadImages($recipe, $requestData);
+
         return $recipe;
     }
 
@@ -75,7 +79,16 @@ class RecipeService
      */
     private function transformData(array $requestData): array
     {
-        return array_merge($requestData);
+        return [
+            'title' => Arr::get($requestData, 'title'),
+            'description' => Arr::get($requestData, 'description'),
+            'info' => Arr::get($requestData, 'info'),
+            'difficulty' => Arr::get($requestData, 'difficulty'),
+            'time_to_cook' => Arr::get($requestData, 'time_to_cook'),
+            'time_to_prepare' => Arr::get($requestData, 'time_to_prepare'),
+            'yield_quantity' => Arr::get($requestData, 'yield_quantity'),
+            'yield_unit_measure' => Arr::get($requestData, 'yield_unit_measure'),
+        ];
     }
 
     /**
@@ -111,6 +124,30 @@ class RecipeService
                 'description' => Arr::get($direction, 'description'),
                 'order' => Arr::get($direction, 'order'),
             ]);
+        }
+    }
+
+     /**
+     * @param Recipe $recipe
+     * @param array $images
+     * @return void
+     */
+    public function uploadImages(Recipe $recipe, array $requestData = []): void
+    {
+        $wallPaper = Arr::get($requestData, 'wallpaper');
+        if ($wallPaper instanceof UploadedFile) {
+            Storage::disk('public')->delete($recipe->wallpaper);
+
+            $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
+        }
+
+        foreach (range(1, 6) as $keyImage) {
+            $image = Arr::get($requestData, "image_{$keyImage}");
+            if ($image instanceof UploadedFile) {
+                Storage::disk('public')->delete($recipe->{"image_{$keyImage}"});
+
+                $recipe->update(["image_{$keyImage}" => Storage::disk('public')->put('recipe', $image)]);
+            }
         }
     }
 

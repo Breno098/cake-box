@@ -24,6 +24,13 @@ class CreateRecipesTable extends Migration
             $table->integer('rating')->nullable();
             $table->integer('yield_quantity')->nullable();
             $table->enum('yield_unit_measure', ['Pedaço', 'Fatia', 'Gramas'])->nullable();
+            $table->string('wallpaper')->nullable();
+            $table->string('image_1')->nullable();
+            $table->string('image_2')->nullable();
+            $table->string('image_3')->nullable();
+            $table->string('image_4')->nullable();
+            $table->string('image_5')->nullable();
+            $table->string('image_6')->nullable();
             $table->timestamps();
         });
     }

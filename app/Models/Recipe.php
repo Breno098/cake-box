@@ -20,6 +20,14 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property int $rating
  * @property int $yield_quantity
  * @property string $yield_unit_measure
+ * @property string $wallpaper
+ * @property string $image_1
+ * @property string $image_2
+ * @property string $image_3
+ * @property string $image_4
+ * @property string $image_5
+ * @property string $image_6
+ * @property string $yield_unit_measure
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Ingredient[]|Collection $ingredients
@@ -41,6 +49,13 @@ class Recipe extends Model
         'rating',
         'yield_quantity',
         'yield_unit_measure',
+        'wallpaper',
+        'image_1',
+        'image_2',
+        'image_3',
+        'image_4',
+        'image_5',
+        'image_6',
     ];
 
     protected $casts = [

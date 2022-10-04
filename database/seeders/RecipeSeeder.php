@@ -29,7 +29,7 @@ class RecipeSeeder extends Seeder
             ))
             ->count(3);
 
-        Recipe::factory(30)
+        Recipe::factory(15)
             ->has(Image::factory()->count(2))
             ->has(Comment::factory()->count(3))
             ->has($directionsFactory)
