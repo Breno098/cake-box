@@ -24,7 +24,7 @@ class RecipeUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'nullable',
+            'title' => 'required',
             'description' => 'nullable',
             'info' => 'nullable',
             'difficulty' => 'nullable',
@@ -36,6 +36,13 @@ class RecipeUpdateRequest extends FormRequest
             'ingredients.*.id' => 'nullable|exists:ingredients,id',
             'ingredients.*.quantity' => 'nullable',
             'ingredients.*.iunit_measured' => 'nullable',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'O título é obrigatório'
         ];
     }
 }

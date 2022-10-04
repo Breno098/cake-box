@@ -1,12 +1,45 @@
 <script setup>
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import { useQuasar } from 'quasar'
+
+    const $q = useQuasar()
 
     const props = defineProps({
         recipe: Object,
         ingredients: Array
     });
+
+    const form = useForm({
+        id: props.recipe.data.id,
+        title: props.recipe.data.title,
+        description: props.recipe.data.description,
+        info: props.recipe.data.info,
+        difficulty: props.recipe.data.difficulty,
+        time_to_cook: props.recipe.data.time_to_cook,
+        time_to_prepare: props.recipe.data.time_to_prepare,
+        rating: props.recipe.data.rating,
+        yield_quantity: props.recipe.data.yield_quantity,
+        yield_unit_measure: props.recipe.data.yield_unit_measure,
+        ingredients: props.recipe.data.ingredients
+    });
+
+    const submit = () => {
+        form.put(route("admin.recipe.update", form.id),{
+            onSuccess: () => {
+                $q.notify({
+                    type: 'positive',
+                    message: 'Produto atualizado com sucesso',
+                    position: 'top',
+                    actions: [{
+                        label: 'Fechar',
+                        color: 'white',
+                    }]
+                })
+            },
+        })
+    };
 
     const color = (difficulty) => {
         switch (difficulty) {
@@ -40,41 +73,74 @@
         'Fatia', 'Pedaço', 'Gramas'
     ];
 
-    const form = useForm({
-        id: props.recipe.data.id,
-        title: props.recipe.data.title,
-        description: props.recipe.data.description,
-        info: props.recipe.data.info,
-        difficulty: props.recipe.data.difficulty,
-        time_to_cook: props.recipe.data.time_to_cook,
-        time_to_prepare: props.recipe.data.time_to_prepare,
-        rating: props.recipe.data.rating,
-        yield_quantity: props.recipe.data.yield_quantity,
-        yield_unit_measure: props.recipe.data.yield_unit_measure,
-        ingredients: props.recipe.data.ingredients
-    });
+    const columnsIngredientsTable = [{
+        name: 'name',
+        field: 'name',
+        align: 'left',
+        label: 'Ingrediente'
+    }, {
+        name: 'quantity',
+        field: 'quantity',
+        align: 'left',
+        label: 'Quantidade'
+    }, {
+        name: 'unit_measure',
+        field: 'unit_measure',
+        align: 'left',
+        label: 'Medida'
+    }, {
+        name: 'actios',
+        field: 'actios',
+        align: 'left',
+    }];
 
-    const submit = () => {
-        form.put(route("admin.recipe.update", form.id));
-    };
+    const ingredientForSelect = computed(() => props.ingredients
+        .filter((ing) => !form.ingredients.some(item => item.id === ing.id))
+        .map((ing) => ({
+            label: ing.name,
+            value: ing.id
+        }))
+    );
+
+    const unitIngrientMeasures = [
+        'Unidade', 'Grama', 'Quilo', 'Mililitro', 'Litro', 'Colher'
+    ];
 
     const modalIngredient = ref({
         show: false,
+        showConfirmDelete: false,
         data: {
             id: null,
             quantity: 1,
-            unit_measure: 'un.'
+            unit_measure: 'Unidade'
         },
-        addIngredient: () => {
-            let ingredient = props.ingredients.filter((ing) => ing.value == modalIngredient.value.data.id).shift();
+        initData: {
+            id: null,
+            quantity: 1,
+            unit_measure: 'Unidade'
+        },
+        add: () => {
+            let ingredient = props.ingredients.filter((ing) => ing.id == modalIngredient.value.data.id).shift();
 
             form.ingredients.push({
                 id: modalIngredient.value.data.id,
-                name: ingredient.label,
+                name: ingredient.name,
                 quantity: modalIngredient.value.data.quantity,
                 unit_measure: modalIngredient.value.data.unit_measure,
             });
-        }
+
+            modalIngredient.value.data = { ...modalIngredient.value.initData };
+            modalIngredient.value.show = false;
+        },
+        delete: (id) => {
+            modalIngredient.value.data.id = id;
+            modalIngredient.value.showConfirmDelete = true;
+        },
+        confirmDelete: () => {
+            form.ingredients = form.ingredients.filter((ing) => ing.id != modalIngredient.value.data.id);
+            modalIngredient.value.showConfirmDelete = false;
+            modalIngredient.value.data.id = null;
+        },
     });
 </script>
 
@@ -84,12 +150,32 @@
 
         <form @submit.prevent="submit">
             <div class="row">
+                <div class="col-6 q-mb-md q-px-sm">
+                    <div class="text-h6"> Receita | Editar </div>
+                </div>
+
+                <div class="col-6 q-mb-md q-px-sm row justify-end">
+                    <q-btn
+                        color="primary"
+                        label="Salvar"
+                        type="submit"
+                        icon="save"
+                        :disabled="form.processing"
+                        :class="{ 'opacity-25': form.processing }"
+                    />
+                </div>
+
                 <div class="col-12 col-md-6 q-mb-md q-px-sm">
                     <q-input
                         filled
                         v-model="form.title"
                         label="Título"
-                    />
+                        :bottom-slots="Boolean(form.errors.title)"
+                    >
+                        <template v-slot:hint>
+                            <div class="text-red"> {{ form.errors.title }} </div>
+                        </template>
+                    </q-input>
                 </div>
 
                 <div class="col-12 col-md-6 q-mb-md q-px-sm">
@@ -102,6 +188,7 @@
                         :options="difficulties"
                         emit-value
                         map-options
+                        :bottom-slots="Boolean(form.errors.difficulty)"
                     >
                         <template v-slot:option="scope">
                             <q-item v-bind="scope.itemProps">
@@ -112,6 +199,9 @@
                                     <q-item-label>{{ scope.opt.label }}</q-item-label>
                                 </q-item-section>
                             </q-item>
+                        </template>
+                        <template v-slot:hint>
+                            <div class="text-red"> {{ form.errors.difficulty }} </div>
                         </template>
                     </q-select>
                 </div>
@@ -175,58 +265,66 @@
                         map-options
                     />
                 </div>
-
-                <div class="col-12 col-md-6 q-mb-md q-px-sm">
-                    <q-btn
-                        color="black"
-                        label="Salvar"
-                        type="submit"
-                        :disabled="form.processing"
-                        :class="{ 'opacity-25': form.processing }"
-                    />
-                </div>
             </div>
 
             <q-table
                 title="Ingredientes"
                 flat
-                hide-header
                 hide-bottom
                 :rows="form.ingredients"
-                :columns="[{
-                    name: 'name',
-                    field: 'name',
-                    align: 'left',
-                }, {
-                    name: 'quantity',
-                    field: 'quantity',
-                    align: 'left',
-                }, {
-                    name: 'unit_measure',
-                    field: 'unit_measure',
-                    align: 'left',
-                }]"
-            />
+                :columns="columnsIngredientsTable"
+            >
+                <template v-slot:top-right>
+                    <q-btn
+                        color="primary"
+                        icon="add"
+                        @click="modalIngredient.show = true"
+                        round
+                        size="sm"
+                    />
+                </template>
+
+                <template v-slot:body="props">
+                    <q-tr :props="props">
+                        <q-td key="name" :props="props">
+                            {{ props.row.name }}
+                        </q-td>
+                        <q-td key="quantity" :props="props">
+                            {{ props.row.quantity }}
+                            <q-popup-edit v-model="props.row.quantity" title="Atualizar quantidade" buttons v-slot="scope">
+                                <q-input type="number" v-model="scope.value" dense autofocus />
+                            </q-popup-edit>
+                        </q-td>
+                        <q-td key="unit_measure" :props="props">
+                            {{ props.row.unit_measure }}
+                            <q-popup-edit v-model="props.row.unit_measure" title="Atualizar quantidade" buttons v-slot="scope">
+                                <q-select
+                                    v-model="scope.value"
+                                    label="Ingrediente"
+                                    filled
+                                    :options="unitIngrientMeasures"
+                                />
+                            </q-popup-edit>
+                        </q-td>
+                        <q-td key="unit_measure" :props="props">
+                            <q-btn
+                                round
+                                color="red"
+                                icon="close"
+                                size="sm"
+                                class="q-mr-sm"
+                                @click="modalIngredient.delete(props.row.id)"
+                            />
+                        </q-td>
+                    </q-tr>
+                </template>
+            </q-table>
         </form>
 
-        <q-btn
-            label="Adicionar Ingrediente"
-            color="primary"
-            @click="modalIngredient.show = true"
-        />
-
-        <pre>
-            <!-- {{ modalIngredient }} -->
-            <!-- {{ ingredients }} -->
-            {{ recipe }}
-        </pre>
-
-        <q-dialog v-model="modalIngredient.show" persistent>
-            <q-card style="min-width: 550px">
+        <q-dialog v-model="modalIngredient.show" >
+            <q-card style="min-width: 600px">
                 <q-card-section>
-                    <div class="text-h6">
-                        Ingrediente
-                    </div>
+                    <div class="text-h6"> Ingrediente </div>
                 </q-card-section>
 
                 <q-card-section class="q-pt-none">
@@ -238,7 +336,7 @@
                                 transition-show="flip-up"
                                 transition-hide="flip-down"
                                 filled
-                                :options="ingredients"
+                                :options="ingredientForSelect"
                                 emit-value
                                 map-options
                             />
@@ -260,7 +358,7 @@
                                 transition-show="flip-up"
                                 transition-hide="flip-down"
                                 filled
-                                :options="['un.', 'grama']"
+                                :options="unitIngrientMeasures"
                                 emit-value
                                 map-options
                             />
@@ -269,8 +367,25 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancel" @click="modalIngredient.show = false"/>
-                    <q-btn flat label="Add address" @click="modalIngredient.addIngredient" />
+                    <q-btn flat label="Cancelar" @click="modalIngredient.show = false"/>
+                    <q-btn flat label="Adicionar" @click="modalIngredient.add" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
+        <q-dialog v-model="modalIngredient.showConfirmDelete">
+            <q-card>
+                <q-card-section class="text-center">
+                    <div class="text-h6"> Excluir ingrediente? </div>
+                </q-card-section>
+
+                <q-card-section>
+                    Ao confirmar você irá tirar o ingrediente da receita. Tem certeza disso?
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancelar" color="green" v-close-popup />
+                    <q-btn flat label="Confirmar" color="red" @click="modalIngredient.confirmDelete" />
                 </q-card-actions>
             </q-card>
         </q-dialog>

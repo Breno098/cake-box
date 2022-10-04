@@ -60,14 +60,7 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe): Response
     {
-        $ingredientsForSelect = Ingredient::orderBy('name')
-            ->get()
-            ->map(function(Ingredient $ingredient) {
-                return [
-                    'label' => $ingredient->name,
-                    'value' => $ingredient->id
-                ];
-            });
+        $ingredientsForSelect = Ingredient::orderBy('name')->get();
 
         return Inertia::render('Admin/Recipe/Edit', [
             'recipe' => new RecipeResourse($recipe),
@@ -82,11 +75,9 @@ class RecipeController extends Controller
      */
     public function update(RecipeUpdateRequest $recipeUpdateRequest, Recipe $recipe): RedirectResponse
     {
-        dd($recipeUpdateRequest->validated());
-
         $recipe = $this->recipeService->update($recipe, $recipeUpdateRequest->validated());
 
-        return redirect()->route('admin.recipe.index');
+        return redirect()->route('admin.recipe.edit', $recipe);
     }
 
     /**

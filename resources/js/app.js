@@ -10,20 +10,14 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
-import { Quasar } from 'quasar'
+import { Quasar, Notify } from 'quasar'
 import quasarLang from 'quasar/lang/pt-BR'
 
 import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
 import '@quasar/extras/material-icons-round/material-icons-round.css'
-
 import 'quasar/src/css/index.sass'
-
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// import { library } from "@fortawesome/fontawesome-svg-core";
-// import { fas } from '@fortawesome/free-solid-svg-icons'
-// library.add(fas);
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -33,10 +27,11 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(Quasar, {
-                plugins: {}, // import Quasar plugins and add here
+                plugins: {
+                    Notify
+                },
                 lang: quasarLang,
             })
-            // .component("fa", FontAwesomeIcon)
             .mount(el);
     },
 });
