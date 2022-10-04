@@ -34,6 +34,8 @@ class RecipeService
     {
         $recipe = Recipe::create($this->transformData($requestData));
 
+        $this->syncIngredients($recipe, Arr::get($requestData, 'ingredients', []));
+
         return $recipe;
     }
 
@@ -46,7 +48,28 @@ class RecipeService
     {
         $recipe->update($this->transformData($requestData));
 
+        $this->syncIngredients($recipe, Arr::get($requestData, 'ingredients', []));
+
         return $recipe;
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @param array $ingredients
+     * @return void
+     */
+    public function syncIngredients(Recipe $recipe, array $ingredients = []): void
+    {
+        $ingredientsSync = [];
+
+        foreach ($ingredients as $ingredient) {
+            $ingredientsSync[$ingredient['id']] = [
+                'quantity' => $ingredient['quantity'],
+                'unit_measure' => $ingredient['unit_measure'],
+            ];
+        }
+
+        $recipe->ingredients()->sync($ingredientsSync);
     }
 
     /**
@@ -55,9 +78,6 @@ class RecipeService
      */
     private function transformData(array $requestData): array
     {
-        // $startAt = Arr::get($requestData, 'start_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'start_at')) : null;
-        // $endAt = Arr::get($requestData, 'end_at') ? Carbon::createFromFormat('d/m/Y', Arr::get($requestData, 'end_at')) : null;
-
         return array_merge($requestData);
     }
 

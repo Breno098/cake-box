@@ -230,8 +230,12 @@
                         v-model="form.time_to_cook"
                         label="Tempo para cozinhar"
                         mask="time"
-                        :rules="['time']"
-                    />
+                        :bottom-slots="Boolean(form.errors.time_to_cook)"
+                    >
+                        <template v-slot:hint>
+                            <div class="text-red"> {{ form.errors.time_to_cook }} </div>
+                        </template>
+                    </q-input>
                 </div>
 
                 <div class="col-12 col-md-6 q-mb-md q-px-sm">
@@ -240,8 +244,12 @@
                         v-model="form.time_to_prepare"
                         label="Tempo de preparo"
                         mask="time"
-                        :rules="['time']"
-                    />
+                        :bottom-slots="Boolean(form.errors.time_to_prepare)"
+                    >
+                        <template v-slot:hint>
+                            <div class="text-red"> {{ form.errors.time_to_prepare }} </div>
+                        </template>
+                    </q-input>
                 </div>
 
                 <div class="col-12 col-md-6 q-mb-md q-px-sm">

@@ -29,14 +29,21 @@ class RecipeSeeder extends Seeder
             ))
             ->count(3);
 
-        Recipe::factory(50)
+        Recipe::factory(30)
             ->has(Image::factory()->count(2))
             ->has(Comment::factory()->count(3))
             ->has($directionsFactory)
-            ->hasAttached(Ingredient::inRandomOrder()->limit(2)->get(), [
-                'quantity' => rand(10, 500),
-                'unit_measure' => 'gramas'
-            ])
-            ->create();
+            ->create()
+            ->each(function(Recipe $recipe) {
+                Ingredient::inRandomOrder()
+                    ->limit(fake()->numberBetween(1, Ingredient::get()->count() - 1))
+                    ->get()
+                    ->each(function(Ingredient $ingredient) use ($recipe){
+                        $recipe->ingredients()->attach($ingredient->id, [
+                            'quantity' => fake()->numberBetween(1, 300),
+                            'unit_measure' => fake()->randomElement(['Unidade', 'Grama', 'Quilo', 'Mililitro', 'Litro', 'Colher'])
+                        ]);
+                    });
+            });
     }
 }
