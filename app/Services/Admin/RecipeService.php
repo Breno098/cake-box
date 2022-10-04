@@ -136,7 +136,9 @@ class RecipeService
     {
         $wallPaper = Arr::get($requestData, 'wallpaper');
         if ($wallPaper instanceof UploadedFile) {
-            Storage::disk('public')->delete($recipe->wallpaper);
+            if ($recipe->wallpaper) {
+                Storage::disk('public')->delete($recipe->wallpaper);
+            }
 
             $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
         }

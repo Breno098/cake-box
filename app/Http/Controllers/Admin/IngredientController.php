@@ -8,9 +8,10 @@ use App\Http\Requests\Admin\Ingredient\IngredientStoreRequest;
 use App\Http\Requests\Admin\Ingredient\IngredientUpdateRequest;
 use App\Http\Resources\Admin\IngredientResourse;
 use App\Services\Admin\IngredientService;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class IngredientController extends Controller
 {
@@ -29,13 +30,24 @@ class IngredientController extends Controller
 
     /**
      * @param Request $request
-     * @return AnonymousResourceCollection
+     * @return Response
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): Response
     {
         $ingredients = $this->ingredientService->index($request->all());
 
-        return IngredientResourse::collection($ingredients);
+        return Inertia::render('Admin/Ingredient/Index', [
+            'ingredients' => IngredientResourse::collection($ingredients)
+        ]);
+    }
+
+    /**
+     * @param Ingredient $ingredient
+     * @return Response
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Admin/Ingredient/Edit');
     }
 
     /**
@@ -51,11 +63,13 @@ class IngredientController extends Controller
 
     /**
      * @param Ingredient $ingredient
-     * @return IngredientResourse
+     * @return Response
      */
-    public function show(Ingredient $ingredient): IngredientResourse
+    public function edit(Ingredient $ingredient): Response
     {
-        return new IngredientResourse($ingredient);
+        return Inertia::render('Admin/Ingredient/Edit', [
+            'recipe' => new IngredientResourse($ingredient)
+        ]);
     }
 
     /**
@@ -72,14 +86,12 @@ class IngredientController extends Controller
 
     /**
      * @param Ingredient $ingredient
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function destroy(Ingredient $ingredient): JsonResponse
+    public function destroy(Ingredient $ingredient): RedirectResponse
     {
-        $deleted = $this->ingredientService->delete($ingredient);
+        $this->ingredientService->delete($ingredient);
 
-        return response()->json([
-            'deleted' => $deleted
-        ]);
+        return redirect()->route('admin.ingredient.index');
     }
 }

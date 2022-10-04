@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
+use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\RecipeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -59,6 +60,7 @@ Route::middleware('auth:admin')
     ->name('admin.')
     ->group(function() {
         Route::resource('recipe', RecipeController::class);
+        Route::resource('ingredient', IngredientController::class);
     });
 
 // Route::get('/', function () {

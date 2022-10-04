@@ -54,6 +54,10 @@ class IngredientService
      */
     public function delete(Ingredient $ingredient): ?bool
     {
+        $ingredient->recipes()->detach();
+
+        $ingredient->nutritional()->delete();
+
         return $ingredient->delete();
     }
 }

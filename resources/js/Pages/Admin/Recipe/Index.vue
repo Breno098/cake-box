@@ -7,6 +7,8 @@
 
     const $q = useQuasar()
 
+    const defaultImg = 'https://www.defensoria.to.def.br/no_image.jpg';
+
     const props = defineProps({
         recipes: Object,
     });
@@ -44,7 +46,7 @@
     const filters = useForm({
     });
 
-    const teste = (page) => {
+    const paginate = (page) => {
         filters.get(route('admin.recipe.index', { page }));
     }
 
@@ -91,6 +93,79 @@
             <div class="text-h6 q-ml-sm"> Receitas </div>
         </div>
 
+         <div class="row">
+            <div
+                class="col-12 col-md-3 q-mb-md q-px-sm"
+                v-for="recipe in recipes.data"
+                :key="recipe.id"
+            >
+                <q-card >
+                    <q-img
+                        :src="recipe.wallpaper ?? defaultImg"
+                        height="140px"
+                    >
+                        <q-icon
+                            name="star"
+                            :color="recipe.rating >= star ? 'orange' : 'grey'"
+                            v-for="star in [1, 2, 3, 4, 5]"
+                            :key="star"
+                        />
+
+                        <div class="absolute-bottom text-center column flex-center">
+                            {{ recipe.title }}
+                        </div>
+                    </q-img>
+
+                    <q-separator />
+
+                    <q-card-section class="flex justify-around">
+                        <q-btn
+                            unelevated
+                            rounded
+                            color="orange"
+                            :label="`Cozinhar: ${recipe.time_to_cook}`"
+                            icon-right="schedule"
+                            size="sm"
+                        />
+
+                        <q-btn
+                            unelevated
+                            rounded
+                            color="orange"
+                            :label="`Preparo: ${recipe.time_to_prepare}`"
+                            icon-right="schedule"
+                            size="sm"
+                        />
+
+                        <!-- <q-icon name="schedule" class="q-mr-sm" size="xs"/>
+                        {{ recipe.time_to_cook }} -->
+
+                        <!-- <q-icon name="schedule" class="q-mr-sm" size="xs"/>
+                        {{ recipe.time_to_prepare }} -->
+                    </q-card-section>
+
+                    <q-card-section >
+                        <!-- <q-card-actions class="justify-around"> -->
+                            <Link
+                                :href="route('admin.recipe.edit', recipe.id)"
+                                style="text-decoration: none"
+                            >
+                                <q-btn
+                                    round
+                                    color="primary"
+                                    icon="edit"
+                                    size="sm"
+                                    class="q-mr-sm"
+                                />
+                            </Link>
+
+                            <q-btn flat round color="red" icon="delete" />
+                        <!-- </q-card-actions> -->
+                    </q-card-section>
+                </q-card>
+            </div>
+        </div>
+<!--
         <q-table
             :rows="recipes.data"
             :columns="columns"
@@ -149,14 +224,14 @@
                     </q-td>
                 </q-tr>
             </template>
-        </q-table>
+        </q-table> -->
 
         <div class="q-pa-lg" v-show="recipes.meta.last_page > 1">
             <q-pagination
                 v-model="recipes.meta.current_page"
                 :max="recipes.meta.last_page"
                 :max-pages="10"
-                @update:model-value="teste"
+                @update:model-value="paginate"
             />
         </div>
 

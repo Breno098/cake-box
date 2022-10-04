@@ -92,14 +92,21 @@
                     <q-item
                         clickable
                         v-ripple
-                        :active="route().current('ingrdient*')"
+                        :active="route().current('ingredient*')"
                     >
                         <q-item-section avatar>
                             <q-icon name="egg" />
                         </q-item-section>
 
                         <q-item-section>
-                            Ingredientes
+                            <Link
+                                :href="route('admin.ingredient.index')"
+                                style="text-decoration: none"
+                                :class="route().current('admin.ingredient.*') ? 'text-primary' : 'text-dark'"
+                            >
+                                Ingredientes
+                            </Link>
+
                         </q-item-section>
                     </q-item>
                 </q-list>
