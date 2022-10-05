@@ -2,11 +2,18 @@
 </script>
 
 <template>
-    <q-layout view="hHh lpR lFf">
+    <q-layout class="my-bg">
         <q-page-container>
-            <q-page class="bg-primary window-height window-width row justify-center items-center">
+            <q-page class="window-height window-width flex flex-center">
                 <slot />
             </q-page>
         </q-page-container>
     </q-layout>
 </template>
+
+<style>
+    .my-bg {
+        background: url('/img/wallpaper-login.jpg') no-repeat;
+        background-size: cover;
+    }
+</style>

@@ -1,13 +1,13 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, useForm } from '@inertiajs/inertia-vue3';
+import { Head, useForm, Link } from '@inertiajs/inertia-vue3';
 
 defineProps({
     status: String,
 });
 
 const form = useForm({
-    email: 'breno@email.com',
+    email: null,
 });
 
 const submit = () => {
@@ -19,47 +19,72 @@ const submit = () => {
     <GuestLayout>
         <Head title="Esqueci minha senha"/>
 
-        <div class="text-center mb-4">
-            Esqueceu sua senha? Sem problemas. <br/> Basta nos informar seu endereço de e-mail e nós lhe enviaremos um link de
-            redefinição de senha que permitirá que você escolha uma nova.
-        </div>
+        <div class="column">
+            <div class="row">
+                <q-card bordered class="shadow-1" style="width: 50vw">
+                    <q-card-section class="text-center text-green" v-show="status">
+                        {{ status }}
+                    </q-card-section>
 
-        <div v-if="status" class="text-center mb-3 text-success">
-            {{ status }}
-        </div>
+                    <q-card-section class="text-center">
+                        Esqueceu sua senha? Sem problemas. <br/>
+                        Basta nos informar seu endereço de e-mail e nós lhe enviaremos um link de
+                        redefinição de senha que permitirá que você escolha uma nova.
+                    </q-card-section>
 
-        <form class="w-50" @submit.prevent="submit">
-            <div class="form-floating mb-3">
-                <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    v-model="form.email"
-                    required
-                    autofocus
-                />
-                <label for="email">
-                    E-mail
-                </label>
+                    <q-card-section>
+                        <q-form class="q-gutter-md">
+                            <q-input
+                                filled
+                                v-model="form.email"
+                                type="email"
+                                label="E-mail"
+                                :bottom-slots="Boolean(form.errors.email)"
+                            >
+                                <template v-slot:hint>
+                                    <div class="text-red"> {{ form.errors.email }} </div>
+                                </template>
+                            </q-input>
+                        </q-form>
+                    </q-card-section>
 
-                <div class="form-text text-danger" v-show="form.errors.email">
-                    {{ form.errors.email }}
-                </div>
+                    <q-card-actions class="q-px-md">
+                        <q-btn
+                            unelevated
+                            color="primary"
+                            size="lg"
+                            class="full-width"
+                            @click="submit"
+                            :disabled="form.processing"
+                            :loading="form.processing"
+                        >
+                            <div class="flex flex-center">
+                                <div class="q-mr-sm"> Enviar </div>
+                                <q-icon name="forward_to_inbox" size="sm"/>
+                            </div>
+
+                            <template v-slot:loading>
+                                <div class="q-mr-sm"> Enviando... </div>
+                                <q-spinner-ios class="on-left" size="sm"/>
+                            </template>
+                        </q-btn>
+                    </q-card-actions>
+
+                    <q-card-section class="q-pa-none">
+                        <Link
+                            :href="route('admin.auth.sign-in')"
+                            style="text-decoration: none"
+                            class="flex flex-center text-primary"
+                        >
+                                Ir para o login
+                        </Link>
+                    </q-card-section>
+
+                    <q-card-section class="text-center q-pb-none">
+                        <p class="text-grey-6"> {{ (new Date()).getFullYear() }}</p>
+                    </q-card-section>
+                </q-card>
             </div>
-
-            <button
-                class="w-100 btn btn-dark mt-3"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                type="submit"
-            >
-                Enviar
-            </button>
-
-            <p class="mt-5 mb-3 text-muted text-center">
-                {{ (new Date()).getFullYear() }}
-            </p>
-        </form>
+        </div>
     </GuestLayout>
 </template>

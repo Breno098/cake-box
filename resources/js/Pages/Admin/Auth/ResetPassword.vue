@@ -25,72 +25,68 @@ const submit = () => {
     <GuestLayout>
         <Head title="Redefinir a senha"/>
 
-        <form class="w-50" @submit.prevent="submit">
-            <div class="form-floating mb-3">
-                <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    v-model="form.email"
-                    required
-                    autofocus
-                />
-                <label for="email">
-                    E-mail
-                </label>
+        <div class="column">
+            <div class="row">
+                <q-card bordered class="shadow-1" style="width: 50vw">
+                    <q-card-section class="text-center text-green" v-show="status">
+                        {{ status }}
+                    </q-card-section>
 
-                <div class="form-text text-danger" v-show="form.errors.email">
-                    {{ form.errors.email }}
-                </div>
+                    <q-card-section>
+                        <q-form class="q-gutter-md">
+                            <q-input
+                                filled
+                                v-model="form.password"
+                                type="password"
+                                label="Nova Senha"
+                                :bottom-slots="Boolean(form.errors.password)"
+                            >
+                                <template v-slot:hint>
+                                    <div class="text-red"> {{ form.errors.password }} </div>
+                                </template>
+                            </q-input>
+
+                            <q-input
+                                filled
+                                v-model="form.password_confirmation"
+                                type="password"
+                                label="Confirme a Senha"
+                                :bottom-slots="Boolean(form.errors.password_confirmation)"
+                            >
+                                <template v-slot:hint>
+                                    <div class="text-red"> {{ form.errors.password_confirmation }} </div>
+                                </template>
+                            </q-input>
+                        </q-form>
+                    </q-card-section>
+
+                    <q-card-actions class="q-px-md">
+                        <q-btn
+                            unelevated
+                            color="primary"
+                            size="lg"
+                            class="full-width"
+                            @click="submit"
+                            :disabled="form.processing"
+                            :loading="form.processing"
+                        >
+                            <div class="flex flex-center">
+                                <div class="q-mr-sm"> Redefinir </div>
+                                <q-icon name="lock_reset" size="sm"/>
+                            </div>
+
+                            <template v-slot:loading>
+                                <div class="q-mr-sm"> Redefinindo... </div>
+                                <q-spinner-ios class="on-left" size="sm"/>
+                            </template>
+                        </q-btn>
+                    </q-card-actions>
+
+                    <q-card-section class="text-center q-pb-none">
+                        <p class="text-grey-6"> {{ (new Date()).getFullYear() }}</p>
+                    </q-card-section>
+                </q-card>
             </div>
-
-            <div class="form-floating mb-3">
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    name="password"
-                    v-model="form.password"
-                    required
-                    autofocus
-                />
-                <label for="password">
-                    Nova Senha
-                </label>
-
-                <div class="form-text text-danger" v-show="form.errors.password">
-                    {{ form.errors.password }}
-                </div>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    v-model="form.password_confirmation"
-                    required
-                    autofocus
-                />
-                <label for="password_confirmation">
-                    Confirme a Senha
-                </label>
-
-                <div class="form-text text-danger" v-show="form.errors.password_confirmation">
-                    {{ form.errors.password_confirmation }}
-                </div>
-            </div>
-
-            <button
-                class="w-100 btn btn-dark mt-3"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                type="submit"
-            >
-                Redefinir
-            </button>
-        </form>
+        </div>
     </GuestLayout>
 </template>

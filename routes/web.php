@@ -19,12 +19,12 @@ use Inertia\Inertia;
 |
 */
 
-Route::redirect('/', '/admin/auth/sing-in');
-Route::redirect('/admin', '/admin/auth/sing-in');
+Route::redirect('/', '/admin/auth/sign-in');
+Route::redirect('/admin', '/admin/auth/sign-in');
 
 Route::middleware('guest:admin')
-    ->get('admin/auth/sing-in', [AuthController::class, 'form'])
-    ->name('admin.auth.sing-in');
+    ->get('admin/auth/sign-in', [AuthController::class, 'form'])
+    ->name('admin.auth.sign-in');
 
 Route::middleware('guest:admin')
     ->post('admin/auth/login', [AuthController::class, 'login'])

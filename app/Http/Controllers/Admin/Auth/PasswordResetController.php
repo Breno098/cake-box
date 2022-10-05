@@ -53,7 +53,7 @@ class PasswordResetController extends Controller
 
         if ($responseOk) {
             return redirect()
-                ->route('admin.auth.login')
+                ->route('admin.auth.sign-in')
                 ->with('status',"Senha redefinida com sucesso.");
         }
 
