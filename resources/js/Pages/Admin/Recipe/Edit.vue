@@ -31,7 +31,7 @@
         image_4: null,
     });
 
-    const defaultImg = 'https://www.defensoria.to.def.br/no_image.jpg';
+    const defaultImg = '/img/no-image.jpg';
 
     const wallpaperRef = ref('wallpaperRef')
     const wallpaperSrc = ref(props.recipe.data.wallpaper ?? defaultImg)
@@ -81,17 +81,6 @@
                 },
             })
     };
-
-    const color = (difficulty) => {
-        switch (difficulty) {
-            case 1: return 'green';
-            case 2: return 'green';
-            case 3: return 'blue';
-            case 4: return 'orange';
-            case 5: return 'red';
-            default: return 'black';
-        }
-    }
 
     const difficulties = [{
         label: 'Muito fácil',
@@ -308,16 +297,6 @@
                             map-options
                             :bottom-slots="Boolean(form.errors.difficulty)"
                         >
-                            <template v-slot:option="scope">
-                                <q-item v-bind="scope.itemProps">
-                                    <q-item-section avatar>
-                                        <q-badge rounded :color="color(scope.opt.value)" />
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>{{ scope.opt.label }}</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </template>
                             <template v-slot:hint>
                                 <div class="text-red"> {{ form.errors.difficulty }} </div>
                             </template>
@@ -607,7 +586,7 @@
                     <div class="col-12 q-mb-md q-px-sm text-center">
                         <q-img
                             :src="wallpaperSrc"
-                            style="max-width: 800px"
+                            style="max-height: 600px"
                             class="relative-position"
                         >
                             <q-btn
@@ -618,6 +597,10 @@
                                 style="top: 8px; left: 8px"
                                 @click="wallpaperRef.click()"
                             />
+
+                            <div class="absolute-bottom text-center column flex-center">
+                                Imagem principal
+                            </div>
 
                             <!-- <q-btn
                                 round
@@ -641,7 +624,7 @@
                     <div class="col-6 q-mb-md q-px-sm text-center">
                         <q-img
                             :src="image1Src"
-                            style="max-width: 800px"
+                            style="max-width: 800px; max-height: 400px"
                             class="relative-position"
                         >
                             <q-btn
@@ -665,7 +648,7 @@
                     <div class="col-6 q-mb-md q-px-sm text-center">
                         <q-img
                             :src="image2Src"
-                            style="max-width: 800px"
+                            style="max-width: 800px; max-height: 400px"
                             class="relative-position"
                         >
                             <q-btn
@@ -689,7 +672,7 @@
                     <div class="col-6 q-mb-md q-px-sm text-center">
                         <q-img
                             :src="image3Src"
-                            style="max-width: 800px"
+                            style="max-width: 800px; max-height: 400px"
                             class="relative-position"
                         >
                             <q-btn
@@ -713,7 +696,7 @@
                     <div class="col-6 q-mb-md q-px-sm text-center">
                         <q-img
                             :src="image4Src"
-                            style="max-width: 800px"
+                            style="max-width: 800px; max-height: 400px"
                             class="relative-position"
                         >
                             <q-btn

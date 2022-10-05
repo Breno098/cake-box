@@ -7,46 +7,16 @@
 
     const $q = useQuasar()
 
-    const defaultImg = 'https://www.defensoria.to.def.br/no_image.jpg';
+    const defaultImg = '/img/no-image.jpg';
 
     const props = defineProps({
         recipes: Object,
     });
 
-    const columns = [{
-        name: 'title',
-        align: 'left',
-        label: 'Titulo',
-        field: 'title',
-    }, {
-        name: 'rating',
-        align: 'left',
-        label: 'Avaliação',
-        field: 'rating',
-    }, {
-        name: 'time_to_prepare',
-        align: 'center',
-        label: 'Tempo para preparo',
-        field: 'time_to_prepare',
-    }, {
-        name: 'time_to_cook',
-        align: 'center',
-        label: 'Tempo para cozinhar',
-        field: 'time_to_cook',
-    }, {
-        name: 'difficulty',
-        align: 'center',
-        label: 'Dificuldade',
-        field: 'difficulty',
-    }, {
-        name: 'actions',
-        align: 'center',
-    }];
-
     const filters = useForm({
     });
 
-    const paginate = (page) => {
+    const search = (page) => {
         filters.get(route('admin.recipe.index', { page }));
     }
 
@@ -58,6 +28,17 @@
             case 4: return 'orange';
             case 5: return 'red';
             default: return 'black';
+        }
+    }
+
+    const difficulties = (difficulty) => {
+        switch (difficulty) {
+            case 1: return 'Muito fácil';
+            case 2: return 'Fácil';
+            case 3: return 'Médio';
+            case 4: return 'Difícil';
+            case 5: return 'Muito difícil';
+            default: return '--';
         }
     }
 
@@ -115,10 +96,10 @@
                 v-for="recipe in recipes.data"
                 :key="recipe.id"
             >
-                <q-card >
+                <q-card>
                     <q-img
                         :src="recipe.wallpaper ?? defaultImg"
-                        height="140px"
+                        height="160px"
                     >
                         <q-icon
                             name="star"
@@ -132,7 +113,7 @@
                         </div>
                     </q-img>
 
-                    <q-card-section class="flex justify-around">
+                    <q-card-section class="flex column q-gutter-sm">
                         <q-btn
                             unelevated
                             rounded
@@ -149,6 +130,15 @@
                             :label="`Preparo: ${recipe.time_to_prepare}`"
                             icon-right="schedule"
                             size="sm"
+                        />
+
+                        <q-btn
+                            unelevated
+                            rounded
+                            :color="color(recipe.difficulty)"
+                            :label="difficulties(recipe.difficulty)"
+                            size="sm"
+                            outline
                         />
                     </q-card-section>
 
@@ -184,7 +174,7 @@
                 v-model="recipes.meta.current_page"
                 :max="recipes.meta.last_page"
                 :max-pages="10"
-                @update:model-value="paginate"
+                @update:model-value="search"
             />
         </div>
 
