@@ -7,23 +7,22 @@
     const $q = useQuasar()
 
     const props = defineProps({
-        recipe: Object,
         ingredients: Array
     });
 
     const form = useForm({
-        id: props.recipe.data.id,
-        title: props.recipe.data.title,
-        description: props.recipe.data.description,
-        info: props.recipe.data.info,
-        difficulty: props.recipe.data.difficulty,
-        time_to_cook: props.recipe.data.time_to_cook,
-        time_to_prepare: props.recipe.data.time_to_prepare,
-        rating: props.recipe.data.rating,
-        yield_quantity: props.recipe.data.yield_quantity,
-        yield_unit_measure: props.recipe.data.yield_unit_measure,
-        ingredients: props.recipe.data.ingredients,
-        directions: props.recipe.data.directions,
+        id: null,
+        title: null,
+        description: null,
+        info: null,
+        difficulty: null,
+        time_to_cook: null,
+        time_to_prepare: null,
+        rating: null,
+        yield_quantity: null,
+        yield_unit_measure: null,
+        ingredients: [],
+        directions: [],
         wallpaper: null,
         image_1: null,
         image_2: null,
@@ -34,48 +33,46 @@
     const defaultImg = '/img/no-image.jpg';
 
     const wallpaperRef = ref('wallpaperRef')
-    const wallpaperSrc = ref(props.recipe.data.wallpaper ?? defaultImg)
+    const wallpaperSrc = ref(defaultImg)
     const wallpaperChange = (event) => {
         form.wallpaper = event.target.files[0];
         wallpaperSrc.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image1Ref = ref('image1Ref')
-    const image1Src = ref(props.recipe.data.image_1 ?? defaultImg)
+    const image1Src = ref(defaultImg)
     const image1Change = (event) => {
         form.image_1 = event.target.files[0];
         image1Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image2Ref = ref('image2Ref')
-    const image2Src = ref(props.recipe.data.image_2 ?? defaultImg)
+    const image2Src = ref(defaultImg)
     const image2Change = (event) => {
         form.image_2 = event.target.files[0];
         image2Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image3Ref = ref('image3Ref')
-    const image3Src = ref(props.recipe.data.image_3 ?? defaultImg)
+    const image3Src = ref(defaultImg)
     const image3Change = (event) => {
         form.image_3 = event.target.files[0];
         image3Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image4Ref = ref('image4Ref')
-    const image4Src = ref(props.recipe.data.image_4 ?? defaultImg)
+    const image4Src = ref(defaultImg)
     const image4Change = (event) => {
         form.image_4 = event.target.files[0];
         image4Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const submit = () => {
-        form
-            .transform((data) => ({...data, _method: 'put' }))
-            .post(route("admin.recipe.update", form.id), {
+        form.post(route("admin.recipe.store"), {
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Produto atualizado com sucesso',
+                        message: 'Receita cadastrada com sucesso',
                         position: 'top',
                     })
                 },
@@ -232,12 +229,12 @@
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Receita | Editar" />
+        <Head title="Receita | Cadastrar" />
 
         <div class="row">
             <div class="row col-6 q-mb-md items-center q-px-sm">
                 <q-icon name="menu_book" size="sm"/>
-                <div class="text-h6 q-ml-sm"> Receita | Editar </div>
+                <div class="text-h6 q-ml-sm"> Receita | Cadastrar </div>
             </div>
 
             <div class="col-6 q-mb-md q-px-sm row justify-end">
@@ -395,7 +392,6 @@
                     hide-bottom
                     :rows="form.ingredients"
                     :columns="columnsIngredientsTable"
-                    class="q-mt-lg"
                     :pagination.sync="{
                         rowsPerPage: form.ingredients.length
                     }"

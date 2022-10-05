@@ -27,7 +27,7 @@ class RecipeUpdateRequest extends FormRequest
             'title' => 'required',
             'description' => 'nullable',
             'info' => 'nullable',
-            'difficulty' => 'nullable',
+            'difficulty' => 'required',
             'time_to_cook' => 'nullable|date_format:H:i:s',
             'time_to_prepare' => 'nullable|date_format:H:i:s',
             'yield_quantity' => 'nullable',
@@ -55,6 +55,7 @@ class RecipeUpdateRequest extends FormRequest
     {
         return [
             'title.required' => 'O título é obrigatório',
+            'difficulty.required' => 'Escolha uma dificuldade',
             'time_to_cook.date_format' => 'O tempo para cozinhar deve estar no formato hh:mm',
             'time_to_prepare.date_format' => 'O tempo de preparo deve estar no formato hh:mm',
         ];

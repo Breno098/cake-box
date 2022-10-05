@@ -56,13 +56,13 @@ class RecipeController extends Controller
 
     /**
      * @param RecipeStoreRequest $recipeStoreRequest
-     * @return RecipeResourse
+     * @return RedirectResponse
      */
-    public function store(RecipeStoreRequest $recipeStoreRequest): RecipeResourse
+    public function store(RecipeStoreRequest $recipeStoreRequest): RedirectResponse
     {
         $recipe = $this->recipeService->store($recipeStoreRequest->validated());
 
-        return new RecipeResourse($recipe);
+        return redirect()->route('admin.recipe.edit', $recipe);
     }
 
     /**

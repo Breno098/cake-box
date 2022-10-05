@@ -39,6 +39,8 @@ class RecipeService
 
         $this->syncDirections($recipe, Arr::get($requestData, 'directions', []));
 
+        $this->uploadImages($recipe, $requestData);
+
         return $recipe;
     }
 

@@ -116,34 +116,6 @@
             </div>
         </div>
 
-        <!-- <div class="row">
-            <div
-                class="col-3 q-mb-md q-px-sm"
-                v-for="ingredient in ingredients.data"
-                :key="ingredient.id"
-            >
-                <q-card >
-                    <q-img
-                        class="col"
-                        src="https://cdn.quasar.dev/img/parallax2.jpg"
-                    >
-                        <div class="absolute-bottom text-subtitle2 text-center">
-                            {{ ingredient.name }}
-                        </div>
-                    </q-img>
-
-                    <q-separator />
-
-                    <q-card-section >
-                        <q-card-actions  class="justify-around">
-                            <q-btn flat round color="primary" icon="edit" />
-                            <q-btn flat round color="red" icon="delete" />
-                        </q-card-actions>
-                    </q-card-section>
-                </q-card>
-            </div>
-        </div> -->
-
         <q-table
             :rows="ingredients.data"
             :columns="columns"
