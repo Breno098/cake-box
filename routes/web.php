@@ -3,21 +3,10 @@
 use App\Http\Controllers\Admin\Auth\AuthController;
 use App\Http\Controllers\Admin\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\RecipeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::redirect('/', '/admin/auth/sign-in');
 Route::redirect('/admin', '/admin/auth/sign-in');
@@ -50,26 +39,11 @@ Route::middleware('guest:admin')
     ->get('admin/auth/reset-password/{token}', [PasswordResetController::class, 'form'])
     ->name('password.reset');
 
-Route::get('/admin/home', function () {
-    return Inertia::render('Admin/Dashboard');
-})->name('admin.home');
-
-
 Route::middleware('auth:admin')
     ->prefix('admin')
     ->name('admin.')
     ->group(function() {
+        Route::get('home', [HomeController::class, 'index'])->name('home');
         Route::resource('recipe', RecipeController::class);
         Route::resource('ingredient', IngredientController::class);
     });
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-// require __DIR__.'/auth.php';
