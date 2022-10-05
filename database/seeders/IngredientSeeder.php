@@ -76,7 +76,6 @@ class IngredientSeeder extends Seeder
         Ingredient::factory()
             ->state($namesSequence)
             ->count($namesSequence->count())
-            ->has(Image::factory())
             ->create();
     }
 }

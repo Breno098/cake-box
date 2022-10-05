@@ -14,10 +14,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
+        $this->call(
+            app()->environment('production')  ? $this->production() : $this->development()
+        );
+    }
+
+     /**
+     * @return string[]
+     */
+    private function production(): array
+    {
+        return [
+            UserSeeder::class,
+            IngredientSeeder::class,
+        ];
+    }
+
+     /**
+     * @return string[]
+     */
+    private function development(): array
+    {
+        return [
             UserSeeder::class,
             IngredientSeeder::class,
             RecipeSeeder::class,
-        ]);
+        ];
     }
+
 }

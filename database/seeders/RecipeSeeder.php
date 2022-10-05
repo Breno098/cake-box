@@ -30,13 +30,12 @@ class RecipeSeeder extends Seeder
             ->count(3);
 
         Recipe::factory(15)
-            ->has(Image::factory()->count(2))
             ->has(Comment::factory()->count(3))
             ->has($directionsFactory)
             ->create()
             ->each(function(Recipe $recipe) {
                 Ingredient::inRandomOrder()
-                    ->limit(fake()->numberBetween(1, Ingredient::get()->count() - 1))
+                    ->limit(fake()->numberBetween(1, Ingredient::get()->count()))
                     ->get()
                     ->each(function(Ingredient $ingredient) use ($recipe){
                         $recipe->ingredients()->attach($ingredient->id, [

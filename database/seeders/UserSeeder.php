@@ -14,8 +14,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create();
-
         User::factory()
             ->state([
                 'name' => 'Breno',

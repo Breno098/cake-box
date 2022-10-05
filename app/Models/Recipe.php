@@ -33,7 +33,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property Ingredient[]|Collection $ingredients
  * @property Direction[]|Collection $directions
  * @property Comment[]|Collection $comments
- * @property Image[]|Collection $images
  */
 class Recipe extends Model
 {
@@ -86,14 +85,6 @@ class Recipe extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    /**
-     * @return Image[]|Collection|MorphMany
-     */
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'imageable');
     }
 
     /**
