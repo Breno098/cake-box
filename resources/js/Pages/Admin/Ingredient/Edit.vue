@@ -44,16 +44,15 @@
         <div class="row">
             <div class="flex col-6 q-mb-md items-center q-px-sm">
                 <q-icon name="egg" size="sm"/>
-                <div class="text-h6 q-ml-sm"> Ingrediente | Editar </div>
+                <div class="text-h6 q-ml-sm"> Ingrediente </div>
             </div>
 
-            <div class="col-6 q-mb-md q-px-sm row justify-end">
+            <div class="col-6 q-mb-md q-px-sm row justify-end flex-center">
                 <q-btn
                     color="green"
                     label="Salvar"
                     icon="save"
                     :disabled="form.processing"
-                    :class="{ 'opacity-25': form.processing }"
                     @click="submit"
                     rounded
                 />

@@ -234,7 +234,7 @@
         <div class="row">
             <div class="row col-6 q-mb-md items-center q-px-sm">
                 <q-icon name="menu_book" size="sm"/>
-                <div class="text-h6 q-ml-sm"> Receita | Cadastrar </div>
+                <div class="text-h6 q-ml-sm"> Receita </div>
             </div>
 
             <div class="col-6 q-mb-md q-px-sm row justify-end">
