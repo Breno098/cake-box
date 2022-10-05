@@ -8,7 +8,6 @@ import { Head } from '@inertiajs/inertia-vue3';
 
     <AuthenticatedLayout>
         <div class="container mb-3">
-            aaaaa
         </div>
     </AuthenticatedLayout>
 </template>
