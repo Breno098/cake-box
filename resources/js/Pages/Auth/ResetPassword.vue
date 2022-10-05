@@ -1,5 +1,5 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import GuestLayout from '@/Layouts/Admin/GuestLayout.vue';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({

@@ -1,7 +1,7 @@
 <script setup>
     import { ref } from 'vue';
     import { Head, useForm, Link } from '@inertiajs/inertia-vue3';
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Inertia } from '@inertiajs/inertia';
     import { useQuasar } from 'quasar'
 
