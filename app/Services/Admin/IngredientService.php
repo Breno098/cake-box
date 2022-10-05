@@ -56,8 +56,6 @@ class IngredientService
     {
         $ingredient->recipes()->detach();
 
-        $ingredient->nutritional()->delete();
-
         return $ingredient->delete();
     }
 }

@@ -243,7 +243,7 @@
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Receita" />
+        <Head title="Receita | Editar" />
 
         <div class="row">
             <div class="row col-6 q-mb-md items-center q-px-sm">
@@ -259,6 +259,7 @@
                     :disabled="form.processing"
                     :class="{ 'opacity-25': form.processing }"
                     @click="submit"
+                    rounded
                 />
             </div>
         </div>

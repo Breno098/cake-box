@@ -12,10 +12,19 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * @property int|null $id
  * @property string $name
+ * @property string $unit_measure
+ * @property int $kcal
+ * @property int $fat
+ * @property int $saturates
+ * @property int $carbs
+ * @property int $sugars
+ * @property int $fibre
+ * @property int $protein
+ * @property int $salt
+ * @property string $image
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Recipe[]|Collection $recipes
- * @property Nutritional $nutritional
  * @property Image $image
  */
 class Ingredient extends Model
@@ -24,6 +33,16 @@ class Ingredient extends Model
 
     protected $fillable = [
         'name',
+        'unit_measure',
+        'kcal',
+        'fat',
+        'saturates',
+        'carbs',
+        'sugars',
+        'fibre',
+        'protein',
+        'salt',
+        'image'
     ];
 
     /**
@@ -32,14 +51,6 @@ class Ingredient extends Model
     public function recipes(): BelongsToMany
     {
         return $this->belongsToMany(Recipe::class)->using(IngredientRecipe::class);
-    }
-
-    /**
-     * @return Nutritional|HasOne
-     */
-    public function nutritional(): HasOne
-    {
-        return $this->hasOne(Nutritional::class)->withDefault();
     }
 
     /**

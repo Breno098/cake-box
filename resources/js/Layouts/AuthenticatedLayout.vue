@@ -23,8 +23,6 @@
 </script>
 
 <template>
-    <Head title="Home"/>
-
     <q-layout view="hHh lpR lFf">
         <q-header bordered class="bg-primary text-white">
             <q-toolbar>
@@ -125,7 +123,23 @@
         </q-drawer>
 
         <q-drawer v-model="rightDrawerOpen" side="right" overlay bordered>
-        <!-- drawer content -->
+            <q-scroll-area class="fit">
+                <q-list padding>
+                    <q-item
+                        clickable
+                        v-ripple
+                    >
+                        <Link
+                            :href="route('admin.auth.logout')"
+                            class="dropdown-item"
+                            method="post"
+                            as="button"
+                        >
+                            Sair
+                        </Link>
+                    </q-item>
+                </q-list>
+            </q-scroll-area>
         </q-drawer>
 
         <q-page-container>

@@ -47,18 +47,18 @@ class IngredientController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Ingredient/Edit');
+        return Inertia::render('Admin/Ingredient/Create');
     }
 
     /**
      * @param IngredientStoreRequest $ingredientStoreRequest
-     * @return IngredientResourse
+     * @return RedirectResponse
      */
-    public function store(IngredientStoreRequest $ingredientStoreRequest): IngredientResourse
+    public function store(IngredientStoreRequest $ingredientStoreRequest): RedirectResponse
     {
         $ingredient = $this->ingredientService->store($ingredientStoreRequest->validated());
 
-        return new IngredientResourse($ingredient);
+        return redirect()->route('admin.ingredient.edit', $ingredient);
     }
 
     /**
@@ -68,20 +68,20 @@ class IngredientController extends Controller
     public function edit(Ingredient $ingredient): Response
     {
         return Inertia::render('Admin/Ingredient/Edit', [
-            'recipe' => new IngredientResourse($ingredient)
+            'ingredient' => new IngredientResourse($ingredient)
         ]);
     }
 
     /**
      * @param IngredientUpdateRequest $ingredientUpdateRequest
      * @param Ingredient $ingredient
-     * @return IngredientResourse
+     * @return RedirectResponse
      */
-    public function update(IngredientUpdateRequest $ingredientUpdateRequest, Ingredient $ingredient): IngredientResourse
+    public function update(IngredientUpdateRequest $ingredientUpdateRequest, Ingredient $ingredient): RedirectResponse
     {
         $ingredient = $this->ingredientService->update($ingredient, $ingredientUpdateRequest->validated());
 
-        return new IngredientResourse($ingredient);
+        return redirect()->route('admin.ingredient.edit', $ingredient);
     }
 
     /**

@@ -26,15 +26,25 @@ class IngredientUpdateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'image' => 'nullable|image',
-            'nutritional.unit_measure' => 'nullable',
-            'nutritional.kcal' => 'nullable',
-            'nutritional.fat' => 'nullable',
-            'nutritional.saturates' => 'nullable',
-            'nutritional.carbs' => 'nullable',
-            'nutritional.sugars' => 'nullable',
-            'nutritional.fibre' => 'nullable',
-            'nutritional.protein' => 'nullable',
-            'nutritional.salt' => 'nullable',
+            'unit_measure' => 'nullable',
+            'kcal' => 'nullable',
+            'fat' => 'nullable',
+            'saturates' => 'nullable',
+            'carbs' => 'nullable',
+            'sugars' => 'nullable',
+            'fibre' => 'nullable',
+            'protein' => 'nullable',
+            'salt' => 'nullable',
+        ];
+    }
+
+      /**
+     * @return array
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome é obrigatório',
         ];
     }
 }

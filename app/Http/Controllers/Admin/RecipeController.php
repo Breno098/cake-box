@@ -35,7 +35,7 @@ class RecipeController extends Controller
      */
     public function index(Request $request): Response
     {
-        $recipes = $this->recipeService->index($request->all());
+        $recipes = $this->recipeService->index($request->all(), 12);
 
         return Inertia::render('Admin/Recipe/Index', [
             'recipes' => RecipeResourse::collection($recipes)

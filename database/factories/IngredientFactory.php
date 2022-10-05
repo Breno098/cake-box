@@ -14,7 +14,15 @@ class IngredientFactory extends Factory
     public function definition()
     {
         return [
-            // 'name' => fake()->randomElement(['Ovo', 'Açucar', 'Manteiga', 'Água', 'Farinha']),
+            'unit_measure' => fake()->randomElement(['Pedaço', 'Fatia', 'Gramas']),
+            'kcal' => fake()->numberBetween(0, 300),
+            'fat' => fake()->numberBetween(0, 300),
+            'saturates' => fake()->numberBetween(0, 300),
+            'carbs' => fake()->numberBetween(0, 300),
+            'sugars' => fake()->numberBetween(0, 300),
+            'fibre' => fake()->numberBetween(0, 300),
+            'protein' => fake()->numberBetween(0, 300),
+            'salt' => fake()->numberBetween(0, 300),
         ];
     }
 }

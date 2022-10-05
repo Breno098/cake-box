@@ -7,7 +7,7 @@
 
     const $q = useQuasar()
 
-    const props = defineProps({
+    defineProps({
         ingredients: Object,
     });
 
@@ -17,6 +17,46 @@
         label: 'Nome',
         field: 'name',
     }, {
+        name: 'kcal',
+        align: 'center',
+        label: 'Calorias',
+        field: 'kcal',
+    }, {
+        name: 'fat',
+        align: 'center',
+        label: 'Gorduras',
+        field: 'fat',
+    }, {
+        name: 'saturates',
+        align: 'center',
+        label: 'Saturação',
+        field: 'saturates',
+    }, {
+        name: 'carbs',
+        align: 'center',
+        label: 'Carboidratos',
+        field: 'carbs',
+    }, {
+        name: 'sugars',
+        align: 'center',
+        label: 'Açucar',
+        field: 'sugars',
+    }, {
+        name: 'fibre',
+        align: 'center',
+        label: 'Fibras',
+        field: 'fibre',
+    }, {
+        name: 'protein',
+        align: 'center',
+        label: 'Proteínas',
+        field: 'protein',
+    }, {
+        name: 'salt',
+        align: 'left',
+        label: 'Sal',
+        field: 'salt',
+    },{
         name: 'actions',
         align: 'center',
     }];
@@ -55,9 +95,25 @@
     <AuthenticatedLayout>
         <Head title="Ingredientes" />
 
-        <div class="row items-center q-pb-sm q-px-sm">
-            <q-icon name="egg" size="sm"/>
-            <div class="text-h6 q-ml-sm"> Ingredientes </div>
+        <div class="row">
+            <div class="flex col-6 q-mb-md items-center q-px-sm">
+                <q-icon name="egg" size="sm"/>
+                <div class="text-h6 q-ml-sm"> Ingredientes </div>
+            </div>
+
+             <div class="col-6 q-mb-md q-px-sm row justify-end">
+                <Link
+                    :href="route('admin.ingredient.create')"
+                    style="text-decoration: none"
+                >
+                    <q-btn
+                        color="primary"
+                        label="Adicionar"
+                        icon="add"
+                        rounded
+                    />
+                </Link>
+            </div>
         </div>
 
         <!-- <div class="row">
@@ -96,11 +152,36 @@
                 rowsPerPage: 10
             }"
             hide-bottom
+            flat
         >
             <template v-slot:body="props">
                 <q-tr :props="props">
                     <q-td key="name" :props="props">
                         {{ props.row.name }}
+                    </q-td>
+                    <q-td key="kcal" :props="props">
+                        {{ props.row.kcal ?? '--' }}
+                    </q-td>
+                    <q-td key="fat" :props="props">
+                        {{ props.row.fat ?? '--' }}
+                    </q-td>
+                    <q-td key="saturates" :props="props">
+                        {{ props.row.saturates ?? '--' }}
+                    </q-td>
+                    <q-td key="carbs" :props="props">
+                        {{ props.row.carbs ?? '--' }}
+                    </q-td>
+                    <q-td key="sugars" :props="props">
+                        {{ props.row.sugars ?? '--' }}
+                    </q-td>
+                    <q-td key="fibre" :props="props">
+                        {{ props.row.fibre ?? '--' }}
+                    </q-td>
+                    <q-td key="protein" :props="props">
+                        {{ props.row.protein ?? '--' }}
+                    </q-td>
+                    <q-td key="salt" :props="props">
+                        {{ props.row.salt ?? '--' }}
                     </q-td>
                     <q-td key="actions" :props="props">
                         <Link

@@ -32,6 +32,7 @@ class AuthController extends Controller
     {
         return Inertia::render('Admin/Auth/Login', [
             'canResetPassword' => Route::has('admin.auth.forgot-password-form'),
+            'canRegister' => false,
             'status' => session('status'),
         ]);
     }

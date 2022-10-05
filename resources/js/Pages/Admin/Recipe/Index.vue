@@ -88,12 +88,28 @@
     <AuthenticatedLayout>
         <Head title="Receitas" />
 
-        <div class="row items-center q-pb-sm q-px-sm">
-            <q-icon name="menu_book" size="sm"/>
-            <div class="text-h6 q-ml-sm"> Receitas </div>
+        <div class="row">
+            <div class="flex col-6 q-mb-md items-center q-px-sm">
+                <q-icon name="menu_book" size="sm"/>
+                <div class="text-h6 q-ml-sm"> Receitas </div>
+            </div>
+
+             <div class="col-6 q-mb-md q-px-sm row justify-end">
+                <Link
+                    :href="route('admin.recipe.create')"
+                    style="text-decoration: none"
+                >
+                    <q-btn
+                        color="primary"
+                        label="Adicionar"
+                        icon="add"
+                        rounded
+                    />
+                </Link>
+            </div>
         </div>
 
-         <div class="row">
+        <div class="row">
             <div
                 class="col-12 col-md-3 q-mb-md q-px-sm"
                 v-for="recipe in recipes.data"
@@ -106,7 +122,7 @@
                     >
                         <q-icon
                             name="star"
-                            :color="recipe.rating >= star ? 'orange' : 'grey'"
+                            :color="recipe.rating >= star ? 'orange' : 'grey-4'"
                             v-for="star in [1, 2, 3, 4, 5]"
                             :key="star"
                         />
@@ -115,8 +131,6 @@
                             {{ recipe.title }}
                         </div>
                     </q-img>
-
-                    <q-separator />
 
                     <q-card-section class="flex justify-around">
                         <q-btn
@@ -136,73 +150,13 @@
                             icon-right="schedule"
                             size="sm"
                         />
-
-                        <!-- <q-icon name="schedule" class="q-mr-sm" size="xs"/>
-                        {{ recipe.time_to_cook }} -->
-
-                        <!-- <q-icon name="schedule" class="q-mr-sm" size="xs"/>
-                        {{ recipe.time_to_prepare }} -->
                     </q-card-section>
 
-                    <q-card-section >
-                        <!-- <q-card-actions class="justify-around"> -->
-                            <Link
-                                :href="route('admin.recipe.edit', recipe.id)"
-                                style="text-decoration: none"
-                            >
-                                <q-btn
-                                    round
-                                    color="primary"
-                                    icon="edit"
-                                    size="sm"
-                                    class="q-mr-sm"
-                                />
-                            </Link>
+                    <q-separator />
 
-                            <q-btn flat round color="red" icon="delete" />
-                        <!-- </q-card-actions> -->
-                    </q-card-section>
-                </q-card>
-            </div>
-        </div>
-<!--
-        <q-table
-            :rows="recipes.data"
-            :columns="columns"
-            row-key="id"
-            :pagination.sync="{
-                rowsPerPage: 10
-            }"
-            hide-bottom
-        >
-            <template v-slot:body="props">
-                <q-tr :props="props">
-                    <q-td key="title" :props="props">
-                        {{ props.row.title }}
-                    </q-td>
-                    <q-td key="rating" :props="props">
-                        <q-rating
-                            v-model="props.row.rating"
-                            size="2em"
-                            :max="5"
-                            color="orange"
-                            readonly
-                        />
-                    </q-td>
-                    <q-td key="time_to_cook" :props="props">
-                        <q-icon name="schedule" class="q-mr-sm" size="sm"/>
-                        {{ props.row.time_to_cook }}
-                    </q-td>
-                    <q-td key="time_to_prepare" :props="props">
-                        <q-icon name="schedule" class="q-mr-sm" size="sm"/>
-                        {{ props.row.time_to_prepare }}
-                    </q-td>
-                    <q-td key="difficulty" :props="props">
-                        <q-badge rounded :color="color(props.row.difficulty)" />
-                    </q-td>
-                    <q-td key="actions" :props="props">
+                    <q-card-section class="flex justify-around">
                         <Link
-                            :href="route('admin.recipe.edit', props.row.id)"
+                            :href="route('admin.recipe.edit', recipe.id)"
                             style="text-decoration: none"
                         >
                             <q-btn
@@ -210,7 +164,6 @@
                                 color="primary"
                                 icon="edit"
                                 size="sm"
-                                class="q-mr-sm"
                             />
                         </Link>
 
@@ -219,12 +172,12 @@
                             color="red"
                             icon="delete"
                             size="sm"
-                            @click="modalDelete.delete(props.row.id)"
+                            @click="modalDelete.delete(recipe.id)"
                         />
-                    </q-td>
-                </q-tr>
-            </template>
-        </q-table> -->
+                    </q-card-section>
+                </q-card>
+            </div>
+        </div>
 
         <div class="q-pa-lg" v-show="recipes.meta.last_page > 1">
             <q-pagination

@@ -2,9 +2,11 @@
 </script>
 
 <template>
-    <div class="container">
-        <div class="d-flex justify-content-center align-items-center flex-column vh-100">
-            <slot />
-        </div>
-    </div>
+    <q-layout view="hHh lpR lFf">
+        <q-page-container>
+            <q-page class="bg-primary window-height window-width row justify-center items-center">
+                <slot />
+            </q-page>
+        </q-page-container>
+    </q-layout>
 </template>
