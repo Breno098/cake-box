@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import GuestLayout from '@/Layouts/Customer/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 
@@ -7,6 +8,8 @@ defineProps({
     canRegister: Boolean,
     status: String,
 });
+
+const seePass = ref(false);
 
 const form = useForm({
     email: 'breno@email.com',
@@ -29,35 +32,53 @@ const submit = () => {
             <div class="row">
                 <q-card bordered class="shadow-1" style="width: 50vw">
                     <q-card-section class="text-center">
-                        <p class="text-h5">
-                            <!-- {{ $page.props.title }} <br/>  -->
-                            Login
+                        <p class="text-h4">
+                            {{ $page.props.title }}
                         </p>
                     </q-card-section>
 
                     <q-card-section>
                         <q-form class="q-gutter-md">
                             <q-input
-                                filled
                                 v-model="form.email"
                                 type="email"
                                 label="E-mail"
                                 :bottom-slots="Boolean(form.errors.email)"
+                                color="brown-8"
+                                bg-color="brown-1"
+                                rounded
+                                outlined
                             >
                                 <template v-slot:hint>
                                     <div class="text-red"> {{ form.errors.email }} </div>
                                 </template>
+                                <template v-slot:prepend>
+                                    <q-icon name="email" class="material-icons-outlined"/>
+                                </template>
                             </q-input>
 
                             <q-input
-                                filled
                                 v-model="form.password"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 label="Senha"
                                 :bottom-slots="Boolean(form.errors.password)"
+                                color="brown-8"
+                                bg-color="brown-1"
+                                rounded
+                                outlined
                             >
                                 <template v-slot:hint>
                                     <div class="text-red"> {{ form.errors.password }} </div>
+                                </template>
+                                <template v-slot:prepend>
+                                    <q-icon name="lock_open"/>
+                                </template>
+                                <template v-slot:append>
+                                    <q-icon
+                                        :name="seePass ? 'visibility' : 'visibility_off'"
+                                        class="cursor-pointer"
+                                        @click="seePass = !seePass"
+                                    />
                                 </template>
                             </q-input>
                         </q-form>
@@ -66,11 +87,12 @@ const submit = () => {
                     <q-card-actions class="q-px-md">
                         <q-btn
                             unelevated
-                            color="primary"
+                            color="brown-8"
                             size="lg"
                             class="full-width"
                             label="Entrar"
                             @click="submit"
+                            rounded
                         />
                     </q-card-actions>
 
@@ -83,7 +105,7 @@ const submit = () => {
                             <div class="text-grey q-mr-sm">
                                 Esqueceu a senha?
                             </div>
-                            <div class="text-primary">
+                            <div class="text-brown-8">
                                 Clique aqui
                             </div>
                         </Link>

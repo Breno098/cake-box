@@ -1,6 +1,9 @@
 <script setup>
-import GuestLayout from '@/Layouts/Admin/GuestLayout.vue';
+import { ref } from 'vue'
+import GuestLayout from '@/Layouts/Customer/GuestLayout.vue';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
+
+const seePass = ref(false);
 
 const props = defineProps({
     email: String,
@@ -15,7 +18,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('admin.auth.password.reset'), {
+    form.post(route('customer.auth.password.reset'), {
         // onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
@@ -35,26 +38,47 @@ const submit = () => {
                     <q-card-section>
                         <q-form class="q-gutter-md">
                             <q-input
-                                filled
                                 v-model="form.password"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 label="Nova Senha"
                                 :bottom-slots="Boolean(form.errors.password)"
+                                rounded
+                                outlined
                             >
                                 <template v-slot:hint>
                                     <div class="text-red"> {{ form.errors.password }} </div>
+                                </template>
+                                <template v-slot:prepend>
+                                    <q-icon name="lock_open"/>
+                                </template>
+                                <template v-slot:append>
+                                    <q-icon
+                                        :name="seePass ? 'visibility' : 'visibility_off'"
+                                        class="cursor-pointer"
+                                        @click="seePass = !seePass"
+                                    />
                                 </template>
                             </q-input>
 
                             <q-input
                                 filled
                                 v-model="form.password_confirmation"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 label="Confirme a Senha"
                                 :bottom-slots="Boolean(form.errors.password_confirmation)"
                             >
                                 <template v-slot:hint>
                                     <div class="text-red"> {{ form.errors.password_confirmation }} </div>
+                                </template>
+                                <template v-slot:prepend>
+                                    <q-icon name="lock_open"/>
+                                </template>
+                                <template v-slot:append>
+                                    <q-icon
+                                        :name="seePass ? 'visibility' : 'visibility_off'"
+                                        class="cursor-pointer"
+                                        @click="seePass = !seePass"
+                                    />
                                 </template>
                             </q-input>
                         </q-form>
@@ -63,12 +87,13 @@ const submit = () => {
                     <q-card-actions class="q-px-md">
                         <q-btn
                             unelevated
-                            color="primary"
+                            color="brown-8"
                             size="lg"
                             class="full-width"
                             @click="submit"
                             :disabled="form.processing"
                             :loading="form.processing"
+                            rounded
                         >
                             <div class="flex flex-center">
                                 <div class="q-mr-sm"> Redefinir </div>

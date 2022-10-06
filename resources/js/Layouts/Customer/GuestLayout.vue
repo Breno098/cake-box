@@ -13,7 +13,7 @@
 
 <style>
     .my-bg {
-        background: url('/img/wallpaper-login.jpg') no-repeat;
+        background: url('/img/wallpaper-login-customer.jpg') no-repeat;
         background-size: cover;
     }
 </style>

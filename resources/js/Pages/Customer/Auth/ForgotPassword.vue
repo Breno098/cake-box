@@ -1,5 +1,5 @@
 <script setup>
-import GuestLayout from '@/Layouts/Admin/GuestLayout.vue';
+import GuestLayout from '@/Layouts/Customer/GuestLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/inertia-vue3';
 
 defineProps({
@@ -11,7 +11,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('admin.auth.forgot-password-send-link'));
+    form.post(route('customer.auth.forgot-password-send-link'));
 };
 </script>
 
@@ -35,14 +35,20 @@ const submit = () => {
                     <q-card-section>
                         <q-form class="q-gutter-md">
                             <q-input
-                                filled
                                 v-model="form.email"
                                 type="email"
                                 label="E-mail"
                                 :bottom-slots="Boolean(form.errors.email)"
+                                color="brown-8"
+                                bg-color="brown-1"
+                                rounded
+                                outlined
                             >
                                 <template v-slot:hint>
                                     <div class="text-red"> {{ form.errors.email }} </div>
+                                </template>
+                                <template v-slot:prepend>
+                                    <q-icon name="email" class="material-icons-outlined"/>
                                 </template>
                             </q-input>
                         </q-form>
@@ -51,12 +57,13 @@ const submit = () => {
                     <q-card-actions class="q-px-md">
                         <q-btn
                             unelevated
-                            color="primary"
+                            color="brown-8"
                             size="lg"
                             class="full-width"
                             @click="submit"
                             :disabled="form.processing"
                             :loading="form.processing"
+                            rounded
                         >
                             <div class="flex flex-center">
                                 <div class="q-mr-sm"> Enviar </div>
@@ -72,9 +79,9 @@ const submit = () => {
 
                     <q-card-section class="q-pa-none">
                         <Link
-                            :href="route('admin.auth.sign-in')"
+                            :href="route('customer.auth.sign-in')"
                             style="text-decoration: none"
-                            class="flex flex-center text-primary"
+                            class="flex flex-center text-brown-8"
                         >
                                 Ir para o login
                         </Link>
