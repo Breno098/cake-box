@@ -16,7 +16,7 @@
 <template>
     <q-layout view="hHh lpR lFf">
         <q-header bordered class="bg-brown-8 text-white">
-            <q-toolbar>
+            <q-toolbar class="q-pa-md">
                 <q-toolbar-title>
                     {{ $page.props.title }}
                 </q-toolbar-title>
@@ -42,7 +42,7 @@
                                 </div>
 
                                 <q-btn
-                                    color="primary"
+                                    color="brown-8"
                                     push
                                     size="sm"
                                     v-close-popup
@@ -54,6 +54,7 @@
                     </q-menu>
                 </q-btn>
             </q-toolbar>
+
         </q-header>
 
         <q-page-container>

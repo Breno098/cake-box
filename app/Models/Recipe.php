@@ -58,7 +58,7 @@ class Recipe extends Model
     ];
 
     protected $casts = [
-        'difficulty' => 'integer'
+        'difficulty' => 'integer',
     ];
 
     /**
