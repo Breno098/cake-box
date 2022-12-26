@@ -10,12 +10,12 @@ use Illuminate\Support\Collection;
 
 class IngredientService
 {
-   /**
+    /**
      * @param array $filters
      * @param null|integer $rowsPerPage
      * @param null|string $orderBy
      * @param null|string $sort
-     * @return Category[]|Collection|LengthAwarePaginator
+     * @return Ingredient[]|Collection|LengthAwarePaginator
      */
     public function index(
         array $filters = [],

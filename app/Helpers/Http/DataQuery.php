@@ -9,6 +9,11 @@ trait DataQuery
      */
     private string $defaultOrderBy = 'id';
 
+     /**
+     * @var int
+     */
+    private int $defaultRowsPerPage = 10;
+
     /**
      * @return integer
      */
@@ -21,9 +26,11 @@ trait DataQuery
      * @param integer $defaultRowsPerPage
      * @return integer
      */
-    public function rowsPerPage(int $defaultRowsPerPage = 10): int
+    public function rowsPerPage(null|int $defaultRowsPerPage = null): int
     {
-        return request()->get('rowsPerPage', $defaultRowsPerPage);
+        $this->defaultRowsPerPage = $defaultRowsPerPage ?? $this->defaultRowsPerPage;
+
+        return request()->get('rowsPerPage', $this->defaultRowsPerPage);
     }
 
     /**

@@ -46,4 +46,6 @@ Route::middleware('auth:admin')
         Route::get('home', [HomeController::class, 'index'])->name('home');
         Route::resource('recipe', RecipeController::class);
         Route::resource('ingredient', IngredientController::class);
+
+        Route::get('recipe/{recipe}/edit/ingredients', [RecipeController::class, 'editIngredients'])->name('recipe.edit.ingredients');
     });

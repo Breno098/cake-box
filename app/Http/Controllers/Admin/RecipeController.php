@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Recipe\RecipeIndexRequest;
 use App\Models\Recipe;
 use App\Http\Requests\Admin\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Admin\Recipe\RecipeUpdateRequest;
+use App\Http\Resources\Admin\IngredientResourse;
 use App\Http\Resources\Admin\RecipeResourse;
 use App\Models\Ingredient;
 use App\Services\Admin\RecipeService;
@@ -33,12 +35,18 @@ class RecipeController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(RecipeIndexRequest $request): Response
     {
-        $recipes = $this->recipeService->index($request->all(), 8);
+        $recipes = $this->recipeService->index(
+            $request->filters(),
+            $request->rowsPerPage(8),
+            $request->orderBy('title'),
+            $request->sort()
+        );
 
         return Inertia::render('Admin/Recipe/Index', [
-            'recipes' => RecipeResourse::collection($recipes)
+            'recipes' => RecipeResourse::collection($recipes),
+            'query' => $request->dataQuery(),
         ]);
     }
 
@@ -73,9 +81,26 @@ class RecipeController extends Controller
     {
         $ingredientsForSelect = Ingredient::orderBy('name')->get();
 
-        return Inertia::render('Admin/Recipe/Edit', [
+        return Inertia::render('Admin/Recipe/Edit/Index', [
             'recipe' => new RecipeResourse($recipe),
             'ingredients' => $ingredientsForSelect
+        ]);
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @return Response
+     */
+    public function editIngredients(Recipe $recipe): Response
+    {
+        dd('aaaaa');
+
+        $ingredientsForSelect = Ingredient::orderBy('name')->get();
+
+        return Inertia::render('Admin/Recipe/Edit/Ingredients', [
+            'recipe' => new RecipeResourse($recipe),
+            'ingredients' => IngredientResourse::collection($recipe->ingredients),
+            'ingredientsForSelect' => $ingredientsForSelect
         ]);
     }
 

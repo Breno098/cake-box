@@ -14,17 +14,24 @@ class RecipeService
 {
     /**
      * @param array $filters
-     * @param integer $perPage
+     * @param null|integer $rowsPerPage
+     * @param null|string $orderBy
+     * @param null|string $sort
      * @return Recipe[]|Collection|LengthAwarePaginator
      */
-    public function index(array $filters = [], int $perPage = 10): LengthAwarePaginator
+    public function index(
+        array $filters = [],
+        null|int $rowsPerPage = 10,
+        null|string $orderBy = 'id',
+        null|string $sort = 'asc'
+    ): LengthAwarePaginator|Collection
     {
-        return Recipe::orderBy('title')
-            ->when(Arr::get($filters, 'title'), function(Builder $builder, $title) {
-                return $builder->where('title', 'like', "%{$title}%");
-            })
-            ->paginate($perPage)
-            ->withQueryString();
+        return Recipe::when(Arr::get($filters, 'title'), function(Builder $builder, $title) {
+            return $builder->where('title', 'like', "%{$title}%");
+        })->when($orderBy, function(Builder $query) use ($orderBy, $sort){
+            return $query->orderBy($orderBy, $sort);
+        })
+        ->paginate($rowsPerPage);
     }
 
     /**

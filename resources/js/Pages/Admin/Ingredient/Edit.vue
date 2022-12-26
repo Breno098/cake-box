@@ -64,7 +64,7 @@
     <AuthenticatedLayout>
         <Head title="Ingrediente | Editar" />
 
-         <div class="row q-mb-lg">
+        <div class="row q-mb-lg">
             <div class="col-6 flex justify-start items-center">
                 <q-icon name="egg" size="md"/>
                 <div class="text-h5 q-ml-sm"> Ingrediente | Editar </div>

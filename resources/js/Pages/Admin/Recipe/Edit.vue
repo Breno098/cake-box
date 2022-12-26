@@ -1,14 +1,17 @@
 <script setup>
-    import { ref, computed } from 'vue'
-    import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
+    import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
+    import { Inertia } from '@inertiajs/inertia';
+    import DialogConfirm from '@/Components/DialogConfirm.vue';
+    import { ref, computed } from 'vue'
 
     const $q = useQuasar()
 
     const props = defineProps({
         recipe: Object,
-        ingredients: Array
+        ingredients: Array,
+        errors: Object,
     });
 
     const form = useForm({
@@ -75,7 +78,7 @@
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Produto atualizado com sucesso',
+                        message: 'Receita atualizado com sucesso',
                         position: 'top',
                     })
                 },
@@ -228,27 +231,57 @@
     });
 
     const tab = ref('recipe');
+
+    function destroy() {
+        $q.dialog({
+            component: DialogConfirm,
+            componentProps: {
+                title: 'Excluir receita',
+                message: 'Tem certeza que deseja excluir esse receita?',
+            },
+        }).onOk(() => {
+            Inertia.delete(route('admin.recipe.destroy', form.id), {
+                onSuccess: () => {
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Receita excluído com sucesso',
+                        position: 'top',
+                    })
+                }
+            })
+        });
+    }
 </script>
 
 <template>
     <AuthenticatedLayout>
         <Head title="Receita | Editar" />
 
-        <div class="row">
-            <div class="row col-6 q-mb-md items-center q-px-sm">
-                <q-icon name="menu_book" size="sm"/>
-                <div class="text-h6 q-ml-sm"> Receita </div>
+        <div class="row q-mb-lg">
+            <div class="col-6 flex justify-start items-center">
+                <q-icon name="menu_book" size="md"/>
+                <div class="text-h5 q-ml-sm"> Receita | Editar </div>
             </div>
 
-            <div class="col-6 q-mb-md q-px-sm row justify-end">
+            <div class="col-6 flex justify-end items-center">
+                <q-btn
+                    color="red"
+                    label="Excluir"
+                    icon="close"
+                    no-caps
+                    @click="destroy"
+                    :disabled="form.processing"
+                    class="q-mr-md"
+                    outline
+                />
+
                 <q-btn
                     color="green"
                     label="Salvar"
-                    icon="save"
-                    :disabled="form.processing"
-                    :class="{ 'opacity-25': form.processing }"
+                    icon="check"
+                    no-caps
                     @click="submit"
-                    rounded
+                    :disabled="form.processing"
                 />
             </div>
         </div>
@@ -271,99 +304,99 @@
             transition-next="jump-up"
         >
             <q-tab-panel name="recipe">
-                <div class="row">
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 col-md-6">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.title"
                             label="Título"
-                            :bottom-slots="Boolean(form.errors.title)"
+                            :bottom-slots="Boolean(errors.title)"
                         >
                             <template v-slot:hint>
-                                <div class="text-red"> {{ form.errors.title }} </div>
+                                <div class="text-red"> {{ errors.title }} </div>
                             </template>
                         </q-input>
                     </div>
 
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                    <div class="col-12 col-md-6">
                         <q-select
                             label="Dificuldade"
                             transition-show="flip-up"
                             transition-hide="flip-down"
-                            filled
+                            outlined
                             v-model="form.difficulty"
                             :options="difficulties"
                             emit-value
                             map-options
-                            :bottom-slots="Boolean(form.errors.difficulty)"
+                            :bottom-slots="Boolean(errors.difficulty)"
                         >
                             <template v-slot:hint>
-                                <div class="text-red"> {{ form.errors.difficulty }} </div>
+                                <div class="text-red"> {{ errors.difficulty }} </div>
                             </template>
                         </q-select>
                     </div>
 
-                    <div class="col-12 q-mb-md q-px-sm">
+                    <div class="col-12">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.description"
                             label="Descrição"
                             type="textarea"
                         />
                     </div>
 
-                    <div class="col-12 q-mb-md q-px-sm">
+                    <div class="col-12">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.info"
                             label="Informação"
                             type="textarea"
                         />
                     </div>
 
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                    <div class="col-12 col-md-6">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.time_to_cook"
                             label="Tempo para cozinhar"
                             mask="time"
-                            :bottom-slots="Boolean(form.errors.time_to_cook)"
+                            :bottom-slots="Boolean(errors.time_to_cook)"
                         >
                             <template v-slot:hint>
-                                <div class="text-red"> {{ form.errors.time_to_cook }} </div>
+                                <div class="text-red"> {{ errors.time_to_cook }} </div>
                             </template>
                         </q-input>
                     </div>
 
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                    <div class="col-12 col-md-6">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.time_to_prepare"
                             label="Tempo de preparo"
                             mask="time"
-                            :bottom-slots="Boolean(form.errors.time_to_prepare)"
+                            :bottom-slots="Boolean(errors.time_to_prepare)"
                         >
                             <template v-slot:hint>
-                                <div class="text-red"> {{ form.errors.time_to_prepare }} </div>
+                                <div class="text-red"> {{ errors.time_to_prepare }} </div>
                             </template>
                         </q-input>
                     </div>
 
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                    <div class="col-12 col-md-6">
                         <q-input
-                            filled
+                            outlined
                             v-model="form.yield_quantity"
                             label="Rendimento"
                             type="number"
                         />
                     </div>
 
-                    <div class="col-12 col-md-6 q-mb-md q-px-sm">
+                    <div class="col-12 col-md-6">
                         <q-select
                             label="Medida de rendimento"
                             transition-show="flip-up"
                             transition-hide="flip-down"
-                            filled
+                            outlined
                             v-model="form.yield_unit_measure"
                             :options="unitMeasures"
                             emit-value
@@ -372,22 +405,22 @@
                     </div>
                 </div>
             </q-tab-panel>
+
             <q-tab-panel name="ingredients">
-                <div class="row">
-                    <div class="flex col-6 q-mb-md items-center q-px-sm">
+                <div class="flex justify-between">
+                    <div class="row items-center">
                         <q-icon name="egg" size="sm"/>
                         <div class="text-h6 q-ml-sm"> Ingredientes </div>
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm row justify-end">
-                        <q-btn
-                            color="primary"
-                            icon="add"
-                            @click="modalIngredient.show = true"
-                            round
-                            size="sm"
-                        />
-                    </div>
+                    <q-btn
+                        color="primary"
+                        icon="add"
+                        @click="modalIngredient.show = true"
+                        size="sm"
+                        label="Adicionar ingrendiente"
+                        no-caps
+                    />
                 </div>
 
                 <q-table
@@ -418,7 +451,7 @@
                                     <q-select
                                         v-model="scope.value"
                                         label="Ingrediente"
-                                        filled
+                                        outlined
                                         :options="unitIngrientMeasures"
                                     />
                                 </q-popup-edit>
@@ -456,35 +489,35 @@
 
                         <q-card-section class="q-pt-none">
                             <div class="row">
-                                <div class="col-5 q-mb-md q-px-sm">
+                                <div class="col-5">
                                     <q-select
                                         v-model="modalIngredient.data.id"
                                         label="Ingrediente"
                                         transition-show="flip-up"
                                         transition-hide="flip-down"
-                                        filled
+                                        outlined
                                         :options="ingredientForSelect"
                                         emit-value
                                         map-options
                                     />
                                 </div>
 
-                                <div class="col-3 q-mb-md q-px-sm">
+                                <div class="col-3">
                                     <q-input
-                                        filled
+                                        outlined
                                         v-model="modalIngredient.data.quantity"
                                         label="Quantidade"
                                         type="number"
                                     />
                                 </div>
 
-                                <div class="col-4 q-mb-md q-px-sm">
+                                <div class="col-4">
                                     <q-select
                                         v-model="modalIngredient.data.unit_measure"
                                         label="Ingrediente"
                                         transition-show="flip-up"
                                         transition-hide="flip-down"
-                                        filled
+                                        outlined
                                         :options="unitIngrientMeasures"
                                         emit-value
                                         map-options
@@ -518,22 +551,22 @@
                     </q-card>
                 </q-dialog>
             </q-tab-panel>
+
             <q-tab-panel name="directions">
-                <div class="row">
-                    <div class="flex col-6 q-mb-md items-center q-px-sm">
+                 <div class="flex justify-between">
+                    <div class="row items-center">
                         <q-icon name="format_list_numbered" size="sm"/>
-                        <div class="text-h6 q-ml-sm"> Intruções </div>
+                        <div class="text-h6 q-ml-sm"> Instruções </div>
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm row justify-end">
-                        <q-btn
-                            color="primary"
-                            icon="add"
-                            @click="modalDirection.show = true"
-                            round
-                            size="sm"
-                        />
-                    </div>
+                    <q-btn
+                        color="primary"
+                        icon="add"
+                        @click="modalDirection.show = true"
+                        size="sm"
+                        label="Adicionar instrução"
+                        no-caps
+                    />
                 </div>
 
                 <q-table
@@ -590,11 +623,12 @@
                         </q-card-section>
 
                         <q-card-section class="q-pt-none">
-                            <div class="row">
-                                <div class="col-12 q-mb-md q-px-sm">
-                                    <q-editor v-model="modalDirection.data.description"/>
-                                </div>
-                            </div>
+                            <q-input
+                                outlined
+                                v-model="modalDirection.data.description"
+                                label="Instrução"
+                                type="textarea"
+                            />
                         </q-card-section>
 
                         <q-card-actions align="right" class="text-primary">
@@ -622,9 +656,10 @@
                     </q-card>
                 </q-dialog>
             </q-tab-panel>
+
             <q-tab-panel name="images">
-                <div class="row">
-                    <div class="col-12 q-mb-md q-px-sm text-center">
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 text-center">
                         <q-img
                             :src="wallpaperSrc"
                             style="max-height: 600px"
@@ -662,7 +697,7 @@
                         />
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm text-center">
+                    <div class="col-6 text-center">
                         <q-img
                             :src="image1Src"
                             style="max-width: 800px; max-height: 400px"
@@ -686,7 +721,7 @@
                         />
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm text-center">
+                    <div class="col-6 text-center">
                         <q-img
                             :src="image2Src"
                             style="max-width: 800px; max-height: 400px"
@@ -710,7 +745,7 @@
                         />
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm text-center">
+                    <div class="col-6 text-center">
                         <q-img
                             :src="image3Src"
                             style="max-width: 800px; max-height: 400px"
@@ -734,7 +769,7 @@
                         />
                     </div>
 
-                    <div class="col-6 q-mb-md q-px-sm text-center">
+                    <div class="col-6 text-center">
                         <q-img
                             :src="image4Src"
                             style="max-width: 800px; max-height: 400px"

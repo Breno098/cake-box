@@ -35,7 +35,7 @@ class RecipeSeeder extends Seeder
             ->create()
             ->each(function(Recipe $recipe) {
                 Ingredient::inRandomOrder()
-                    ->limit(fake()->numberBetween(1, Ingredient::get()->count()))
+                    ->limit(5)
                     ->get()
                     ->each(function(Ingredient $ingredient) use ($recipe){
                         $recipe->ingredients()->attach($ingredient->id, [
