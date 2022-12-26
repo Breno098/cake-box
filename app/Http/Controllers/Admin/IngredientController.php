@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Ingredient\IngredientIndexRequest;
 use App\Models\Ingredient;
 use App\Http\Requests\Admin\Ingredient\IngredientStoreRequest;
 use App\Http\Requests\Admin\Ingredient\IngredientUpdateRequest;
@@ -29,15 +30,21 @@ class IngredientController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param IngredientIndexRequest $request
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(IngredientIndexRequest $request): Response
     {
-        $ingredients = $this->ingredientService->index($request->all());
+        $ingredients = $this->ingredientService->index(
+            $request->filters(),
+            $request->rowsPerPage(),
+            $request->orderBy('name'),
+            $request->sort()
+        );
 
         return Inertia::render('Admin/Ingredient/Index', [
-            'ingredients' => IngredientResourse::collection($ingredients)
+            'ingredients' => IngredientResourse::collection($ingredients),
+            'query' => $request->dataQuery(),
         ]);
     }
 

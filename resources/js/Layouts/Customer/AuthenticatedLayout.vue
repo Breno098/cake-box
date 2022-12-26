@@ -1,31 +1,47 @@
 <script setup>
     import { Link, useForm } from '@inertiajs/inertia-vue3';
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
+    import { useQuasar } from 'quasar'
 
-    const leftDrawerOpen = ref(true)
-
-    const toggleLeftDrawer = () => {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-    }
+    const $q = useQuasar()
 
     const logout = () => {
         useForm().post(route('customer.auth.logout'));
     }
+
+    const style = computed(() => ({
+      height: $q.screen.height + 'px'
+    }))
 </script>
 
 <template>
-    <q-layout view="hHh lpR lFf">
+    <q-layout view="lHh Lpr lFf">
         <q-header bordered class="bg-brown-8 text-white">
-            <q-toolbar class="q-pa-md">
-                <q-toolbar-title>
+            <q-toolbar>
+                <div class="q-pr-lg text-h5" v-if="$q.screen.gt.xs">
                     {{ $page.props.title }}
-                </q-toolbar-title>
+                </div>
 
-                <q-btn icon="account_circle" flat >
+                <q-space />
+
+                <q-btn round dense flat icon="notifications">
+                    <q-badge color="red" text-color="white" floating>
+                        2
+                    </q-badge>
+                    <q-tooltip>Notificações</q-tooltip>
+                </q-btn>
+
+                <q-btn flat round>
+                    <q-avatar size="26px">
+                        <img src="https://cdn.quasar.dev/img/avatar2.jpg">
+                    </q-avatar>
+
+                    <q-tooltip>Perfil</q-tooltip>
+
                     <q-menu>
                         <div class="row no-wrap q-pa-md">
                             <div class="column">
-                                <div class="text-h6 q-mb-md">Settings</div>
+                                <div class="text-h6 q-mb-md">Configurações</div>
                                 <!-- <q-toggle v-model="mobileData" label="Use Mobile Data" />
                                 <q-toggle v-model="bluetooth" label="Bluetooth" /> -->
                             </div>
@@ -57,11 +73,13 @@
 
         </q-header>
 
-        <q-page-container>
-            <q-page padding>
-                <slot />
-            </q-page>
-        </q-page-container>
+        <div class="position-relative bg-grey-4" :style="style">
+            <q-page-container class="WAL__layout">
+                <q-page padding>
+                    <slot />
+                </q-page>
+            </q-page-container>
+        </div>
 
         <!-- <q-footer bordered class="bg-primary text-white">
             <q-toolbar>
@@ -97,3 +115,20 @@
         </q-footer> -->
     </q-layout>
 </template>
+
+<style lang="sass">
+.WAL
+  width: 100%
+  height: 100%
+  padding-top: 20px
+  padding-bottom: 20px
+
+  &__layout
+    margin: 0 auto
+    z-index: 4000
+    height: 100%
+    width: 90%
+    max-width: 1200px
+
+
+</style>

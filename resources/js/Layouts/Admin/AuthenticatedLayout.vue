@@ -1,6 +1,7 @@
 <script setup>
     import { Link, useForm } from '@inertiajs/inertia-vue3';
     import { ref } from 'vue'
+    import { Inertia } from '@inertiajs/inertia';
 
     const leftDrawerOpen = ref(true)
     const miniState = ref(false)
@@ -19,6 +20,32 @@
     const logout = () => {
         useForm().post(route('admin.auth.logout'));
     }
+
+    const goRoute = (routeName) => {
+        Inertia.get(route(routeName));
+    }
+
+    const menuItems = [{
+        items: [{
+            route: 'admin.home',
+            active: 'admin.home*',
+            label: 'Dashboard',
+            icon: 'show_chart'
+        }]
+    }, {
+        label: 'CADASTROS',
+        items: [{
+            route: 'admin.recipe.index',
+            active: 'admin.recipe*',
+            label: 'Receitas',
+            icon: 'format_align_left'
+        }, {
+            route: 'admin.ingredient.index',
+            active: 'admin.ingredient*',
+            label: 'Ingredientes',
+            icon: 'egg'
+        }]
+    }];
 </script>
 
 <template>
@@ -34,19 +61,7 @@
                 <q-btn icon="account_circle" flat >
                     <q-menu>
                         <div class="row no-wrap q-pa-md">
-                            <!-- <div class="column"> -->
-                                <!-- <div class="text-h6 q-mb-md">Settings</div> -->
-                                <!-- <q-toggle v-model="mobileData" label="Use Mobile Data" />
-                                <q-toggle v-model="bluetooth" label="Bluetooth" /> -->
-                            <!-- </div> -->
-
-                            <!-- <q-separator vertical inset class="q-mx-lg" /> -->
-
                             <div class="column items-center q-pa-lg q-px-xl">
-                                <q-avatar size="72px">
-                                    <img src="https://cdn.quasar.dev/img/avatar2.jpg">
-                                </q-avatar>
-
                                 <div class="text-subtitle1 q-mt-md q-mb-md text-center">
                                     {{ $page.props.auth.user.name.split(' ').shift() }}
                                 </div>
@@ -76,67 +91,44 @@
             class="bg-grey-3"
         >
             <q-scroll-area class="fit">
-                <q-list padding>
-                    <q-item
-                        clickable
-                        v-ripple
-                        :active="route().current('admin.home')"
+                <q-list
+                    padding
+                    v-for="(menuItem, index) in menuItems"
+                    :key="index"
+                >
+                    <q-item-label header overline class="q-pl-xl">
+                        {{ menuItem.label }}
+                    </q-item-label>
+
+                    <div
+                        v-for="(item, i) in menuItem.items"
+                        :key="`menu-item-${i}`"
                     >
-                        <q-item-section avatar>
-                            <q-icon name="home" />
-                        </q-item-section>
+                        <q-item
+                            v-ripple
+                            :active="route().current(item.active)"
+                            active-class="bg-blue-2"
+                            class="cursor-pointer q-px-lg"
+                            @click="goRoute(item.route)"
+                            clickable
+                        >
+                            <q-item-section avatar>
+                                <q-icon
+                                    :name="item.icon"
+                                    :class="route().current(item.active) ? 'text-primary' : 'text-black'"
+                                    class="material-icons-outlined"
+                                />
+                            </q-item-section>
 
-                        <q-item-section>
-                            <Link
-                                :href="route('admin.home')"
-                                :class="route().current('admin.home') ? 'text-primary' : 'text-dark'"
-                                style="text-decoration: none"
+                            <q-item-section
+                                :class="route().current(item.active) ? 'text-primary' : 'text-black'"
                             >
-                                Home
-                            </Link>
-                        </q-item-section>
-                    </q-item>
+                                {{ item.label }}
+                            </q-item-section>
+                        </q-item>
 
-                    <q-item
-                        clickable
-                        v-ripple
-                        :active="route().current('admin.recipe.*')"
-                    >
-                        <q-item-section avatar>
-                            <q-icon name="menu_book" />
-                        </q-item-section>
-
-                        <q-item-section>
-                            <Link
-                                :href="route('admin.recipe.index')"
-                                style="text-decoration: none"
-                                :class="route().current('admin.recipe.*') ? 'text-primary' : 'text-dark'"
-                            >
-                                Receitas
-                            </Link>
-                        </q-item-section>
-                    </q-item>
-
-                    <q-item
-                        clickable
-                        v-ripple
-                        :active="route().current('ingredient*')"
-                    >
-                        <q-item-section avatar>
-                            <q-icon name="egg" />
-                        </q-item-section>
-
-                        <q-item-section>
-                            <Link
-                                :href="route('admin.ingredient.index')"
-                                style="text-decoration: none"
-                                :class="route().current('admin.ingredient.*') ? 'text-primary' : 'text-dark'"
-                            >
-                                Ingredientes
-                            </Link>
-
-                        </q-item-section>
-                    </q-item>
+                        <q-separator/>
+                    </div>
                 </q-list>
             </q-scroll-area>
 
@@ -153,42 +145,9 @@
         </q-drawer>
 
         <q-page-container>
-            <q-page padding>
+            <q-page  class="bg-grey-2 q-pa-lg">
                 <slot />
             </q-page>
         </q-page-container>
-
-        <!-- <q-footer bordered class="bg-primary text-white">
-            <q-toolbar>
-                <q-toolbar-title>
-                    <q-avatar>
-                        <q-btn icon="account_circle" flat >
-                            <q-menu>
-                                <div class="row no-wrap q-pa-md">
-                                    <div class="column items-center q-pa-lg q-px-xl">
-                                        <q-avatar size="72px">
-                                            <img src="https://cdn.quasar.dev/img/avatar2.jpg">
-                                        </q-avatar>
-
-                                        <div class="text-subtitle1 q-mt-md q-mb-md text-center">
-                                            {{ $page.props.auth.user.name.split(' ').shift() }}
-                                        </div>
-
-                                        <q-btn
-                                            color="primary"
-                                            push
-                                            size="sm"
-                                            v-close-popup
-                                            @click="logout"
-                                            label="Sair"
-                                        />
-                                    </div>
-                                </div>
-                            </q-menu>
-                        </q-btn>
-                    </q-avatar>
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-footer> -->
     </q-layout>
 </template>

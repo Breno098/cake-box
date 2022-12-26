@@ -10,7 +10,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
-import { Quasar, Notify } from 'quasar'
+import { Quasar, Notify, Dialog } from 'quasar'
 import quasarLang from 'quasar/lang/pt-BR'
 
 import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
@@ -28,7 +28,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(Quasar, {
                 plugins: {
-                    Notify
+                    Notify, Dialog
                 },
                 lang: quasarLang,
             })

@@ -1,211 +1,288 @@
 <script setup>
-    import { ref } from 'vue';
-    import { Head, useForm, Link } from '@inertiajs/inertia-vue3';
+    import { ref, computed } from 'vue';
+    import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Inertia } from '@inertiajs/inertia';
-    import { useQuasar } from 'quasar'
+    import { useQuasar } from 'quasar';
+    import DialogConfirm from '@/Components/DialogConfirm.vue';
 
     const $q = useQuasar()
 
-    defineProps({
+    const props = defineProps({
         ingredients: Object,
+        errors: Object,
+        query: Object,
     });
 
-    const columns = [{
-        name: 'name',
-        align: 'left',
-        label: 'Nome',
-        field: 'name',
-    }, {
-        name: 'kcal',
-        align: 'center',
-        label: 'Calorias',
-        field: 'kcal',
-    }, {
-        name: 'fat',
-        align: 'center',
-        label: 'Gorduras',
-        field: 'fat',
-    }, {
-        name: 'saturates',
-        align: 'center',
-        label: 'Saturação',
-        field: 'saturates',
-    }, {
-        name: 'carbs',
-        align: 'center',
-        label: 'Carboidratos',
-        field: 'carbs',
-    }, {
-        name: 'sugars',
-        align: 'center',
-        label: 'Açucar',
-        field: 'sugars',
-    }, {
-        name: 'fibre',
-        align: 'center',
-        label: 'Fibras',
-        field: 'fibre',
-    }, {
-        name: 'protein',
-        align: 'center',
-        label: 'Proteínas',
-        field: 'protein',
-    }, {
-        name: 'salt',
-        align: 'left',
-        label: 'Sal',
-        field: 'salt',
-    },{
-        name: 'actions',
-        align: 'center',
-    }];
-
-    const filters = useForm({
+    const requestData = useForm({
+        orderBy: props.query.orderBy,
+        sort: props.query.sort,
+        page: props.query.page,
+        rowsPerPage: props.query.rowsPerPage,
+        filters: {
+            name: props.query.filters.name,
+        },
     });
 
-    const paginate = (page) => {
-        filters.get(route('admin.ingredient.index', { page }));
+    const sortBy = (field) => {
+        if (requestData.orderBy === field) {
+            requestData.sort = requestData.sort == 'desc' ? 'asc' : 'desc';
+        } else {
+            requestData.sort == 'asc';
+        }
+
+        requestData.orderBy = field;
+        requestData.page = 1;
+
+        submit();
     }
 
-    const modalDelete = ref({
-        show: false,
-        deleteId: null,
-        delete: (id) => {
-            modalDelete.value.deleteId = id;
-            modalDelete.value.show = true;
-        },
-        confirmDelete: () => {
-            Inertia.delete(route('admin.ingredient.destroy', modalDelete.value.deleteId), {
+    const removeFilter = (filterName) => {
+        requestData.filters[filterName] = null;
+        submit();
+    }
+
+    const submit = () => {
+        requestData.get(route('admin.ingredient.index'), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => showFilters.value = false,
+        });
+    }
+
+    function create() {
+        Inertia.get(route('admin.ingredient.create'));
+    }
+
+    function edit(id) {
+        Inertia.get(route('admin.ingredient.edit', id));
+    }
+
+    function destroy(id) {
+        $q.dialog({
+            component: DialogConfirm,
+            componentProps: {
+                title: 'Excluir ingrediente',
+                message: 'Tem certeza que deseja excluir esse ingrediente?',
+            },
+        }).onOk(() => {
+            Inertia.delete(route('admin.ingredient.destroy', id), {
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Ingrediente deletado com sucesso',
+                        message: 'Ingrediente excluído com sucesso',
                         position: 'top',
                     })
-
-                    modalDelete.value.show = false;
                 }
             })
-        }
-    })
+        });
+    }
+
+    const countAppliedFilters = computed(() => Object.values(props.query.filters).filter(fil => fil).length);
+
+    const showFilters = ref(false)
 </script>
 
 <template>
     <AuthenticatedLayout>
         <Head title="Ingredientes" />
 
-        <div class="row">
-            <div class="flex col-6 q-mb-md items-center q-px-sm">
-                <q-icon name="egg" size="sm"/>
-                <div class="text-h6 q-ml-sm"> Ingredientes </div>
+        <div class="row q-mb-lg">
+            <div class="col-6 flex justify-start items-center">
+                <q-icon name="egg" size="md"/>
+                <div class="text-h5 q-ml-sm"> Ingredientes </div>
             </div>
 
-             <div class="col-6 q-mb-md q-px-sm row justify-end">
-                <Link
-                    :href="route('admin.ingredient.create')"
-                    style="text-decoration: none"
+            <div class="col-6 flex justify-end items-center">
+                <q-btn
+                    color="primary"
+                    label="Novo ingrediente"
+                    icon="add"
+                    no-caps
+                    @click="create"
+                />
+            </div>
+        </div>
+
+        <div class="row q-mb-lg">
+            <q-chip
+                removable
+                outline
+                color="primary"
+                v-if="query.filters.name"
+                @remove="removeFilter('name')"
+                square
+            >
+                Nome = {{ query.filters.name }}
+            </q-chip>
+
+            <q-space/>
+
+            <q-btn
+                dense
+                flat
+                color="primary"
+                icon="filter_alt"
+            >
+                <q-badge
+                    color="orange"
+                    floating
+                    rounded
+                    :label="countAppliedFilters"
+                    v-if="countAppliedFilters"
+                />
+
+                <q-menu
+                    style="min-width: 500px"
+                    max-width='500px'
+                    class="bg-white q-pa-md"
+                    v-model="showFilters"
                 >
-                    <q-btn
-                        color="primary"
-                        label="Adicionar"
-                        icon="add"
-                        rounded
-                    />
-                </Link>
-            </div>
-        </div>
-
-        <q-table
-            :rows="ingredients.data"
-            :columns="columns"
-            row-key="id"
-            :pagination.sync="{
-                rowsPerPage: 10
-            }"
-            hide-bottom
-            flat
-        >
-            <template v-slot:body="props">
-                <q-tr :props="props">
-                    <q-td key="name" :props="props">
-                        {{ props.row.name }}
-                    </q-td>
-                    <q-td key="kcal" :props="props">
-                        {{ props.row.kcal ?? '--' }}
-                    </q-td>
-                    <q-td key="fat" :props="props">
-                        {{ props.row.fat ?? '--' }}
-                    </q-td>
-                    <q-td key="saturates" :props="props">
-                        {{ props.row.saturates ?? '--' }}
-                    </q-td>
-                    <q-td key="carbs" :props="props">
-                        {{ props.row.carbs ?? '--' }}
-                    </q-td>
-                    <q-td key="sugars" :props="props">
-                        {{ props.row.sugars ?? '--' }}
-                    </q-td>
-                    <q-td key="fibre" :props="props">
-                        {{ props.row.fibre ?? '--' }}
-                    </q-td>
-                    <q-td key="protein" :props="props">
-                        {{ props.row.protein ?? '--' }}
-                    </q-td>
-                    <q-td key="salt" :props="props">
-                        {{ props.row.salt ?? '--' }}
-                    </q-td>
-                    <q-td key="actions" :props="props">
-                        <Link
-                            :href="route('admin.ingredient.edit', props.row.id)"
-                            style="text-decoration: none"
-                        >
-                            <q-btn
-                                round
-                                color="primary"
-                                icon="edit"
-                                size="sm"
-                                class="q-mr-sm"
+                    <div class="row q-col-gutter-sm">
+                        <div class="col-12">
+                            <q-input
+                                outlined
+                                v-model="requestData.filters.name"
+                                label="Nome do ingrediente"
                             />
-                        </Link>
+                        </div>
+                    </div>
 
+                    <div class="q-pt-lg">
                         <q-btn
-                            round
-                            color="red"
-                            icon="delete"
-                            size="sm"
-                            @click="modalDelete.delete(props.row.id)"
+                            color="primary"
+                            no-caps
+                            @click="submit"
+                            icon="search"
+                            label="Procurar"
                         />
-                    </q-td>
-                </q-tr>
-            </template>
-        </q-table>
-
-        <div class="q-pa-lg" v-show="ingredients.meta.last_page > 1">
-            <q-pagination
-                v-model="ingredients.meta.current_page"
-                :max="ingredients.meta.last_page"
-                :max-pages="10"
-                @update:model-value="paginate"
-            />
+                    </div>
+                </q-menu>
+            </q-btn>
         </div>
 
-        <q-dialog v-model="modalDelete.show">
-            <q-card>
-                <q-card-section class="text-center">
-                    <div class="text-h6"> Excluir ingrediente? </div>
-                </q-card-section>
+        <q-card>
+            <q-markup-table class="text-grey-8">
+                <thead>
+                    <tr>
+                        <th class="text-left cursor-pointer" >
+                            <div @click="sortBy('name')">
+                                Ingrediente
+                            </div>
+                        </th>
+                        <th class="text-left">
+                            Calorias
+                        </th>
+                        <th class="text-left">
+                            Gorduras
+                        </th>
+                        <th class="text-left">
+                            Saturação
+                        </th>
+                        <th class="text-left">
+                            Carboidratos
+                        </th>
+                        <th class="text-left">
+                            Açucar
+                        </th>
+                        <th class="text-left">
+                            Fibras
+                        </th>
+                        <th class="text-left">
+                            Proteínas
+                        </th>
+                        <th class="text-left">
+                            Sal
+                        </th>
+                        <th class="text-center">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ingredient, index in ingredients.data" :key="`ingredient-${index}`">
+                        <td class="text-left">
+                            {{ ingredient.name }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.kcal ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.fat ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.saturates ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.carbs ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.sugars ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.fibre ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.protein ?? '--' }}
+                        </td>
+                        <td class="text-left">
+                            {{ ingredient.salt ?? '--' }}
+                        </td>
+                        <td class="text-center">
+                            <q-btn icon="more_vert" flat>
+                                <q-menu>
+                                    <q-list>
+                                        <q-item
+                                            clickable
+                                            @click="edit(ingredient.id)"
+                                            class="text-blue flex flex-center"
+                                        >
+                                            <q-icon name="edit" size="xs"/>
+                                            <div class="q-ml-sm"> Editar </div>
+                                        </q-item>
 
-                <q-card-section class="text-center">
-                    Ao confirmar você irá deletar o ingrediente de todas as receitas. <br/>
-                    Tem certeza disso?
-                </q-card-section>
+                                        <q-separator/>
 
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancelar" color="green" v-close-popup />
-                    <q-btn flat label="Confirmar" color="red" @click="modalDelete.confirmDelete" />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
+                                        <q-item
+                                            clickable
+                                            @click="destroy(ingredient.id)"
+                                            class="text-red flex flex-center"
+                                        >
+                                            <q-icon name="close" size="xs"/>
+                                            <div class="q-ml-sm"> Excluir </div>
+                                        </q-item>
+                                    </q-list>
+                                </q-menu>
+                            </q-btn>
+                        </td>
+                    </tr>
+                </tbody>
+            </q-markup-table>
+
+            <div class="row justify-end">
+                <div class="row items-center text-grey">
+                    Resultado por página
+
+                    <q-select
+                        :options="[5, 10, 15]"
+                        v-model="requestData.rowsPerPage"
+                        borderless
+                        class="q-ml-md"
+                        @update:model-value="submit"
+                    />
+                </div>
+
+                <q-pagination
+                    v-model="requestData.page"
+                    :max="ingredients.meta.last_page"
+                    @update:model-value="submit"
+                    direction-links
+                    boundary-links
+                    color="grey"
+                    input
+                    icon-first="keyboard_double_arrow_left"
+                    icon-last="keyboard_double_arrow_right"
+                />
+            </div>
+        </q-card>
     </AuthenticatedLayout>
 </template>
