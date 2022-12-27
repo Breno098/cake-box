@@ -33,8 +33,8 @@ class RecipeResourse extends JsonResource
             'image_4' => $this->when($this->image_4, Storage::url($this->image_4)),
             'image_5' => $this->when($this->image_5, Storage::url($this->image_5)),
             'image_6' => $this->when($this->image_6, Storage::url($this->image_6)),
-            'ingredients' => IngredientResourse::collection($this->ingredients),
-            'directions' => DirectionResourse::collection($this->directions),
+            // 'ingredients' => IngredientResourse::collection($this->ingredients),
+            // 'directions' => DirectionResourse::collection($this->directions),
         ];
     }
 }

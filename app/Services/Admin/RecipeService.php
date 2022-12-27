@@ -41,7 +41,7 @@ class RecipeService
      */
     public function store(array $requestData = []): Recipe
     {
-        $recipe = Recipe::create($this->transformData($requestData));
+        $recipe = Recipe::create($requestData);
 
         // $this->uploadImages($recipe, $requestData);
 
@@ -55,7 +55,7 @@ class RecipeService
      */
     public function update(Recipe $recipe, array $requestData = []): Recipe
     {
-        $recipe->update($this->transformData($requestData));
+        $recipe->update($requestData);
 
         // $this->uploadImages($recipe, $requestData);
 
@@ -73,65 +73,6 @@ class RecipeService
         $recipe->directions()->delete();
 
         return $recipe->delete();
-    }
-
-    /**
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @param array $requestData
-     * @return void
-     */
-    public function attachIngredient(Recipe $recipe, Ingredient $ingredient, array $requestData = []): void
-    {
-        $recipe->ingredients()->attach($ingredient, [
-            'quantity' => Arr::get($requestData, 'quantity', 1),
-            'unit_measure' => Arr::get($requestData, 'unit_measure'),
-        ]);
-    }
-
-    /**
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @param array $requestData
-     * @return void
-     */
-    public function updateIngredient(Recipe $recipe, Ingredient $ingredient, array $requestData = []): void
-    {
-        $this->detachIngredient($recipe, $ingredient);
-
-        $this->attachIngredient($recipe, $ingredient, $requestData);
-        // $recipe->ingredients()->sync($ingredient, [
-        //     'quantity' => Arr::get($requestData, 'quantity', 1),
-        //     'unit_measure' => Arr::get($requestData, 'unit_measure'),
-        // ]);
-    }
-
-     /**
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @return boolean|null
-     */
-    public function detachIngredient(Recipe $recipe, Ingredient $ingredient): ?bool
-    {
-        return $recipe->ingredients()->detach($ingredient) > 0;
-    }
-
-    /**
-     * @param array $requestData
-     * @return array
-     */
-    private function transformData(array $requestData): array
-    {
-        return [
-            'title' => Arr::get($requestData, 'title'),
-            'description' => Arr::get($requestData, 'description'),
-            'info' => Arr::get($requestData, 'info'),
-            'difficulty' => Arr::get($requestData, 'difficulty'),
-            'time_to_cook' => Arr::get($requestData, 'time_to_cook'),
-            'time_to_prepare' => Arr::get($requestData, 'time_to_prepare'),
-            'yield_quantity' => Arr::get($requestData, 'yield_quantity'),
-            'yield_unit_measure' => Arr::get($requestData, 'yield_unit_measure'),
-        ];
     }
 
      /**

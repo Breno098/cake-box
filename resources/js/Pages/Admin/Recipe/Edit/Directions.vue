@@ -4,26 +4,15 @@
     import { useQuasar } from 'quasar'
     import { Inertia } from '@inertiajs/inertia';
     import DialogConfirm from '@/Components/DialogConfirm.vue';
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
 
     const $q = useQuasar()
 
     const props = defineProps({
         recipe: Object,
         errors: Object,
-        ingredients: Object,
-        optionsIngredients: Array,
+        directions: Object,
     });
-
-    const optionsIngredients = ref(props.optionsIngredients);
-
-    const filterIngredients = (val, update, abort) => {
-        update(() => optionsIngredients.value = props.optionsIngredients.filter(s => s.name.toLowerCase().indexOf(val.toLowerCase()) > -1))
-    }
-
-    const unitIngrientMeasures = [
-        'Unidade', 'Grama', 'Quilo', 'Mililitro', 'Litro', 'Colher'
-    ];
 
     function destroy() {
         $q.dialog({
@@ -45,26 +34,22 @@
         });
     }
 
-    const modalAttachShow = ref(false);
+    const modalStoreShow = ref(false);
 
-    const formAttach = useForm({
-        ingredient_id: null,
-        quantity: 1,
-        unit_measure: 'Grama',
+    const formStore = useForm({
+        description: null
     });
 
-    const attachIngredient = () => {
-        formAttach.post(route("admin.recipe.ingredient.attach", {
+    const storeDirection = () => {
+        formStore.post(route("admin.recipe.direction.store", {
             recipe: props.recipe.id,
-            ingredient: formAttach.ingredient_id
         }), {
             onSuccess: () => {
-                modalAttachShow.value = false;
-                formAttach.ingredient_id = null;
+                modalStoreShow.value = false;
 
                 $q.notify({
                     type: 'positive',
-                    message: 'Ingrediente adicionado com sucesso',
+                    message: 'Instrução adicionado com sucesso',
                     position: 'top',
                 })
             },
@@ -74,55 +59,50 @@
     const modalUpdateShow = ref(false);
 
     const formUpdate = useForm({
-        ingredient_id: null,
-        ingredient_name: null,
-        quantity: 1,
-        unit_measure: 'Grama',
+        direction_id: null,
+        description: null,
     });
 
-    const modalUpdateShowAction = (ingredient) => {
-        formUpdate.ingredient_id = ingredient.id;
-        formUpdate.ingredient_name = ingredient.name;
-        formUpdate.quantity = ingredient.quantity;
-        formUpdate.unit_measure = ingredient.unit_measure;
-
+    const modalUpdateShowAction = (direction) => {
+        formUpdate.direction_id = direction.id;
+        formUpdate.description = direction.description;
         modalUpdateShow.value = true;
     }
 
-    const updateIngredient = () => {
-        formUpdate.put(route("admin.recipe.ingredient.update", {
+    const updateDirection = () => {
+        formUpdate.put(route("admin.recipe.direction.update", {
             recipe: props.recipe.id,
-            ingredient: formUpdate.ingredient_id
+            direction: formUpdate.direction_id
         }), {
             onSuccess: () => {
                 modalUpdateShow.value = false;
-                formUpdate.ingredient_id = null;
+                formUpdate.direction_id = null;
 
                 $q.notify({
                     type: 'positive',
-                    message: 'Ingrediente atualizado com sucesso',
+                    message: 'Instrução atualizada com sucesso',
                     position: 'top',
                 })
             },
         })
     };
 
-    function detachIngredient(ingredientId) {
+    function destroyDirection(directionId) {
         $q.dialog({
             component: DialogConfirm,
             componentProps: {
-                title: 'Retirar ingrediente?',
-                message: 'Tem certeza que deseja excluir esse receita?',
+                title: 'Retirar instrução?',
+                message: 'Tem certeza que deseja excluir essa instrução?',
             },
         }).onOk(() => {
-            Inertia.delete(route('admin.recipe.ingredient.detach', {
+            Inertia.delete(route('admin.recipe.direction.destroy', {
                 recipe: props.recipe.id,
-                ingredient: ingredientId
+                direction: directionId
             }), {
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Ingrediente desvinculado com sucesso',
+                        message: 'Instrução desvinculado com sucesso',
                         position: 'top',
                     })
                 }
@@ -130,25 +110,25 @@
         });
     }
 
-    const tab = ref('ingredients');
+    const tab = ref('directions');
 
     const goIndexTab = () => {
         Inertia.get(route('admin.recipe.edit', props.recipe.id))
     }
 
-    const goDirectionsTab = () => {
-        Inertia.get(route('admin.recipe.direction.index', props.recipe.id))
+    const goIngredientsTab = () => {
+        Inertia.get(route('admin.recipe.ingredient.index', props.recipe.id))
     }
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Receita | Ingredientes" />
+        <Head title="Receita | Instruções" />
 
         <div class="row q-mb-lg">
             <div class="col-6 flex justify-start items-center">
                 <q-icon name="menu_book" size="md"/>
-                <div class="text-h5 q-ml-sm"> {{ recipe.title }} | Ingredientes </div>
+                <div class="text-h5 q-ml-sm"> {{ recipe.title }} | Instruções </div>
             </div>
 
             <div class="col-6 flex justify-end items-center">
@@ -181,43 +161,37 @@
                     icon="egg"
                     label="Ingredientes"
                     name="ingredients"
+                    @click="goIngredientsTab"
                 />
                 <q-tab
                     icon="format_list_numbered"
                     label="Intruções"
                     name="directions"
-                    @click="goDirectionsTab"
                 />
             </q-tabs>
 
             <q-card-section>
                 <div class="flex justify-between q-mb-md">
                     <div class="row items-center">
-                        <q-icon name="egg" size="sm"/>
-                        <div class="text-h6 q-ml-sm"> Ingredientes </div>
+                        <q-icon name="format_list_numbered" size="sm"/>
+                        <div class="text-h6 q-ml-sm"> Instruções </div>
                     </div>
 
                     <q-btn
                         color="primary"
                         icon="add"
-                        @click="modalAttachShow = true"
+                        @click="modalStoreShow = true"
                         size="sm"
-                        label="Adicionar ingrediente"
+                        label="Adicionar instrução"
                         no-caps
                     />
                 </div>
 
-                <q-markup-table v-if="ingredients.length > 0" flat>
+                <q-markup-table v-if="directions.length > 0" flat>
                     <thead>
                         <tr>
                             <th class="text-left">
-                                Ingrediente
-                            </th>
-                            <th class="text-left">
-                                Quantidade
-                            </th>
-                            <th class="text-left">
-                                Medida
+                                Descrição
                             </th>
                             <th class="text-left">
                             </th>
@@ -225,24 +199,18 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="ingredient, index in ingredients"
-                            :key="`ingredient-${index}`"
+                            v-for="direction, index in directions"
+                            :key="`direction-${index}`"
                         >
                             <td class="text-left">
-                                {{ ingredient.name }}
-                            </td>
-                            <td class="text-left">
-                                {{ ingredient.quantity }}
-                            </td>
-                            <td class="text-left">
-                                {{ ingredient.unit_measure }}
+                                {{ direction.description }}
                             </td>
                             <td class="text-right">
                                 <q-btn
                                     color="primary"
                                     icon="edit"
                                     size="sm"
-                                    @click="modalUpdateShowAction(ingredient)"
+                                    @click="modalUpdateShowAction(direction)"
                                     class="q-mr-sm"
                                 />
                                 <q-btn
@@ -250,7 +218,7 @@
                                     icon="close"
                                     size="sm"
                                     class="q-mr-sm"
-                                    @click="detachIngredient(ingredient.id)"
+                                    @click="destroyDirection(direction.id)"
                                 />
                             </td>
                         </tr>
@@ -264,51 +232,27 @@
                     <q-icon name="add_circle_outline" size="md" class="text-h6 q-py-lg"/>
 
                     <div class="text-h6 q-py-lg">
-                        Não há ingredientes para essa receita. Clique no botão ao lado e adicione os ingredientes.
+                        Não há intruções para essa receita. Clique no botão ao lado e adicione o passo a passo.
                     </div>
                 </div>
 
-                <q-dialog v-model="modalAttachShow" >
+                <q-dialog v-model="modalStoreShow" >
                     <q-card
-                        class="q-dialog-plugin q-pa-md"
-                        style="width: 550px; border-radius: 10px;"
+                        class="q-dialog-plugin"
+                        style="width: 600px; border-radius: 10px;"
                     >
                         <q-card-section class="text-h5 text-center q-mb-md">
-                            Adicionar ingrediente
+                            Adicionar instrução
                         </q-card-section>
 
                         <q-card-section>
                             <div class="row q-col-gutter-lg">
-                                <div class="col-6">
-                                    <q-select
-                                        v-model="formAttach.ingredient_id"
-                                        label="Ingrediente"
-                                        outlined
-                                        :options="optionsIngredients"
-                                        emit-value
-                                        map-options
-                                        use-input
-                                        option-value="id"
-                                        option-label="name"
-                                        @filter="filterIngredients"
-                                    />
-                                </div>
-
-                                <div class="col-3">
+                                <div class="col-12">
                                     <q-input
                                         outlined
-                                        v-model="formAttach.quantity"
-                                        label="Quantidade"
-                                        type="number"
-                                    />
-                                </div>
-
-                                <div class="col-3">
-                                    <q-select
-                                        v-model="formAttach.unit_measure"
-                                        label="Medida"
-                                        outlined
-                                        :options="unitIngrientMeasures"
+                                        v-model="formStore.description"
+                                        label="Instrução"
+                                        type="textarea"
                                     />
                                 </div>
                             </div>
@@ -319,7 +263,7 @@
                                 color="red"
                                 no-caps
                                 label="Cancelar"
-                                @click="modalAttachShow = false"
+                                @click="modalStoreShow = false"
                                 icon="close"
                             />
 
@@ -327,7 +271,7 @@
                                 color="green"
                                 no-caps
                                 label="Adicionar"
-                                @click="attachIngredient"
+                                @click="storeDirection"
                                 icon="check"
                             />
                         </q-card-actions>
@@ -340,35 +284,17 @@
                         style="width: 550px; border-radius: 10px;"
                     >
                         <q-card-section class="text-h5 text-center q-mb-md">
-                            Atualizar ingrediente
+                            Atualizar instrução
                         </q-card-section>
 
                         <q-card-section>
                             <div class="row q-col-gutter-lg">
-                                <div class="col-5">
+                                <div class="col-12">
                                     <q-input
                                         outlined
-                                        v-model="formUpdate.ingredient_name"
-                                        label="Ingrediente"
-                                        readonly
-                                    />
-                                </div>
-
-                                <div class="col-3">
-                                    <q-input
-                                        outlined
-                                        v-model="formUpdate.quantity"
-                                        label="Quantidade"
-                                        type="number"
-                                    />
-                                </div>
-
-                                <div class="col-4">
-                                    <q-select
-                                        v-model="formUpdate.unit_measure"
-                                        label="Medida"
-                                        outlined
-                                        :options="unitIngrientMeasures"
+                                        v-model="formUpdate.description"
+                                        label="Instrução"
+                                        type="textarea"
                                     />
                                 </div>
                             </div>
@@ -387,7 +313,7 @@
                                 color="green"
                                 no-caps
                                 label="Atualizar"
-                                @click="updateIngredient"
+                                @click="updateDirection"
                                 icon="check"
                             />
                         </q-card-actions>

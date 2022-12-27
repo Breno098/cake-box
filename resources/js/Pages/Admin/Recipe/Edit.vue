@@ -15,18 +15,18 @@
     });
 
     const form = useForm({
-        id: props.recipe.data.id,
-        title: props.recipe.data.title,
-        description: props.recipe.data.description,
-        info: props.recipe.data.info,
-        difficulty: props.recipe.data.difficulty,
-        time_to_cook: props.recipe.data.time_to_cook,
-        time_to_prepare: props.recipe.data.time_to_prepare,
-        rating: props.recipe.data.rating,
-        yield_quantity: props.recipe.data.yield_quantity,
-        yield_unit_measure: props.recipe.data.yield_unit_measure,
-        ingredients: props.recipe.data.ingredients,
-        directions: props.recipe.data.directions,
+        id: props.recipe.id,
+        title: props.recipe.title,
+        description: props.recipe.description,
+        info: props.recipe.info,
+        difficulty: props.recipe.difficulty,
+        time_to_cook: props.recipe.time_to_cook,
+        time_to_prepare: props.recipe.time_to_prepare,
+        rating: props.recipe.rating,
+        yield_quantity: props.recipe.yield_quantity,
+        yield_unit_measure: props.recipe.yield_unit_measure,
+        ingredients: props.recipe.ingredients,
+        directions: props.recipe.directions,
         wallpaper: null,
         image_1: null,
         image_2: null,
@@ -37,35 +37,35 @@
     const defaultImg = '/img/no-image.jpg';
 
     const wallpaperRef = ref('wallpaperRef')
-    const wallpaperSrc = ref(props.recipe.data.wallpaper ?? defaultImg)
+    const wallpaperSrc = ref(props.recipe.wallpaper ?? defaultImg)
     const wallpaperChange = (event) => {
         form.wallpaper = event.target.files[0];
         wallpaperSrc.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image1Ref = ref('image1Ref')
-    const image1Src = ref(props.recipe.data.image_1 ?? defaultImg)
+    const image1Src = ref(props.recipe.image_1 ?? defaultImg)
     const image1Change = (event) => {
         form.image_1 = event.target.files[0];
         image1Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image2Ref = ref('image2Ref')
-    const image2Src = ref(props.recipe.data.image_2 ?? defaultImg)
+    const image2Src = ref(props.recipe.image_2 ?? defaultImg)
     const image2Change = (event) => {
         form.image_2 = event.target.files[0];
         image2Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image3Ref = ref('image3Ref')
-    const image3Src = ref(props.recipe.data.image_3 ?? defaultImg)
+    const image3Src = ref(props.recipe.image_3 ?? defaultImg)
     const image3Change = (event) => {
         form.image_3 = event.target.files[0];
         image3Src.value = URL.createObjectURL(event.target.files[0]);
     }
 
     const image4Ref = ref('image4Ref')
-    const image4Src = ref(props.recipe.data.image_4 ?? defaultImg)
+    const image4Src = ref(props.recipe.image_4 ?? defaultImg)
     const image4Change = (event) => {
         form.image_4 = event.target.files[0];
         image4Src.value = URL.createObjectURL(event.target.files[0]);
@@ -73,7 +73,7 @@
 
     const submit = () => {
         form
-            .transform((data) => ({...data, _method: 'put' }))
+            .transform((data) => ({.., _method: 'put' }))
             .post(route("admin.recipe.update", form.id), {
                 onSuccess: () => {
                     $q.notify({
@@ -153,26 +153,26 @@
             unit_measure: 'Unidade'
         },
         add: () => {
-            let ingredient = props.ingredients.filter((ing) => ing.id == modalIngredient.value.data.id).shift();
+            let ingredient = props.ingredients.filter((ing) => ing.id == modalIngredient.value.id).shift();
 
             form.ingredients.push({
-                id: modalIngredient.value.data.id,
+                id: modalIngredient.value.id,
                 name: ingredient.name,
-                quantity: modalIngredient.value.data.quantity,
-                unit_measure: modalIngredient.value.data.unit_measure,
+                quantity: modalIngredient.value.quantity,
+                unit_measure: modalIngredient.value.unit_measure,
             });
 
-            modalIngredient.value.data = { ...modalIngredient.value.initData };
+            modalIngredient.value = { ...modalIngredient.value.initData };
             modalIngredient.value.show = false;
         },
         delete: (id) => {
-            modalIngredient.value.data.id = id;
+            modalIngredient.value.id = id;
             modalIngredient.value.showConfirmDelete = true;
         },
         confirmDelete: () => {
-            form.ingredients = form.ingredients.filter((ing) => ing.id != modalIngredient.value.data.id);
+            form.ingredients = form.ingredients.filter((ing) => ing.id != modalIngredient.value.id);
             modalIngredient.value.showConfirmDelete = false;
-            modalIngredient.value.data.id = null;
+            modalIngredient.value.id = null;
         },
     });
 
@@ -205,19 +205,19 @@
         },
         add: () => {
             form.directions.push({
-                description: modalDirection.value.data.description,
+                description: modalDirection.value.description,
                 order: form.directions.length + 1,
             });
 
-            modalDirection.value.data = { ...modalDirection.value.initData };
+            modalDirection.value = { ...modalDirection.value.initData };
             modalDirection.value.show = false;
         },
         delete: (order) => {
-            modalDirection.value.data.order = order;
+            modalDirection.value.order = order;
             modalDirection.value.showConfirmDelete = true;
         },
         confirmDelete: () => {
-            form.directions = form.directions.filter((dir) => dir.order != modalDirection.value.data.order);
+            form.directions = form.directions.filter((dir) => dir.order != modalDirection.value.order);
 
             var order = 1;
             form.directions.map(dir => {
@@ -226,7 +226,7 @@
             })
 
             modalDirection.value.showConfirmDelete = false;
-            modalDirection.value.data.order = null;
+            modalDirection.value.order = null;
         },
     });
 
@@ -491,7 +491,7 @@
                             <div class="row">
                                 <div class="col-5">
                                     <q-select
-                                        v-model="modalIngredient.data.id"
+                                        v-model="modalIngredient.id"
                                         label="Ingrediente"
                                         transition-show="flip-up"
                                         transition-hide="flip-down"
@@ -505,7 +505,7 @@
                                 <div class="col-3">
                                     <q-input
                                         outlined
-                                        v-model="modalIngredient.data.quantity"
+                                        v-model="modalIngredient.quantity"
                                         label="Quantidade"
                                         type="number"
                                     />
@@ -513,7 +513,7 @@
 
                                 <div class="col-4">
                                     <q-select
-                                        v-model="modalIngredient.data.unit_measure"
+                                        v-model="modalIngredient.unit_measure"
                                         label="Ingrediente"
                                         transition-show="flip-up"
                                         transition-hide="flip-down"
@@ -625,7 +625,7 @@
                         <q-card-section class="q-pt-none">
                             <q-input
                                 outlined
-                                v-model="modalDirection.data.description"
+                                v-model="modalDirection.description"
                                 label="Instrução"
                                 type="textarea"
                             />

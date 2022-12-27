@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Recipe\RecipeAttachIngredientRequest;
 use App\Http\Requests\Admin\Recipe\RecipeIndexRequest;
 use App\Models\Recipe;
 use App\Http\Requests\Admin\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Admin\Recipe\RecipeUpdateRequest;
-use App\Http\Resources\Admin\IngredientResourse;
 use App\Http\Resources\Admin\RecipeResourse;
 use App\Models\Ingredient;
 use App\Services\Admin\RecipeService;
@@ -56,10 +54,10 @@ class RecipeController extends Controller
      */
     public function create(): Response
     {
-        $ingredientsForSelect = Ingredient::orderBy('name')->get();
+        $optionsIngredients = Ingredient::orderBy('name')->get();
 
         return Inertia::render('Admin/Recipe/Create', [
-            'ingredients' => $ingredientsForSelect
+            'ingredients' => $optionsIngredients
         ]);
     }
 
@@ -80,11 +78,8 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe): Response
     {
-        $ingredientsForSelect = Ingredient::orderBy('name')->get();
-
         return Inertia::render('Admin/Recipe/Edit/Index', [
             'recipe' => new RecipeResourse($recipe),
-            'ingredients' => $ingredientsForSelect
         ]);
     }
 
@@ -109,66 +104,5 @@ class RecipeController extends Controller
         $this->recipeService->delete($recipe);
 
         return redirect()->route('admin.recipe.index');
-    }
-
-     /**
-     * @param Recipe $recipe
-     * @return Response
-     */
-    public function indexIngredient(Recipe $recipe): Response
-    {
-        $ingredientsForSelect = Ingredient::orderBy('name')->get();
-
-        return Inertia::render('Admin/Recipe/Edit/Ingredients', [
-            'recipe' => new RecipeResourse($recipe),
-            'ingredients' => $ingredientsForSelect
-        ]);
-    }
-
-
-    /**
-     * @param RecipeAttachIngredientRequest $recipeAttachIngredientRequest,
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @return RedirectResponse
-     */
-    public function attachIngredient(
-        RecipeAttachIngredientRequest $recipeAttachIngredientRequest,
-        Recipe $recipe,
-        Ingredient $ingredient
-    ): RedirectResponse
-    {
-        $this->recipeService->attachIngredient($recipe, $ingredient, $recipeAttachIngredientRequest->validated());
-
-        return redirect()->route('admin.recipe.ingredient.index', $recipe);
-    }
-
-    /**
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @return RedirectResponse
-     */
-    public function detachIngredient(Recipe $recipe, Ingredient $ingredient): RedirectResponse
-    {
-        $this->recipeService->detachIngredient($recipe, $ingredient);
-
-        return redirect()->route('admin.recipe.ingredient.index', $recipe);
-    }
-
-    /**
-     * @param RecipeAttachIngredientRequest $recipeAttachIngredientRequest,
-     * @param Recipe $recipe
-     * @param Ingredient $ingredient
-     * @return RedirectResponse
-     */
-    public function updateIngredient(
-        RecipeAttachIngredientRequest $recipeAttachIngredientRequest,
-        Recipe $recipe,
-        Ingredient $ingredient
-    ): RedirectResponse
-    {
-        $this->recipeService->updateIngredient($recipe, $ingredient, $recipeAttachIngredientRequest->validated());
-
-        return redirect()->route('admin.recipe.ingredient.index', $recipe);
     }
 }

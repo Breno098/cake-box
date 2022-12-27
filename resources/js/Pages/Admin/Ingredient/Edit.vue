@@ -13,18 +13,18 @@
     });
 
     const form = useForm({
-        id: props.ingredient.data.id,
-        name: props.ingredient.data.name,
-        unit_measure: props.ingredient.data.unit_measure,
-        kcal: props.ingredient.data.kcal,
-        fat: props.ingredient.data.fat,
-        saturates: props.ingredient.data.saturates,
-        carbs: props.ingredient.data.carbs,
-        sugars: props.ingredient.data.sugars,
-        fibre: props.ingredient.data.fibre,
-        protein: props.ingredient.data.protein,
-        salt: props.ingredient.data.salt,
-        image: props.ingredient.data.image,
+        id: props.ingredient.id,
+        name: props.ingredient.name,
+        unit_measure: props.ingredient.unit_measure,
+        kcal: props.ingredient.kcal,
+        fat: props.ingredient.fat,
+        saturates: props.ingredient.saturates,
+        carbs: props.ingredient.carbs,
+        sugars: props.ingredient.sugars,
+        fibre: props.ingredient.fibre,
+        protein: props.ingredient.protein,
+        salt: props.ingredient.salt,
+        image: props.ingredient.image,
     });
 
     const submit = () => {

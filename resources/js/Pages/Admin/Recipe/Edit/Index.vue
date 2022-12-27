@@ -14,16 +14,16 @@
     });
 
     const form = useForm({
-        id: props.recipe.data.id,
-        title: props.recipe.data.title,
-        description: props.recipe.data.description,
-        info: props.recipe.data.info,
-        difficulty: props.recipe.data.difficulty,
-        time_to_cook: props.recipe.data.time_to_cook,
-        time_to_prepare: props.recipe.data.time_to_prepare,
-        rating: props.recipe.data.rating,
-        yield_quantity: props.recipe.data.yield_quantity,
-        yield_unit_measure: props.recipe.data.yield_unit_measure,
+        id: props.recipe.id,
+        title: props.recipe.title,
+        description: props.recipe.description,
+        info: props.recipe.info,
+        difficulty: props.recipe.difficulty,
+        time_to_cook: props.recipe.time_to_cook,
+        time_to_prepare: props.recipe.time_to_prepare,
+        rating: props.recipe.rating,
+        yield_quantity: props.recipe.yield_quantity,
+        yield_unit_measure: props.recipe.yield_unit_measure,
     });
 
     const submit = (afterRoute = null) => {
@@ -85,8 +85,31 @@
         });
     }
 
-    const goIngredientsTab = async () => {
-        submit('admin.recipe.ingredient.index');
+    const goIngredientsTab = () => {
+        goToTab(route('admin.recipe.ingredient.index', form.id));
+    }
+
+    const goDirectionsTab = () => {
+        goToTab(route('admin.recipe.direction.index', form.id));
+    }
+
+    const goToTab = (_route) => {
+        tab.value = 'recipe'
+
+        if (form.isDirty) {
+            $q.dialog({
+                component: DialogConfirm,
+                componentProps: {
+                    title: 'Dados não salvos',
+                    html: true,
+                    message: `Alguns dados foram alterados e não foram salvos. <br/> Deseja descartar alterações?`,
+                },
+            }).onOk(() => {
+                Inertia.get(_route)
+            })
+        } else {
+            Inertia.get(_route)
+        }
     }
 </script>
 
@@ -97,39 +120,39 @@
         <div class="row q-mb-lg">
             <div class="col-6 flex justify-start items-center">
                 <q-icon name="menu_book" size="md"/>
-                <div class="text-h5 q-ml-sm"> Receita | Editar </div>
+                <div class="text-h5 q-ml-sm"> {{ recipe.title }} | Editar </div>
             </div>
 
             <div class="col-6 flex justify-end items-center">
-                <q-btn
-                    color="red"
-                    label="Excluir"
-                    icon="close"
-                    no-caps
-                    @click="destroy"
-                    :disabled="form.processing"
-                    class="q-mr-md"
-                    outline
-                />
-
                 <q-btn
                     color="green"
                     label="Salvar"
                     icon="check"
                     no-caps
-                    @click="submit"
+                    @click="submit()"
                     :disabled="form.processing"
+                    class="q-mr-md"
                 />
+
+                <q-btn
+                    color="red"
+                    label="Excluir receita"
+                    icon="close"
+                    no-caps
+                    @click="destroy"
+                    outline
+                />
+
             </div>
         </div>
 
         <q-card>
-
             <q-tabs
                 v-model="tab"
                 class="text-primary"
                 inline-label
                 no-caps
+                align="left"
             >
                 <q-tab
                     icon="menu_book"
@@ -139,22 +162,25 @@
                 <q-tab
                     icon="egg"
                     label="Ingredientes"
-                    @click="goIngredientsTab"
                     name="ingredients"
+                    @click="goIngredientsTab"
                 />
                 <q-tab
                     icon="format_list_numbered"
                     label="Intruções"
                     name="directions"
-                />
-                <q-tab
-                    icon="image"
-                    label="Imagens"
-                    name="images"
+                    @click="goDirectionsTab"
                 />
             </q-tabs>
 
-            <q-card-section class="row items-center q-py-sm q-px-lg">
+            <q-card-section>
+                <div class="flex justify-between q-mb-md">
+                    <div class="row items-center">
+                        <q-icon name="menu_book" size="sm"/>
+                        <div class="text-h6 q-ml-sm"> Informações </div>
+                    </div>
+                </div>
+
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 col-md-6">
                         <q-input

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\RecipeController;
+use App\Http\Controllers\Admin\RecipeDirectionController;
+use App\Http\Controllers\Admin\RecipeIngredientController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin/auth/sign-in');
@@ -44,11 +46,13 @@ Route::middleware('auth:admin')
     ->name('admin.')
     ->group(function() {
         Route::get('home', [HomeController::class, 'index'])->name('home');
-        Route::resource('recipe', RecipeController::class);
-        Route::resource('ingredient', IngredientController::class);
 
-        Route::get('recipe/{recipe}/ingredient', [RecipeController::class, 'indexIngredient'])->name('recipe.ingredient.index');
-        Route::post('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'attachIngredient'])->name('recipe.ingredient.attach');
-        Route::put('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'updateIngredient'])->name('recipe.ingredient.update');
-        Route::delete('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'detachIngredient'])->name('recipe.ingredient.detach');
+        Route::resource('ingredient', IngredientController::class);
+        Route::resource('recipe', RecipeController::class);
+        Route::resource('recipe.direction', RecipeDirectionController::class)->except(['create', 'edit', 'show']);
+
+        Route::get('recipe/{recipe}/ingredient', [RecipeIngredientController::class, 'index'])->name('recipe.ingredient.index');
+        Route::post('recipe/{recipe}/ingredient/{ingredient}', [RecipeIngredientController::class, 'attach'])->name('recipe.ingredient.attach');
+        Route::put('recipe/{recipe}/ingredient/{ingredient}', [RecipeIngredientController::class, 'update'])->name('recipe.ingredient.update');
+        Route::delete('recipe/{recipe}/ingredient/{ingredient}', [RecipeIngredientController::class, 'detach'])->name('recipe.ingredient.detach');
     });
