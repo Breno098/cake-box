@@ -4,7 +4,8 @@
     import { useQuasar } from 'quasar'
     import { Inertia } from '@inertiajs/inertia';
     import DialogConfirm from '@/Components/DialogConfirm.vue';
-    import { ref, computed } from 'vue'
+    import { ref } from 'vue'
+    import { useDropzone } from "vue3-dropzone";
 
     const $q = useQuasar()
 
@@ -12,6 +13,28 @@
         recipe: Object,
         errors: Object,
     });
+
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptFiles, rejectReasons) => {
+            for (var x = 0; x < acceptFiles.length; x++) {
+                form.images.push({
+                    id: null,
+                    name: acceptFiles[x].name,
+                    size: acceptFiles[x].size,
+                    link: URL.createObjectURL(acceptFiles[x]),
+                    uploadedFile: acceptFiles[x],
+                });
+            }
+        },
+        accept: ['image/*']
+    });
+
+    const removeImage = (position) => {
+        form.images = [
+            ...form.images.slice(0, position),
+            ...form.images.slice(position + 1)
+        ];
+    }
 
     const form = useForm({
         id: props.recipe.id,
@@ -24,22 +47,23 @@
         rating: props.recipe.rating,
         yield_quantity: props.recipe.yield_quantity,
         yield_unit_measure: props.recipe.yield_unit_measure,
+        images: props.recipe.images,
     });
 
-    const submit = (afterRoute = null) => {
-        form.put(route("admin.recipe.update", form.id), {
-            onSuccess: () => {
-                if (afterRoute) {
-                    Inertia.get(route(afterRoute, form.id))
-                } else {
+    const submit = () => {
+        form
+            .transform((data) => ({...data, _method: 'put' }))
+            .post(route("admin.recipe.update", form.id), {
+                onSuccess: () => {
+                    form.images= props.recipe.images;
+
                     $q.notify({
                         type: 'positive',
                         message: 'Receita atualizado com sucesso',
                         position: 'top',
                     })
-                }
-            },
-        })
+                },
+            })
     };
 
     const difficulties = [{
@@ -229,6 +253,39 @@
                             label="Informação"
                             type="textarea"
                         />
+                    </div>
+
+                    <div class="col-12">
+                        <div
+                            v-bind="getRootProps()"
+                            class="column flex-center q-py-md text-grey-8 app-border-dashed-blue rounded-borders"
+                        >
+                            <input v-bind="getInputProps()"/>
+                            <q-icon name="image" size="md"/>
+                            <div class="q-mt-sm">Clique aqui ou arraste imagens para receita</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 row q-col-gutter-lg">
+                        <div class="col-12 col-md-3" v-for="(image, index) in form.images" :key="`image-${index}}}`">
+                            <q-img :src="image.link" style="height: 240px" class="rounded-borders">
+                                <div class="absolute-bottom text-subtitle2 flex flex-center">
+                                    <q-icon name="image" size="sm" class="q-mr-md"/>
+
+                                    <div class="column">
+                                        <span class="text-caption">
+                                            {{ image.name.length > 25 ? image.name.slice(0, 25) + '...' : image.name }}
+                                        </span>
+
+                                        <span class="text-caption"> ({{ image.size ?? 0 }} kb) </span>
+                                    </div>
+
+                                    <q-space/>
+
+                                    <q-btn flat icon="close" @click="removeImage(index)"/>
+                                </div>
+                            </q-img>
+                        </div>
                     </div>
 
                     <div class="col-12 col-md-6">

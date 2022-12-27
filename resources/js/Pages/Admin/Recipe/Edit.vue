@@ -73,7 +73,7 @@
 
     const submit = () => {
         form
-            .transform((data) => ({.., _method: 'put' }))
+            .transform((data) => ({...data, _method: 'put' }))
             .post(route("admin.recipe.update", form.id), {
                 onSuccess: () => {
                     $q.notify({

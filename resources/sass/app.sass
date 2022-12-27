@@ -1,0 +1,20 @@
+.app-border-dashed-blue
+    border: 1px dashed #acacac
+
+// Font-sizes
+@for $i from 1 through 50
+    .app-fs-#{$i}
+        font-size: #{$i}px
+
+// Font-weights
+$fontWeights: 400, 500, 600, 700
+
+@each $fw in $fontWeights
+    .app-fw-#{$fw}
+        font-weight: #{$fw}
+
+$borderRadius: 16, 24, 32, 40, 48
+
+@each $br in $borderRadius
+    .app-br-#{$br}
+        border-radius: #{$br}px

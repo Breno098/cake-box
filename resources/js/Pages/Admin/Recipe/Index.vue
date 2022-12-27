@@ -105,6 +105,8 @@
             default: return '--';
         }
     }
+
+    const slides = ref(props.recipes.data.map((r, i) => i));
 </script>
 
 <template>
@@ -188,92 +190,107 @@
         <div class="row">
             <div
                 class="col-12 col-md-3 q-mb-md q-px-sm"
-                v-for="recipe in recipes.data"
+                v-for="recipe, indexR in recipes.data"
                 :key="recipe.id"
             >
                 <q-card>
-                    <q-img
-                        :src="recipe.wallpaper ?? defaultImg"
-                        height="160px"
+                    <q-carousel
+                        v-if="recipe.images.length > 0"
+                        animated
+                        v-model="slides[indexR]"
+                        arrows
+                        infinite
+                        autoplay
+                        height="180px"
                     >
-                        <q-icon
-                            name="star"
-                            :color="recipe.rating >= star ? 'orange' : 'grey-4'"
-                            v-for="star in [1, 2, 3, 4, 5]"
-                            :key="star"
-                        />
+                        <q-carousel-slide
+                            v-for="image, index in recipe.images"
+                            :img-src="image.link"
+                            :name="index"
+                        >
+                            <q-icon
+                                name="star"
+                                :color="recipe.rating >= star ? 'orange' : 'grey-4'"
+                                v-for="star in [1, 2, 3, 4, 5]"
+                            />
+                        </q-carousel-slide>
+                    </q-carousel>
 
-                        <div class="absolute-bottom row items-center">
-                            <div class="col-10">
-                                {{ recipe.title }}
-                            </div>
+                    <q-img
+                        v-else
+                        :src="defaultImg"
+                        height="180px"
+                    />
 
-                            <div class="col-2">
-                                <q-btn icon="more_vert" flat>
-                                    <q-menu>
-                                        <q-list>
-                                            <q-item
-                                                clickable
-                                                @click="edit(recipe.id)"
-                                                class="text-blue flex flex-center"
-                                            >
-                                                <q-icon name="edit" size="xs"/>
-                                                <div class="q-ml-sm"> Editar </div>
-                                            </q-item>
-
-                                            <q-separator/>
-
-                                            <q-item
-                                                clickable
-                                                @click="destroy(recipe.id)"
-                                                class="text-red flex flex-center"
-                                            >
-                                                <q-icon name="close" size="xs"/>
-                                                <div class="q-ml-sm"> Excluir </div>
-                                            </q-item>
-                                        </q-list>
-                                    </q-menu>
-                                </q-btn>
-                            </div>
+                    <q-card-section class="flex items-center justify-between q-px-lg q-py-none bg-orange-3">
+                        <div class="text-h6">
+                            {{ recipe.title }}
                         </div>
-                    </q-img>
 
-                    <q-card-section>
-                        <q-chip
-                            outline
-                            color="orange"
-                            square
-                            icon="schedule"
-                            class="full-width"
-                        >
-                            <div class="full-width text-center">
-                                Cozinhar: {{ recipe.time_to_cook }}
-                            </div>
-                        </q-chip>
+                        <q-btn icon="more_vert" flat>
+                            <q-menu>
+                                <q-list>
+                                    <q-item
+                                        clickable
+                                        @click="edit(recipe.id)"
+                                        class="text-blue flex flex-center"
+                                    >
+                                        <q-icon name="edit" size="xs"/>
+                                        <div class="q-ml-sm"> Editar </div>
+                                    </q-item>
 
-                        <q-chip
-                            outline
-                            color="orange"
-                            square
-                            icon="schedule"
-                            class="full-width"
-                        >
-                            <div class="full-width text-center">
-                                Preparo: {{ recipe.time_to_prepare }}
-                            </div>
-                        </q-chip>
+                                    <q-separator/>
 
-                        <q-chip
-                            outline
-                            square
-                            icon="schedule"
-                            :color="color(recipe.difficulty)"
-                            class="full-width"
-                        >
-                            <div class="full-width text-center">
-                                {{ difficulties(recipe.difficulty) }}
-                            </div>
-                        </q-chip>
+                                    <q-item
+                                        clickable
+                                        @click="destroy(recipe.id)"
+                                        class="text-red flex flex-center"
+                                    >
+                                        <q-icon name="close" size="xs"/>
+                                        <div class="q-ml-sm"> Excluir </div>
+                                    </q-item>
+                                </q-list>
+                            </q-menu>
+                        </q-btn>
+                    </q-card-section>
+
+                    <q-card-section class="row q-col-gutter-sm">
+                        <div class="col-4">
+                            <q-chip
+                                square
+                                icon="leaderboard"
+                                :color="color(recipe.difficulty)"
+                                :label="difficulties(recipe.difficulty)"
+                                class="full-width"
+                                text-color="white"
+                            >
+                                <q-tooltip> Dificuldade </q-tooltip>
+                            </q-chip>
+                        </div>
+                        <div class="col-4">
+                            <q-chip
+                                outline
+                                color="orange"
+                                square
+                                icon="microwave"
+                                :label="recipe.time_to_cook"
+                                class="full-width"
+                            >
+                                <q-tooltip> Tempo para cozinhar </q-tooltip>
+                            </q-chip>
+                        </div>
+                        <div class="col-4">
+                            <q-chip
+                                outline
+                                color="orange"
+                                square
+                                icon="check"
+                                :label="recipe.time_to_prepare"
+                                class="full-width"
+                            >
+                                <q-tooltip> Tempo de preparo </q-tooltip>
+                            </q-chip>
+                        </div>
                     </q-card-section>
                 </q-card>
             </div>

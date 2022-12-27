@@ -27,12 +27,7 @@ class RecipeResourse extends JsonResource
             'yield_quantity' => $this->yield_quantity,
             'yield_unit_measure' => $this->yield_unit_measure,
             'wallpaper' => $this->when($this->wallpaper, Storage::url($this->wallpaper)),
-            'image_1' => $this->when($this->image_1, Storage::url($this->image_1)),
-            'image_2' => $this->when($this->image_2, Storage::url($this->image_2)),
-            'image_3' => $this->when($this->image_3, Storage::url($this->image_3)),
-            'image_4' => $this->when($this->image_4, Storage::url($this->image_4)),
-            'image_5' => $this->when($this->image_5, Storage::url($this->image_5)),
-            'image_6' => $this->when($this->image_6, Storage::url($this->image_6)),
+            'images' => ImageResource::collection($this->images)
             // 'ingredients' => IngredientResourse::collection($this->ingredients),
             // 'directions' => DirectionResourse::collection($this->directions),
         ];

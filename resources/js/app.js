@@ -1,23 +1,24 @@
 import './bootstrap';
-import '../css/app.css';
-// import '../sass/app.scss';
 
+// INERTIA
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
-
+// QUASAR
 import { Quasar, Notify, Dialog } from 'quasar'
 import quasarLang from 'quasar/lang/pt-BR'
-
-import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/material-icons-outlined/material-icons-outlined.css'
 import '@quasar/extras/material-icons-round/material-icons-round.css'
 import 'quasar/src/css/index.sass'
+
+// SASS
+import '../sass/app.sass';
+
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -36,4 +37,4 @@ createInertiaApp({
     },
 });
 
-InertiaProgress.init({ color: '#4B5563' });
+InertiaProgress.init({ color: 'blue' });

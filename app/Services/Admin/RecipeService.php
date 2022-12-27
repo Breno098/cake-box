@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Image;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -57,7 +58,7 @@ class RecipeService
     {
         $recipe->update($requestData);
 
-        // $this->uploadImages($recipe, $requestData);
+        $this->updateOrCreateImages($recipe, Arr::get($requestData, 'images', []));
 
         return $recipe;
     }
@@ -75,32 +76,60 @@ class RecipeService
         return $recipe->delete();
     }
 
-     /**
+    /**
      * @param Recipe $recipe
      * @param array $images
      * @return void
      */
-    public function uploadImages(Recipe $recipe, array $requestData = []): void
+    public function updateOrCreateImages(Recipe $recipe, array $images = []): void
     {
-        $wallPaper = Arr::get($requestData, 'wallpaper');
-        if ($wallPaper instanceof UploadedFile) {
-            if ($recipe->wallpaper) {
-                Storage::disk('public')->delete($recipe->wallpaper);
-            }
+        /** Upload new images added */
+        collect($images)->filter(function ($image) {
+            return Arr::get($image, 'uploadedFile') instanceof UploadedFile;
+        })->each(function($image) use ($recipe) {
+            /** @var UploadedFile */
+            $uploadedFile = Arr::get($image, 'uploadedFile');
 
-            $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
-        }
+            $recipe->images()->create([
+                'name' => $uploadedFile->getClientOriginalName(),
+                'path' => Storage::disk('public')->put('recipes', $uploadedFile),
+                'size' => $uploadedFile->getSize()
+            ]);
+        });
 
-        foreach (range(1, 4) as $keyImage) {
-            $image = Arr::get($requestData, "image_{$keyImage}");
-            if ($image instanceof UploadedFile) {
-                if ($recipe->{"image_{$keyImage}"}) {
-                    Storage::disk('public')->delete($recipe->{"image_{$keyImage}"});
-                }
-
-                $recipe->update(["image_{$keyImage}" => Storage::disk('public')->put('recipe', $image)]);
-            }
-        }
+        /** Destroy images */
+        $recipe->images()
+            ->whereNotIn('id', data_get($images, '*.id'))
+            ->each(function(Image $image) use ($recipe){
+                $this->deleteImage($recipe, $image);
+            });
     }
 
+     /**
+     * @param Recipe $recipe
+     * @param Image $image
+     * @return bool|null
+     */
+    public function deleteImage(Recipe $recipe, Image $image): ?bool
+    {
+        Storage::disk('public')->delete($image->path);
+
+        return $recipe->images()->find($image->id)->delete();
+    }
+
+    //  /**
+    //  * @param Recipe $recipe
+    //  * @param array $images
+    //  * @return void
+    //  */
+    // public function uploadImages(Recipe $recipe, array $requestData = []): void
+    // {
+    //     $wallPaper = Arr::get($requestData, 'wallpaper');
+    //     if ($wallPaper instanceof UploadedFile) {
+    //         if ($recipe->wallpaper) {
+    //             Storage::disk('public')->delete($recipe->wallpaper);
+    //         }
+
+    //         $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
+    //     }
 }

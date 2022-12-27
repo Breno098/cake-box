@@ -32,19 +32,8 @@ class RecipeStoreRequest extends FormRequest
             'time_to_prepare' => 'nullable|date_format:H:i:s',
             'yield_quantity' => 'nullable',
             'yield_unit_measure' => 'nullable',
-            'ingredients.*.id' => 'nullable|exists:ingredients,id',
-            'ingredients.*.quantity' => 'nullable',
-            'ingredients.*.unit_measure' => 'nullable',
-            'ingredients.*.iunit_measured' => 'nullable',
-            'directions.*.description' => 'nullable',
-            'directions.*.order' => 'nullable',
             'wallpaper' => 'nullable|image',
-            'image_1' => 'nullable|image',
-            'image_2' => 'nullable|image',
-            'image_3' => 'nullable|image',
-            'image_4' => 'nullable|image',
-            'image_5' => 'nullable|image',
-            'image_6' => 'nullable|image',
+            'images' => 'nullable|array',
         ];
     }
 

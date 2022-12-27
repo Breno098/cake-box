@@ -29,6 +29,7 @@
         "@fortawesome/vue-fontawesome": "^3.0.1",
         "@quasar/extras": "^1.15.4",
         "moment": "^2.29.4",
-        "quasar": "^2.9.1"
+        "quasar": "^2.9.1",
+        "vue3-dropzone": "^2.0.1"
     }
 }
