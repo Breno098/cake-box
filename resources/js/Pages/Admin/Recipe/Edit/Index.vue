@@ -39,7 +39,6 @@
                     })
                 }
             },
-            onError: () => tab.value = 'recipe'
         })
     };
 
@@ -87,7 +86,7 @@
     }
 
     const goIngredientsTab = async () => {
-        submit('admin.recipe.edit.ingredients');
+        submit('admin.recipe.ingredient.index');
     }
 </script>
 
@@ -132,14 +131,27 @@
                 inline-label
                 no-caps
             >
-                <q-tab name="recipe" icon="menu_book" label="Receita" />
+                <q-tab
+                    icon="menu_book"
+                    label="Receita"
+                    name="recipe"
+                />
                 <q-tab
                     icon="egg"
                     label="Ingredientes"
                     @click="goIngredientsTab"
+                    name="ingredients"
                 />
-                <q-tab name="directions" icon="format_list_numbered" label="Intruções" />
-                <q-tab name="images" icon="image" label="Imagens" />
+                <q-tab
+                    icon="format_list_numbered"
+                    label="Intruções"
+                    name="directions"
+                />
+                <q-tab
+                    icon="image"
+                    label="Imagens"
+                    name="images"
+                />
             </q-tabs>
 
             <q-card-section class="row items-center q-py-sm q-px-lg">

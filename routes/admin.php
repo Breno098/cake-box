@@ -47,5 +47,8 @@ Route::middleware('auth:admin')
         Route::resource('recipe', RecipeController::class);
         Route::resource('ingredient', IngredientController::class);
 
-        Route::get('recipe/{recipe}/edit/ingredients', [RecipeController::class, 'editIngredients'])->name('recipe.edit.ingredients');
+        Route::get('recipe/{recipe}/ingredient', [RecipeController::class, 'indexIngredient'])->name('recipe.ingredient.index');
+        Route::post('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'attachIngredient'])->name('recipe.ingredient.attach');
+        Route::put('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'updateIngredient'])->name('recipe.ingredient.update');
+        Route::delete('recipe/{recipe}/ingredient/{ingredient}', [RecipeController::class, 'detachIngredient'])->name('recipe.ingredient.detach');
     });

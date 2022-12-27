@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         return [
             UserSeeder::class,
             IngredientSeeder::class,
+            RecipeSeeder::class,
         ];
     }
 
