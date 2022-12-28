@@ -9,7 +9,7 @@
     const $q = useQuasar()
 
     const props = defineProps({
-        ingredients: Object,
+        posts: Object,
         errors: Object,
         query: Object,
     });
@@ -20,7 +20,7 @@
         page: props.query.page,
         rowsPerPage: props.query.rowsPerPage,
         filters: {
-            name: props.query.filters.name,
+            title: props.query.filters.title,
         },
     });
 
@@ -43,7 +43,7 @@
     }
 
     const submit = () => {
-        requestData.get(route('admin.ingredient.index'), {
+        requestData.get(route('admin.post.index'), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => showFilters.value = false,
@@ -51,26 +51,26 @@
     }
 
     function create() {
-        Inertia.get(route('admin.ingredient.create'));
+        Inertia.get(route('admin.post.create'));
     }
 
     function edit(id) {
-        Inertia.get(route('admin.ingredient.edit', id));
+        Inertia.get(route('admin.post.edit', id));
     }
 
     function destroy(id) {
         $q.dialog({
             component: DialogConfirm,
             componentProps: {
-                title: 'Excluir ingrediente',
-                message: 'Tem certeza que deseja excluir esse ingrediente?',
+                title: 'Excluir postagem?',
+                message: 'Tem certeza que deseja excluir esse postagem?',
             },
         }).onOk(() => {
-            Inertia.delete(route('admin.ingredient.destroy', id), {
+            Inertia.delete(route('admin.post.destroy', id), {
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Ingrediente excluído com sucesso',
+                        message: 'Postagem excluída com sucesso',
                         position: 'top',
                     })
                 }
@@ -85,18 +85,18 @@
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Ingredientes" />
+        <Head title="Postagens" />
 
         <div class="row q-mb-lg">
             <div class="col-6 flex justify-start items-center">
-                <q-icon name="egg" size="md"/>
-                <div class="text-h5 q-ml-sm"> Ingredientes </div>
+                <q-icon name="web" size="md"/>
+                <div class="text-h5 q-ml-sm"> Postagens </div>
             </div>
 
             <div class="col-6 flex justify-end items-center">
                 <q-btn
                     color="primary"
-                    label="Novo ingrediente"
+                    label="Nova postagem"
                     icon="add"
                     no-caps
                     @click="create"
@@ -109,11 +109,11 @@
                 removable
                 outline
                 color="primary"
-                v-if="query.filters.name"
-                @remove="removeFilter('name')"
+                v-if="query.filters.title"
+                @remove="removeFilter('title')"
                 square
             >
-                Nome = {{ query.filters.name }}
+                Título = {{ query.filters.title }}
             </q-chip>
 
             <q-space/>
@@ -142,8 +142,8 @@
                         <div class="col-12">
                             <q-input
                                 outlined
-                                v-model="requestData.filters.name"
-                                label="Nome do ingrediente"
+                                v-model="requestData.filters.title"
+                                label="Título da postagem"
                             />
                         </div>
                     </div>
@@ -166,66 +166,22 @@
                 <thead>
                     <tr>
                         <th class="text-left cursor-pointer" >
-                            <div @click="sortBy('name')">
-                                Ingrediente
-                            </div>
+                            Postagem
                         </th>
                         <th class="text-left">
-                            Calorias
-                        </th>
-                        <th class="text-left">
-                            Gorduras
-                        </th>
-                        <th class="text-left">
-                            Saturação
-                        </th>
-                        <th class="text-left">
-                            Carboidratos
-                        </th>
-                        <th class="text-left">
-                            Açucar
-                        </th>
-                        <th class="text-left">
-                            Fibras
-                        </th>
-                        <th class="text-left">
-                            Proteínas
-                        </th>
-                        <th class="text-left">
-                            Sal
+                            Criado por
                         </th>
                         <th class="text-center">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="ingredient, index in ingredients.data" :key="`ingredient-${index}`">
+                    <tr v-for="post, index in posts.data" :key="`post-${index}`">
                         <td class="text-left">
-                            {{ ingredient.name }}
+                            {{ post.title }}
                         </td>
                         <td class="text-left">
-                            {{ ingredient.kcal ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.fat ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.saturates ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.carbs ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.sugars ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.fibre ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.protein ?? '--' }}
-                        </td>
-                        <td class="text-left">
-                            {{ ingredient.salt ?? '--' }}
+                            {{ post.creator.name }}
                         </td>
                         <td class="text-center">
                             <q-btn icon="more_vert" flat>
@@ -233,7 +189,7 @@
                                     <q-list>
                                         <q-item
                                             clickable
-                                            @click="edit(ingredient.id)"
+                                            @click="edit(post.id)"
                                             class="text-blue flex flex-center"
                                         >
                                             <q-icon name="edit" size="xs"/>
@@ -244,7 +200,7 @@
 
                                         <q-item
                                             clickable
-                                            @click="destroy(ingredient.id)"
+                                            @click="destroy(post.id)"
                                             class="text-red flex flex-center"
                                         >
                                             <q-icon name="close" size="xs"/>
@@ -273,7 +229,7 @@
 
                 <q-pagination
                     v-model="requestData.page"
-                    :max="ingredients.meta.last_page"
+                    :max="posts.meta.last_page"
                     @update:model-value="submit"
                     direction-links
                     boundary-links

@@ -45,6 +45,14 @@
             label: 'Ingredientes',
             icon: 'egg'
         }]
+    }, {
+        label: 'POSTAGENS',
+        items: [{
+            route: 'admin.post.index',
+            active: 'admin.post*',
+            label: 'Postagens',
+            icon: 'web'
+        }]
     }];
 </script>
 
@@ -96,7 +104,7 @@
                     v-for="(menuItem, index) in menuItems"
                     :key="index"
                 >
-                    <q-item-label header overline class="q-pl-xl">
+                    <q-item-label header overline class="q-pl-xl q-py-sm">
                         {{ menuItem.label }}
                     </q-item-label>
 

@@ -10,7 +10,6 @@ use App\Http\Requests\Admin\Ingredient\IngredientUpdateRequest;
 use App\Http\Resources\Admin\IngredientResourse;
 use App\Services\Admin\IngredientService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 

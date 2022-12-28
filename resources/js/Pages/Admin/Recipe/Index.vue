@@ -278,7 +278,7 @@
                                 color="orange"
                                 square
                                 icon="microwave"
-                                :label="recipe.time_to_cook"
+                                :label="recipe.time_to_cook ?? '--:--:--'"
                                 class="full-width"
                             >
                                 <q-tooltip> Tempo para cozinhar </q-tooltip>
@@ -290,7 +290,7 @@
                                 color="orange"
                                 square
                                 icon="check"
-                                :label="recipe.time_to_prepare"
+                                :label="recipe.time_to_prepare ?? '--:--:--'"
                                 class="full-width"
                             >
                                 <q-tooltip> Tempo de preparo </q-tooltip>

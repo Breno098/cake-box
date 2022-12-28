@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\IngredientController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RecipeController;
 use App\Http\Controllers\Admin\RecipeDirectionController;
 use App\Http\Controllers\Admin\RecipeIngredientController;
@@ -47,6 +48,7 @@ Route::middleware('auth:admin')
     ->group(function() {
         Route::get('home', [HomeController::class, 'index'])->name('home');
 
+        Route::resource('post', PostController::class);
         Route::resource('ingredient', IngredientController::class);
         Route::resource('recipe', RecipeController::class);
         Route::resource('recipe.direction', RecipeDirectionController::class)->except(['create', 'edit', 'show']);

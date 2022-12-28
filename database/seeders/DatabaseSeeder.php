@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             IngredientSeeder::class,
             RecipeSeeder::class,
+            PostSeeder::class
         ];
     }
 
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             IngredientSeeder::class,
             RecipeSeeder::class,
+            PostSeeder::class
         ];
     }
 
