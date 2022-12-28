@@ -53,6 +53,14 @@
             label: 'Postagens',
             icon: 'web'
         }]
+    }, {
+        label: 'PROFISSIONAIS',
+        items: [{
+            route: 'admin.person.index',
+            active: 'admin.person*',
+            label: 'Pessoas',
+            icon: 'contact_mail'
+        }]
     }];
 </script>
 
