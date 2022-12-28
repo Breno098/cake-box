@@ -4,7 +4,7 @@
     import { Inertia } from '@inertiajs/inertia';
 
     const leftDrawerOpen = ref(true)
-    const miniState = ref(true)
+    const miniState = ref(false)
 
     const toggleLeftDrawer = () => {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -33,7 +33,7 @@
             icon: 'show_chart'
         }]
     }, {
-        label: 'CADASTROS',
+        label: 'RECEITAS',
         items: [{
             route: 'admin.recipe.index',
             active: 'admin.recipe*',

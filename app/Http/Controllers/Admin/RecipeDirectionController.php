@@ -36,7 +36,7 @@ class RecipeDirectionController extends Controller
      */
     public function index(Recipe $recipe): Response
     {
-        return Inertia::render('Admin/Recipe/Edit/Directions', [
+        return Inertia::render('Admin/Recipe/Tabs/Directions', [
             'recipe' => new RecipeResourse($recipe),
             'directions' => DirectionResourse::collection($recipe->directions),
         ]);

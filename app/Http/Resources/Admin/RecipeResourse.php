@@ -28,8 +28,6 @@ class RecipeResourse extends JsonResource
             'yield_unit_measure' => $this->yield_unit_measure,
             'wallpaper' => $this->when($this->wallpaper, Storage::url($this->wallpaper)),
             'images' => ImageResource::collection($this->images)
-            // 'ingredients' => IngredientResourse::collection($this->ingredients),
-            // 'directions' => DirectionResourse::collection($this->directions),
         ];
     }
 }

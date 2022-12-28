@@ -36,7 +36,7 @@ class RecipeIngredientController extends Controller
     {
         $optionsIngredients = Ingredient::whereNotIn('id', $recipe->ingredients()->allRelatedIds())->orderBy('name')->get();
 
-        return Inertia::render('Admin/Recipe/Edit/Ingredients', [
+        return Inertia::render('Admin/Recipe/Tabs/Ingredients', [
             'recipe' => new RecipeResourse($recipe),
             'ingredients' => IngredientResourse::collection($recipe->ingredients),
             'optionsIngredients' => $optionsIngredients

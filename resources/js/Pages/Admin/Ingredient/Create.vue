@@ -28,6 +28,8 @@
 
     const submit = () => {
         form.post(route("admin.ingredient.store"), {
+                preserveState: true,
+                preserveScroll: true,
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
@@ -37,6 +39,23 @@
                 },
             })
     };
+
+    const goIndex = () => {
+        if (form.isDirty) {
+            $q.dialog({
+                component: DialogConfirm,
+                componentProps: {
+                    title: 'Dados não salvos',
+                    html: true,
+                    message: `Ao voltar dados serão descartados. <br/> Deseja descartar alterações?`,
+                },
+            }).onOk(() => {
+                Inertia.get(route('admin.ingredient.index'))
+            })
+        } else {
+            Inertia.get(route('admin.ingredient.index'))
+        }
+    }
 </script>
 
 <template>
@@ -51,12 +70,11 @@
 
             <div class="col-6 flex justify-end items-center">
                 <q-btn
-                    color="green"
-                    label="Cadastrar"
-                    icon="check"
+                    color="primary"
+                    label="Voltar para listagem"
+                    icon="chevron_left"
                     no-caps
-                    @click="submit"
-                    :disabled="form.processing"
+                    @click="goIndex"
                 />
             </div>
         </div>
@@ -196,6 +214,17 @@
                             <div class="text-red"> {{ errors.salt }} </div>
                         </template>
                     </q-input>
+                </div>
+
+                <div class="col-12 flex justify-end">
+                    <q-btn
+                        color="green"
+                        label="Salvar"
+                        icon="check"
+                        no-caps
+                        @click="submit"
+                        :disabled="form.processing"
+                    />
                 </div>
             </div>
         </q-card>

@@ -194,7 +194,7 @@
                 :key="recipe.id"
             >
                 <q-card>
-                    <q-carousel
+                    <!-- <q-carousel
                         v-if="recipe.images.length > 0"
                         animated
                         v-model="slides[indexR]"
@@ -214,11 +214,16 @@
                                 v-for="star in [1, 2, 3, 4, 5]"
                             />
                         </q-carousel-slide>
-                    </q-carousel>
+                    </q-carousel> -->
 
-                    <q-img
+                    <!-- <q-img
                         v-else
                         :src="defaultImg"
+                        height="180px"
+                    /> -->
+
+                    <q-img
+                        :src="recipe.wallpaper ?? defaultImg"
                         height="180px"
                     />
 

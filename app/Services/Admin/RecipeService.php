@@ -42,9 +42,11 @@ class RecipeService
      */
     public function store(array $requestData = []): Recipe
     {
-        $recipe = Recipe::create($requestData);
+        $recipe = Recipe::create($this->transformData($requestData));
 
-        // $this->uploadImages($recipe, $requestData);
+        $this->uploadWallpaper($recipe, Arr::get($requestData, 'wallpaper'));
+
+        $this->updateOrCreateImages($recipe, Arr::get($requestData, 'images', []));
 
         return $recipe;
     }
@@ -56,7 +58,9 @@ class RecipeService
      */
     public function update(Recipe $recipe, array $requestData = []): Recipe
     {
-        $recipe->update($requestData);
+        $recipe->update($this->transformData($requestData));
+
+        $this->uploadWallpaper($recipe, Arr::get($requestData, 'wallpaper'));
 
         $this->updateOrCreateImages($recipe, Arr::get($requestData, 'images', []));
 
@@ -74,6 +78,24 @@ class RecipeService
         $recipe->directions()->delete();
 
         return $recipe->delete();
+    }
+
+    /**
+     * @param array $requestData
+     * @return array
+     */
+    private function transformData(array $requestData): array
+    {
+        return [
+            'title' => Arr::get($requestData, 'title'),
+            'description' => Arr::get($requestData, 'description'),
+            'info' => Arr::get($requestData, 'info'),
+            'difficulty' => Arr::get($requestData, 'difficulty'),
+            'time_to_cook' => Arr::get($requestData, 'time_to_cook'),
+            'time_to_prepare' => Arr::get($requestData, 'time_to_prepare'),
+            'yield_quantity' => Arr::get($requestData, 'yield_quantity'),
+            'yield_unit_measure' => Arr::get($requestData, 'yield_unit_measure'),
+        ];
     }
 
     /**
@@ -117,19 +139,19 @@ class RecipeService
         return $recipe->images()->find($image->id)->delete();
     }
 
-    //  /**
-    //  * @param Recipe $recipe
-    //  * @param array $images
-    //  * @return void
-    //  */
-    // public function uploadImages(Recipe $recipe, array $requestData = []): void
-    // {
-    //     $wallPaper = Arr::get($requestData, 'wallpaper');
-    //     if ($wallPaper instanceof UploadedFile) {
-    //         if ($recipe->wallpaper) {
-    //             Storage::disk('public')->delete($recipe->wallpaper);
-    //         }
+     /**
+     * @param UploadedFile|null $wallPaper
+     * @param array $images
+     * @return void
+     */
+    public function uploadWallpaper(Recipe $recipe, UploadedFile|null $wallPaper): void
+    {
+        if ($wallPaper instanceof UploadedFile) {
+            if ($recipe->wallpaper) {
+                Storage::disk('public')->delete($recipe->wallpaper);
+            }
 
-    //         $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
-    //     }
+            $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
+        }
+    }
 }

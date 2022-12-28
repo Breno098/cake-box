@@ -78,7 +78,7 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe): Response
     {
-        return Inertia::render('Admin/Recipe/Edit/Index', [
+        return Inertia::render('Admin/Recipe/Edit', [
             'recipe' => new RecipeResourse($recipe),
         ]);
     }
