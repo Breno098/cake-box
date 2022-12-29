@@ -1,5 +1,5 @@
 <script setup>
-     import { ref, computed } from 'vue';
+    import { ref, computed } from 'vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Inertia } from '@inertiajs/inertia';
@@ -194,34 +194,6 @@
                 :key="recipe.id"
             >
                 <q-card>
-                    <!-- <q-carousel
-                        v-if="recipe.images.length > 0"
-                        animated
-                        v-model="slides[indexR]"
-                        arrows
-                        infinite
-                        autoplay
-                        height="180px"
-                    >
-                        <q-carousel-slide
-                            v-for="image, index in recipe.images"
-                            :img-src="image.link"
-                            :name="index"
-                        >
-                            <q-icon
-                                name="star"
-                                :color="recipe.rating >= star ? 'orange' : 'grey-4'"
-                                v-for="star in [1, 2, 3, 4, 5]"
-                            />
-                        </q-carousel-slide>
-                    </q-carousel> -->
-
-                    <!-- <q-img
-                        v-else
-                        :src="defaultImg"
-                        height="180px"
-                    /> -->
-
                     <q-img
                         :src="recipe.wallpaper ?? defaultImg"
                         height="180px"

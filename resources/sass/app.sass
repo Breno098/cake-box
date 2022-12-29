@@ -18,3 +18,15 @@ $borderRadius: 16, 24, 32, 40, 48
 @each $br in $borderRadius
     .app-br-#{$br}
         border-radius: #{$br}px
+
+    .app-br-tl-#{$br}
+        border-top-left-radius: #{$br}px
+
+    .app-br-tr-#{$br}
+        border-top-right-radius: #{$br}px
+
+    .app-br-bl-#{$br}
+        border-bottom-left-radius: #{$br}px
+
+    .app-br-br-#{$br}
+        border-bottom-right-radius: #{$br}px

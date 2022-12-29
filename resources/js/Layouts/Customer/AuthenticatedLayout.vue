@@ -16,7 +16,7 @@
 
 <template>
     <q-layout view="lHh Lpr lFf">
-        <q-header bordered class="bg-brown-8 text-white">
+        <!-- <q-header bordered class="bg-brown-8 text-white">
             <q-toolbar>
                 <div class="q-pr-lg text-h5" v-if="$q.screen.gt.xs">
                     {{ $page.props.title }}
@@ -42,8 +42,8 @@
                         <div class="row no-wrap q-pa-md">
                             <div class="column">
                                 <div class="text-h6 q-mb-md">Configurações</div>
-                                <!-- <q-toggle v-model="mobileData" label="Use Mobile Data" />
-                                <q-toggle v-model="bluetooth" label="Bluetooth" /> -->
+                                <q-toggle v-model="mobileData" label="Use Mobile Data" />
+                                <q-toggle v-model="bluetooth" label="Bluetooth" />
                             </div>
 
                             <q-separator vertical inset class="q-mx-lg" />
@@ -70,10 +70,9 @@
                     </q-menu>
                 </q-btn>
             </q-toolbar>
+        </q-header> -->
 
-        </q-header>
-
-        <div class="position-relative bg-grey-4" :style="style">
+        <div class="position-relative bg-grey-4">
             <q-page-container class="WAL__layout">
                 <q-page padding>
                     <slot />
@@ -128,7 +127,5 @@
     z-index: 4000
     height: 100%
     width: 90%
-    max-width: 1200px
-
-
+    max-width: 1100px
 </style>
