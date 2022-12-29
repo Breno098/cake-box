@@ -12,6 +12,8 @@
     const style = computed(() => ({
       height: $q.screen.height + 'px'
     }))
+
+    const tab = ref('home')
 </script>
 
 <template>
@@ -80,38 +82,52 @@
             </q-page-container>
         </div>
 
-        <!-- <q-footer bordered class="bg-primary text-white">
-            <q-toolbar>
-                <q-toolbar-title>
-                    <q-avatar>
-                        <q-btn icon="account_circle" flat >
-                            <q-menu>
-                                <div class="row no-wrap q-pa-md">
-                                    <div class="column items-center q-pa-lg q-px-xl">
-                                        <q-avatar size="72px">
-                                            <img src="https://cdn.quasar.dev/img/avatar2.jpg">
-                                        </q-avatar>
+        <q-footer class="bg-grey-4">
+            <q-tabs
+                v-model="tab"
+                class="fit"
+            >
+                <q-tab
+                    name="home"
+                    icon="home"
+                    class="text-primary"
+                >
+                    <q-tooltip>Home</q-tooltip>
+                </q-tab>
 
-                                        <div class="text-subtitle1 q-mt-md q-mb-md text-center">
-                                            {{ $page.props.auth.user.name.split(' ').shift() }}
-                                        </div>
+                <q-tab
+                    name="recipes"
+                    icon="menu_book"
+                    class="text-primary"
+                >
+                    <q-tooltip>Receitas</q-tooltip>
+                </q-tab>
 
-                                        <q-btn
-                                            color="primary"
-                                            push
-                                            size="sm"
-                                            v-close-popup
-                                            @click="logout"
-                                            label="Sair"
-                                        />
-                                    </div>
-                                </div>
-                            </q-menu>
-                        </q-btn>
-                    </q-avatar>
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-footer> -->
+                <q-tab
+                    name="people"
+                    icon="contact_mail"
+                    class="text-primary"
+                >
+                    <q-tooltip>Profissionais</q-tooltip>
+                </q-tab>
+
+                <q-tab
+                    name="store"
+                    icon="local_grocery_store"
+                    class="text-primary"
+                >
+                    <q-tooltip>Loja</q-tooltip>
+                </q-tab>
+
+                <q-tab
+                    name="perfil"
+                    icon="account_circle"
+                    class="text-black"
+                >
+                    <q-tooltip>Perfil</q-tooltip>
+                </q-tab>
+            </q-tabs>
+        </q-footer>
     </q-layout>
 </template>
 
