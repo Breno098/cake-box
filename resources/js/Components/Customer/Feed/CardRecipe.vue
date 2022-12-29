@@ -15,15 +15,15 @@
 
     const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
 
-    const textIs250OrMoreCharacters = computed(() => props.recipe.description ? props.recipe.description.length >= 250 : 0)
+    const textIsHundredOrMoreCharacters = computed(() => props.recipe.description ? props.recipe.description.length >= 100 : 0)
 
     const descriptionComputed = computed(() => {
         if (!props.recipe.description) {
             return props.recipe.description;
         }
 
-        if (textIs250OrMoreCharacters.value) {
-            return props.recipe.description.substring(0, 250) + '...'
+        if (textIsHundredOrMoreCharacters.value) {
+            return props.recipe.description.substring(0, 100) + '...'
         }
 
         return props.recipe.description;
@@ -31,18 +31,19 @@
 </script>
 
 <template>
-    <q-card class="app-br-16" style="min-height: 250px">
+    <q-card class="app-br-16" style="min-height: 150px">
         <q-card-section class="row full-height q-pa-none">
             <div class="col-12 col-md-4">
                 <q-img
                     :src="recipe.wallpaper ?? defaultImg"
                     :class="classesRounded"
-                    style="min-height: 250px"
+                    style="min-height: 150px"
                 />
             </div>
 
             <div class="col-12 col-md-8 column q-pa-md app-br-br-16 app-br-tr-16">
                 <div class="text-weight-bold text-orange text-overline app-fs-9">
+                    <q-icon name="menu_book" class="app-fs-15 q-mr-sm q-mb-xs"/>
                     RECEITAS
                 </div>
 
@@ -55,7 +56,7 @@
 
                     <span
                         class="cursor-pointer text-blue-10"
-                        v-if="textIs250OrMoreCharacters"
+                        v-if="textIsHundredOrMoreCharacters"
                     >
                         ver receita
                     </span>
@@ -63,7 +64,7 @@
 
                 <q-space/>
 
-                <div class="text-right q-pt-md">
+                <div class="text-right q-pt-xs">
                     <q-btn
                         flat
                         round

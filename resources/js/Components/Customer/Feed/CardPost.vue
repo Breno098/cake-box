@@ -90,6 +90,7 @@
 
             <div class="col-12 col-md-7 column q-pa-md app-br-br-16 app-br-tr-16">
                 <div class="text-weight-bold text-orange text-overline app-fs-9">
+                    <q-icon name="web" class="app-fs-15 q-mr-sm"/>
                     POSTAGEM
                 </div>
 
@@ -111,7 +112,7 @@
 
                 <q-space/>
 
-                <div class="text-right q-pt-md">
+                <div class="text-right q-pt-xs">
                     <q-btn
                         flat
                         round

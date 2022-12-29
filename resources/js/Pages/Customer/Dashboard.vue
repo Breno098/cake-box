@@ -6,8 +6,7 @@
     import CardPost from '@/Components/Customer/Feed/CardPost.vue'
 
     const props = defineProps({
-        recipes: Array,
-        posts: Array
+        feed: Array
     });
 
     const defaultImg = '/img/no-image.jpg';
@@ -17,7 +16,21 @@
     <Head title="Dashboard"/>
 
     <AuthenticatedLayout>
-        <div v-for="post in posts">
+        <div v-for="f in feed">
+            <CardPost
+                :post="f"
+                class="q-my-md"
+                v-if="f.type_feed == 'post'"
+            />
+
+            <CardRecipe
+                :recipe="f"
+                class="q-my-md"
+                v-if="f.type_feed == 'recipe'"
+            />
+        </div>
+
+        <!-- <div v-for="post in posts">
             <CardPost
                 :post="post"
                 class="q-my-md"
@@ -29,6 +42,6 @@
                 :recipe="recipe"
                 class="q-my-md"
             />
-        </div>
+        </div> -->
     </AuthenticatedLayout>
 </template>

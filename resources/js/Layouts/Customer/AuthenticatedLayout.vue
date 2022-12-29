@@ -2,6 +2,7 @@
     import { Link, useForm } from '@inertiajs/inertia-vue3';
     import { ref, computed } from 'vue'
     import { useQuasar } from 'quasar'
+    import { Inertia } from '@inertiajs/inertia';
 
     const $q = useQuasar()
 
@@ -14,6 +15,18 @@
     }))
 
     const tab = ref('home')
+
+    const tabRoute =  computed(() => {
+        return route().current('*recipe*') ? 'recipes' : 'home'
+    })
+
+    const goFeedTab = () => {
+        Inertia.get(route('customer.home'))
+    }
+
+    const goRecipeTab = () => {
+        Inertia.get(route('customer.recipe.index'))
+    }
 </script>
 
 <template>
@@ -84,13 +97,14 @@
 
         <q-footer class="bg-grey-4">
             <q-tabs
-                v-model="tab"
+                v-model="tabRoute"
                 class="fit"
             >
                 <q-tab
                     name="home"
                     icon="home"
                     class="text-primary"
+                    @click="goFeedTab"
                 >
                     <q-tooltip>Home</q-tooltip>
                 </q-tab>
@@ -99,6 +113,7 @@
                     name="recipes"
                     icon="menu_book"
                     class="text-primary"
+                    @click="goRecipeTab"
                 >
                     <q-tooltip>Receitas</q-tooltip>
                 </q-tab>
