@@ -8,18 +8,28 @@
         post: Object
     });
 
-    const styleImage = computed(() => ({
-        'max-height': fullscreen.value ? '100%' : $q.screen.lt.sm ? '240px' : '250px'
-    }))
-
     const slide = ref(0);
-
-    const fullscreen = ref(false)
 
     const liked = ref(false)
     const saved = ref(false)
 
     const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
+
+    const seeMoreText = ref(false)
+
+    const textIsHundredOrMoreCharacters = computed(() => props.post.description ? props.post.description.length >= 100 : 0)
+
+    const descriptionComputed = computed(() => {
+        if (!props.post.description || seeMoreText.value) {
+            return props.post.description;
+        }
+
+        if (textIsHundredOrMoreCharacters.value) {
+            return props.post.description.substring(0, 100) + '...'
+        }
+
+        return props.post.description;
+    })
 </script>
 
 <template>
@@ -30,31 +40,48 @@
                     v-if="post.images.length > 0"
                     animated
                     v-model="slide"
-                    arrows
                     infinite
                     autoplay
                     :class="classesRounded"
-                    v-model:fullscreen="fullscreen"
+                    class="fit"
+                    ref="carousel"
                 >
                     <q-carousel-slide
                         v-for="image, index in post.images"
                         :name="index"
                         class="q-pa-none"
-                        :img-src="image.link"
-                    />
+                    >
+                        <q-img
+                            class="rounded-borders fit"
+                            :src="image.link"
+                            fit="contain"
+                        />
+                    </q-carousel-slide>
 
-                    <template v-slot:control>
+                    <template v-slot:control v-if="post.images.length > 1">
                         <q-carousel-control
-                            position="bottom-right"
-                            :offset="[10, 10]"
+                            position="bottom"
+                            :offset="[8, 8]"
+                            class="row"
                         >
                             <q-btn
                                 dense
-                                color="white"
+                                color="primary"
+                                text-color="white"
+                                icon="arrow_left"
+                                @click="$refs.carousel.previous()"
                                 size="sm"
-                                text-color="orange"
-                                :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                                @click="fullscreen = !fullscreen"
+                                class="dimmed"
+                            />
+                            <q-space/>
+                            <q-btn
+                                dense
+                                color="primary"
+                                text-color="white"
+                                icon="arrow_right"
+                                @click="$refs.carousel.next()"
+                                size="sm"
+                                class="dimmed"
                             />
                         </q-carousel-control>
                     </template>
@@ -71,7 +98,15 @@
                 </div>
 
                 <div class="q-mt-sm q-mb-xs">
-                    {{ post.description }}
+                    {{ descriptionComputed }}
+
+                    <span
+                        @click="seeMoreText = !seeMoreText"
+                        class="cursor-pointer text-blue-10"
+                        v-if="textIsHundredOrMoreCharacters"
+                        v-text="seeMoreText ? 'mostrar menos' : 'mostrar mais'"
+                    >
+                    </span>
                 </div>
 
                 <q-space/>
@@ -99,77 +134,4 @@
             </div>
         </q-card-section>
     </q-card>
-    <!-- <q-card class="app-br-16" >
-        <q-card-section class="q-pa-none">
-            <q-carousel
-                v-if="post.images.length > 0"
-                animated
-                v-model="slide"
-                arrows
-                infinite
-                autoplay
-                class="app-br-tr-16 app-br-tl-16"
-                :style="styleImage"
-                thumbnails
-                v-model:fullscreen="fullscreen"
-            >
-                <q-carousel-slide
-                    v-for="image, index in post.images"
-                    :name="index"
-                    class="q-pa-none"
-                    :img-src="image.link"
-                />
-
-                <template v-slot:control>
-                    <q-carousel-control
-                        position="bottom-right"
-                        :offset="[10, 10]"
-                    >
-                        <q-btn
-                            dense
-                            color="white"
-                            text-color="orange"
-                            :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                            @click="fullscreen = !fullscreen"
-                        />
-                    </q-carousel-control>
-                </template>
-            </q-carousel>
-        </q-card-section>
-
-        <q-card-section class="q-pt-sm">
-            <div class="text-weight-bold text-orange text-overline app-fs-9">
-                POSTAGEM
-            </div>
-
-            <div class="text-h5 text-weight-bold text-primary">
-                {{ post.title }}
-            </div>
-
-            <div class="q-mt-sm q-mb-xs">
-                {{  post.description }}
-            </div>
-
-            <div class="text-right q-pt-md">
-                <q-btn
-                    flat
-                    round
-                    color="red"
-                    :icon="liked ? 'favorite' : 'favorite_border'"
-                    @click="liked = !liked"
-                >
-                    <q-tooltip> Curtir </q-tooltip>
-                </q-btn>
-                <q-btn
-                    flat
-                    round
-                    color="primary"
-                    :icon="saved ? 'bookmark' : 'bookmark_border'"
-                    @click="saved = !saved"
-                >
-                    <q-tooltip> Salvar </q-tooltip>
-                </q-btn>
-            </div>
-        </q-card-section>
-    </q-card> -->
 </template>

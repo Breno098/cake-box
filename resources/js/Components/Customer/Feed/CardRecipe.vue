@@ -14,6 +14,20 @@
     const saved = ref(false)
 
     const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
+
+    const textIs250OrMoreCharacters = computed(() => props.recipe.description ? props.recipe.description.length >= 250 : 0)
+
+    const descriptionComputed = computed(() => {
+        if (!props.recipe.description) {
+            return props.recipe.description;
+        }
+
+        if (textIs250OrMoreCharacters.value) {
+            return props.recipe.description.substring(0, 250) + '...'
+        }
+
+        return props.recipe.description;
+    })
 </script>
 
 <template>
@@ -37,7 +51,14 @@
                 </div>
 
                 <div class="q-mt-sm q-mb-xs">
-                    {{ recipe.description.length > 250 ? recipe.description.slice(0, 250) + '...' : recipe.description }}
+                    {{ descriptionComputed }}
+
+                    <span
+                        class="cursor-pointer text-blue-10"
+                        v-if="textIs250OrMoreCharacters"
+                    >
+                        ver receita
+                    </span>
                 </div>
 
                 <q-space/>
