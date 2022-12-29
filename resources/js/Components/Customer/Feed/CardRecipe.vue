@@ -1,5 +1,8 @@
 <script setup>
     import { ref, computed } from 'vue'
+    import { useQuasar } from 'quasar'
+
+    const $q = useQuasar()
 
     const props = defineProps({
         recipe: Object
@@ -9,6 +12,8 @@
 
     const liked = ref(false)
     const saved = ref(false)
+
+    const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
 </script>
 
 <template>
@@ -17,7 +22,7 @@
             <div class="col-12 col-md-4">
                 <q-img
                     :src="recipe.wallpaper ?? defaultImg"
-                    class="app-br-bl-16 app-br-tl-16"
+                    :class="classesRounded"
                     style="min-height: 250px"
                 />
             </div>
