@@ -40,7 +40,7 @@ class RecipeController extends Controller
             $request->filters(),
             $request->rowsPerPage(8),
             $request->orderBy('title'),
-            $request->sort()
+            $request->sort('desc')
         );
 
         return Inertia::render('Admin/Recipe/Index', [

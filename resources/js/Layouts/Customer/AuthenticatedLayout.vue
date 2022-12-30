@@ -14,8 +14,6 @@
       height: $q.screen.height + 'px'
     }))
 
-    const tab = ref('home')
-
     const tabRoute =  computed(() => {
         return route().current('*recipe*') ? 'recipes' : 'home'
     })
@@ -31,9 +29,9 @@
 
 <template>
     <q-layout view="lHh Lpr lFf">
-        <!-- <q-header bordered class="bg-brown-8 text-white">
+        <q-header class="bg-orange">
             <q-toolbar>
-                <div class="q-pr-lg text-h5" v-if="$q.screen.gt.xs">
+                <div class="q-pr-lg text-h5">
                     {{ $page.props.title }}
                 </div>
 
@@ -46,7 +44,7 @@
                     <q-tooltip>Notificações</q-tooltip>
                 </q-btn>
 
-                <q-btn flat round>
+                <!-- <q-btn flat round>
                     <q-avatar size="26px">
                         <img src="https://cdn.quasar.dev/img/avatar2.jpg">
                     </q-avatar>
@@ -83,9 +81,9 @@
                             </div>
                         </div>
                     </q-menu>
-                </q-btn>
+                </q-btn> -->
             </q-toolbar>
-        </q-header> -->
+        </q-header>
 
         <div class="position-relative bg-grey-4">
             <q-page-container class="WAL__layout">
@@ -95,10 +93,11 @@
             </q-page-container>
         </div>
 
-        <q-footer class="bg-grey-4">
+        <q-footer class="bg-grey-4 q-pb-xs">
             <q-tabs
                 v-model="tabRoute"
                 class="fit"
+                narrow-indicator
             >
                 <q-tab
                     name="home"

@@ -15,6 +15,11 @@ trait DataQuery
     private int $defaultRowsPerPage = 10;
 
     /**
+     * @var string
+     */
+    private string $defaultSort = 'asc';
+
+    /**
      * @return integer
      */
     public function page(): int
@@ -37,9 +42,11 @@ trait DataQuery
      * @param string $defaultSort
      * @return string
      */
-    public function sort(string $defaultSort = 'asc'): string
+    public function sort(string $defaultSort = null): string
     {
-        return request()->get('sort', $defaultSort);
+        $this->defaultSort = $defaultSort ?? $this->defaultSort;
+
+        return request()->get('sort', $this->defaultSort);
     }
 
     /**
