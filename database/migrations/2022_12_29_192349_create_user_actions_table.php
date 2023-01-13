@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->enum('action', ['save', 'like']);
-            $table->morphs('type');
+            $table->morphs('origin');
             $table->timestamps();
         });
     }

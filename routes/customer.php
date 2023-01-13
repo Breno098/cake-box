@@ -4,6 +4,7 @@ use App\Http\Controllers\Customer\Auth\AuthController;
 use App\Http\Controllers\Customer\Auth\PasswordResetController;
 use App\Http\Controllers\Customer\Auth\PasswordSendLinkController;
 use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Customer\PostController;
 use App\Http\Controllers\Customer\RecipeController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,4 +45,8 @@ Route::middleware('auth:customer')
     ->group(function() {
         Route::get('home', [HomeController::class, 'index'])->name('home');
         Route::get('recipe', [RecipeController::class, 'index'])->name('recipe.index');
+
+        Route::get('post/{post}', [PostController::class, 'show'])->name('post.show');
+        Route::post('post/{post}/toogle-like', [PostController::class, 'toogleLike'])->name('post.toogle-like');
+        Route::post('post/{post}/toogle-save', [PostController::class, 'toogleSave'])->name('post.toogle-save');
     });

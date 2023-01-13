@@ -1,6 +1,7 @@
 <script setup>
     import { ref, computed } from 'vue'
     import { useQuasar } from 'quasar'
+    import { useForm } from '@inertiajs/inertia-vue3';
 
     const $q = useQuasar()
 
@@ -10,8 +11,28 @@
 
     const slide = ref(0);
 
-    const liked = ref(false)
-    const saved = ref(false)
+    const liked = ref(props.post.liked)
+    const saved = ref(props.post.saved)
+
+    const toogleLike = () => {
+        useForm().post(route('customer.post.toogle-like', props.post.id), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => liked.value = !liked.value,
+        })
+    }
+
+    const toogleSave = () => {
+        useForm().post(route('customer.post.toogle-save', props.post.id), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => saved.value = !saved.value,
+        })
+    }
+
+    const show = () => {
+        useForm().get(route('customer.post.show', props.post.id))
+    }
 
     const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
 
@@ -33,7 +54,7 @@
 </script>
 
 <template>
-    <q-card class="app-br-16">
+    <q-card class="app-br-16 cursor-pointer" @click="show">
         <q-card-section class="row full-height q-pa-none">
             <div class="col-12 col-md-5">
                 <q-carousel
@@ -118,7 +139,7 @@
                         round
                         color="red"
                         :icon="liked ? 'favorite' : 'favorite_border'"
-                        @click="liked = !liked"
+                        @click="toogleLike"
                     >
                         <q-tooltip> Curtir </q-tooltip>
                     </q-btn>
@@ -127,7 +148,7 @@
                         round
                         color="primary"
                         :icon="saved ? 'bookmark' : 'bookmark_border'"
-                        @click="saved = !saved"
+                        @click="toogleSave"
                     >
                         <q-tooltip> Salvar </q-tooltip>
                     </q-btn>

@@ -16,7 +16,7 @@
     <Head title="Dashboard"/>
 
     <AuthenticatedLayout>
-        <div v-for="f in feed">
+        <div v-for="f in feed" class="q-px-xs-lg">
             <CardPost
                 :post="f"
                 class="q-my-md"

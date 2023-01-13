@@ -87,7 +87,7 @@
 
         <div class="position-relative bg-grey-4">
             <q-page-container class="WAL__layout">
-                <q-page padding>
+                <q-page >
                     <slot />
                 </q-page>
             </q-page-container>
@@ -144,18 +144,17 @@
         </q-footer>
     </q-layout>
 </template>
-
+<!--
 <style lang="sass">
 .WAL
   width: 100%
   height: 100%
-  padding-top: 20px
-  padding-bottom: 20px
+  padding: 0px
 
   &__layout
     margin: 0 auto
     z-index: 4000
     height: 100%
-    width: 90%
+    width: 100%
     max-width: 1100px
-</style>
+</style> -->
