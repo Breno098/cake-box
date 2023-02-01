@@ -23,9 +23,9 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    public function user()
+    public function creator()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function replies()

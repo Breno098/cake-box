@@ -13,8 +13,6 @@
     const liked = ref(false)
     const saved = ref(false)
 
-    const classesRounded = computed(() => $q.screen.lt.sm ? 'app-br-tr-16 app-br-tl-16' : 'app-br-bl-16 app-br-tl-16')
-
     const textIsHundredOrMoreCharacters = computed(() => props.recipe.description ? props.recipe.description.length >= 100 : 0)
 
     const descriptionComputed = computed(() => {
@@ -31,23 +29,18 @@
 </script>
 
 <template>
-    <q-card class="app-br-16" style="min-height: 150px">
-        <q-card-section class="row full-height q-pa-none">
+    <q-card class="rounded-borders" style="min-height: 250px">
+        <q-card-section class="row q-pa-none">
             <div class="col-12 col-md-4">
                 <q-img
                     :src="recipe.wallpaper ?? defaultImg"
-                    :class="classesRounded"
-                    style="min-height: 150px"
+                    style="min-height: 250px"
                 />
             </div>
 
             <div class="col-12 col-md-8 column q-pa-md app-br-br-16 app-br-tr-16">
-                <div class="text-weight-bold text-orange text-overline app-fs-9">
-                    <q-icon name="menu_book" class="app-fs-15 q-mr-sm q-mb-xs"/>
-                    RECEITAS
-                </div>
-
-                <div class="text-h5 text-weight-bold text-primary">
+                <div class="text-weight-bold text-orange app-fs-18 flex items-center">
+                    <q-icon name="menu_book" class="q-mr-sm"/>
                     {{ recipe.title }}
                 </div>
 

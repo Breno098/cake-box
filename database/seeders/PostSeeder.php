@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Image;
 use App\Models\Post;
 use App\Models\User;
@@ -19,9 +20,13 @@ class PostSeeder extends Seeder
         Post::factory(10)
             ->state(['link_video' => 'https://www.youtube.com/watch?v=_VuJA-VQRcY'])
             ->for(User::all()->random(), 'creator')
+            ->has(Comment::factory()->count(3))
             ->create();
 
-        Post::factory(10)->for(User::all()->random(), 'creator')->create();
+        Post::factory(10)
+            ->for(User::all()->random(), 'creator')
+            ->has(Comment::factory()->count(3))
+            ->create();
 
         Post::get()->each(function(Post $post) {
             foreach (range(1, random_int(1, 5)) as $image) {

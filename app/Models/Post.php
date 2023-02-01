@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Collection;
  * @property string $title
  * @property string $description
  * @property string $link_video
+ * @property string $tags
  * @property int $created_by
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property User $creator
  * @property Image[]|Collection $images
+ * @property Comment[]|Collection $comments
  */
 class Post extends Model
 {
@@ -29,6 +31,7 @@ class Post extends Model
         'description',
         'link_video',
         'created_by',
+        'tags'
     ];
 
     /**
@@ -89,6 +92,14 @@ class Post extends Model
         return $this->saves()->when(auth()->check(), function(Builder $query) {
             return $query->where('user_id', auth()->user()->id);
         });
+    }
+
+    /**
+     * @return Comment[]|Collection|MorphMany
+     */
+    public function comments(): MorphMany|Collection
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     /**

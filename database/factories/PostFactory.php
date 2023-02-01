@@ -15,7 +15,15 @@ class PostFactory extends Factory
     {
         return [
             'title' => fake()->title(),
-            'description' => fake()->realText(100),
+            'description' => fake()->realText(500),
+            'tags' => implode(' ', fake()->randomElements([
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+                '#' . fake()->colorName(), '#' . fake()->colorName(),
+            ], random_int(1, 10)))
         ];
     }
 }

@@ -27,6 +27,7 @@ class FeedService
         while ($times < $timesLimit && $postsForFeed->count() > 0) {
             $times++;
 
+
             foreach ($postsForFeed as $postForFeed) {
                 $postCount++;
                 $feed[] = new PostResourse($postForFeed);
