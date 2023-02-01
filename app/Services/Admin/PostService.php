@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,9 +42,10 @@ class PostService
      */
     public function store(array $requestData = []): Post
     {
-        $post = Post::create(array_merge($requestData, [
-            'created_by' => auth()->user()->id
-        ]));
+        $post = Post::create([
+            'created_by' => auth()->user()->id,
+            ...$this->transformData($requestData)
+        ]);
 
         $this->updateOrCreateImages($post, Arr::get($requestData, 'images', []));
 
@@ -57,7 +59,7 @@ class PostService
      */
     public function update(Post $post, array $requestData = []): Post
     {
-        $post->update($requestData);
+        $post->update($this->transformData($requestData));
 
         $this->updateOrCreateImages($post, Arr::get($requestData, 'images', []));
 
@@ -70,7 +72,22 @@ class PostService
      */
     public function delete(Post $post): ?bool
     {
+        $post->images()->each(fn(Image $image) => $this->deleteImage($post, $image));
+
         return $post->delete();
+    }
+
+    /**
+     * @param array $requestData
+     * @return array
+     */
+    private function transformData(array $requestData): array
+    {
+        return array_merge($requestData, [
+            'title' => Arr::get($requestData, 'title'),
+            'description' => Arr::get($requestData, 'description'),
+            'link_video' => Arr::get($requestData, 'link_video'),
+        ]);
     }
 
     /**
@@ -89,7 +106,7 @@ class PostService
 
             $post->images()->create([
                 'name' => $uploadedFile->getClientOriginalName(),
-                'path' => Storage::disk('public')->put('posts', $uploadedFile),
+                'path' => Storage::url(Storage::disk('public')->put('recipes', $uploadedFile)),
                 'size' => $uploadedFile->getSize()
             ]);
         });
@@ -97,9 +114,7 @@ class PostService
         /** Destroy images */
         $post->images()
             ->whereNotIn('id', data_get($images, '*.id'))
-            ->each(function(Image $image) use ($post){
-                $this->deleteImage($post, $image);
-            });
+            ->each(fn(Image $image) => $this->deleteImage($post, $image));
     }
 
       /**
@@ -109,7 +124,7 @@ class PostService
      */
     public function deleteImage(Post $post, Image $image): ?bool
     {
-        Storage::disk('public')->delete($image->path);
+        Storage::disk('public')->delete(Str::replaceFirst('storage', '', $image->path));
 
         return $post->images()->find($image->id)->delete();
     }

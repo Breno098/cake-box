@@ -77,6 +77,8 @@ class RecipeService
 
         $recipe->directions()->delete();
 
+        $recipe->images()->each(fn(Image $image) => $this->deleteImage($recipe, $image));
+
         return $recipe->delete();
     }
 
