@@ -3,12 +3,12 @@
 namespace App\Services\Admin;
 
 use App\Models\Image;
-use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -114,7 +114,7 @@ class RecipeService
 
             $recipe->images()->create([
                 'name' => $uploadedFile->getClientOriginalName(),
-                'path' => Storage::disk('public')->put('recipes', $uploadedFile),
+                'path' => Storage::url(Storage::disk('public')->put('recipes', $uploadedFile)),
                 'size' => $uploadedFile->getSize()
             ]);
         });
@@ -122,9 +122,45 @@ class RecipeService
         /** Destroy images */
         $recipe->images()
             ->whereNotIn('id', data_get($images, '*.id'))
-            ->each(function(Image $image) use ($recipe){
-                $this->deleteImage($recipe, $image);
-            });
+            ->each(fn(Image $image) => $this->deleteImage($recipe, $image));
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @return void
+     */
+    public function deleteWallpaper(Recipe $recipe): void
+    {
+        if ($recipe->wallpaper) {
+            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $recipe->wallpaper));
+
+            $recipe->update(['wallpaper' => null]);
+        }
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @param UploadedFile $wallpaper
+     * @return void
+     */
+    public function updateWallpaper(Recipe $recipe, UploadedFile $wallpaper): void
+    {
+        $this->deleteWallpaper($recipe);
+        $recipe->update(['wallpaper' => Storage::url(Storage::disk('public')->put('recipes', $wallpaper))]);
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @param null|string|UploadedFile $wallpaper
+     * @return void
+     */
+    public function uploadWallpaper(Recipe $recipe, null|string|UploadedFile $wallpaper): void
+    {
+        if (! $wallpaper) {
+            $this->deleteWallpaper($recipe);
+        } else if ($wallpaper instanceof UploadedFile) {
+            $this->updateWallpaper($recipe, $wallpaper);
+        }
     }
 
      /**
@@ -132,26 +168,10 @@ class RecipeService
      * @param Image $image
      * @return bool|null
      */
-    public function deleteImage(Recipe $recipe, Image $image): ?bool
+    public function deleteImage(Recipe $recipe, Image $image): bool|null
     {
-        Storage::disk('public')->delete($image->path);
+        Storage::disk('public')->delete(Str::replaceFirst('storage', '', $image->path));
 
         return $recipe->images()->find($image->id)->delete();
-    }
-
-     /**
-     * @param UploadedFile|null $wallPaper
-     * @param array $images
-     * @return void
-     */
-    public function uploadWallpaper(Recipe $recipe, UploadedFile|null $wallPaper): void
-    {
-        if ($wallPaper instanceof UploadedFile) {
-            if ($recipe->wallpaper) {
-                Storage::disk('public')->delete($recipe->wallpaper);
-            }
-
-            $recipe->update(['wallpaper' => Storage::disk('public')->put('recipe', $wallPaper)]);
-        }
     }
 }

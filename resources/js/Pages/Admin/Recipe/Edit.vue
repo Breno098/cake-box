@@ -4,7 +4,7 @@
     import { useQuasar } from 'quasar'
     import { Inertia } from '@inertiajs/inertia';
     import DialogConfirm from '@/Components/DialogConfirm.vue';
-    import { ref } from 'vue'
+    import { ref, computed } from 'vue'
     import { useDropzone } from "vue3-dropzone";
 
     const $q = useQuasar()
@@ -26,19 +26,34 @@
         yield_quantity: props.recipe.yield_quantity,
         yield_unit_measure: props.recipe.yield_unit_measure,
         images: props.recipe.images,
-        wallpaper: null
+        wallpaper: props.recipe.wallpaper,
     });
 
     const dropZoneWallpaper = useDropzone({
         onDrop: (acceptFiles, rejectReasons) => {
             form.wallpaper = acceptFiles[0];
-            wallpaperSrc.value = URL.createObjectURL(acceptFiles[0]);
+
+            if (rejectReasons.length > 0) {
+                $q.notify({
+                    message: 'Insira apenas uma imagem',
+                    position: 'center',
+                })
+            }
         },
         accept: ['image/*'],
         maxFiles: 1
     });
 
-    const wallpaperSrc = ref(props.recipe.wallpaper)
+    const wallpaperSrc = computed(() => {
+        if (! form.wallpaper)
+            return '';
+
+        return (typeof form.wallpaper === 'object') ? URL.createObjectURL(form.wallpaper) : form.wallpaper;
+    });
+
+    const removeWallpaper = () => {
+        form.wallpaper = null;
+    }
 
     const getRootPropsWallpaper = dropZoneWallpaper.getRootProps;
     const getInputPropsWallpaper = dropZoneWallpaper.getInputProps;
@@ -75,7 +90,7 @@
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
-                    form.images= props.recipe.images;
+                    form.images = props.recipe.images;
 
                     $q.notify({
                         type: 'positive',
@@ -243,7 +258,7 @@
 
                                 <q-space/>
 
-                                <q-btn flat icon="close" @click="form.wallpaper = null">
+                                <q-btn flat icon="close" @click="removeWallpaper">
                                     <q-tooltip> Remover capa </q-tooltip>
                                 </q-btn>
                             </div>

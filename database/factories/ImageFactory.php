@@ -14,7 +14,9 @@ class ImageFactory extends Factory
     public function definition()
     {
         return [
-            'path' => fake()->imageUrl(),
+            'name' => fake()->colorName(),
+            'path' => \App\Helpers\Seeder\Random::image(),
+            'size' =>  fake()->numberBetween(500, 5000)
         ];
     }
 }

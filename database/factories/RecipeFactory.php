@@ -26,6 +26,7 @@ class RecipeFactory extends Factory
             'rating' => fake()->numberBetween(0, 5),
             'yield_quantity' => fake()->numberBetween(0, 15),
             'yield_unit_measure' => fake()->randomElement(['Pedaço', 'Fatia', 'Gramas']),
+            'wallpaper' => \App\Helpers\Seeder\Random::image()
         ];
     }
 }

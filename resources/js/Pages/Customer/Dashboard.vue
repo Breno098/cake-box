@@ -8,15 +8,13 @@
     const props = defineProps({
         feed: Array
     });
-
-    const defaultImg = '/img/no-image.jpg';
 </script>
 
 <template>
     <Head title="Dashboard"/>
 
     <AuthenticatedLayout>
-        <div v-for="f in feed" class="q-px-xs-lg">
+        <div v-for="f in feed" class="q-px-xl">
             <CardPost
                 :post="f"
                 class="q-my-md"
@@ -29,19 +27,5 @@
                 v-if="f.type_feed == 'recipe'"
             />
         </div>
-
-        <!-- <div v-for="post in posts">
-            <CardPost
-                :post="post"
-                class="q-my-md"
-            />
-        </div>
-
-        <div v-for="recipe in recipes">
-            <CardRecipe
-                :recipe="recipe"
-                class="q-my-md"
-            />
-        </div> -->
     </AuthenticatedLayout>
 </template>

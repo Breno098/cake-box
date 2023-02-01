@@ -26,7 +26,7 @@ class RecipeResourse extends JsonResource
             'rating' => $this->rating,
             'yield_quantity' => $this->yield_quantity,
             'yield_unit_measure' => $this->yield_unit_measure,
-            'wallpaper' => $this->when($this->wallpaper, Storage::url($this->wallpaper)),
+            'wallpaper' => $this->wallpaper,
             'images' => ImageResource::collection($this->images)
         ];
     }

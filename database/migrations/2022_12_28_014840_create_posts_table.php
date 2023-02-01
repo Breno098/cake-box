@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('link_video')->nullable();
             $table->foreignId('created_by')->constrained('users');
+            $table->string('tags')->nullable();
             $table->timestamps();
         });
     }

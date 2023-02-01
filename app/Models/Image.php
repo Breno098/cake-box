@@ -29,15 +29,9 @@ class Image extends Model
         'name',
         'path',
         'size',
+        'image_id',
+        'image_type'
     ];
-
-    /**
-     * @var array
-     */
-    protected $appends = [
-        'storage_link',
-    ];
-
 
      /**
      * @return MorphTo
@@ -45,13 +39,5 @@ class Image extends Model
     public function imageable()
     {
         return $this->morphTo();
-    }
-
-    /**
-     * Attributes
-     */
-    public function getStorageLinkAttribute()
-    {
-        return Storage::url($this->path);
     }
 }

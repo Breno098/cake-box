@@ -21,22 +21,23 @@ class RecipeSeeder extends Seeder
      */
     public function run()
     {
-        $directionsFactory = Direction::factory()
-            ->state(new Sequence(
-                ['order' => 1],
-                ['order' => 2],
-                ['order' => 3]
-            ))
-            ->count(3);
-
         Recipe::factory(15)
             ->has(Comment::factory()->count(3))
-            ->has($directionsFactory)
             ->create()
             ->each(function(Recipe $recipe) {
+                foreach (range(1, random_int(1, 5)) as $image) {
+                    $recipe->images()->create(Image::factory()->make([
+                        'image_type' => Recipe::class,
+                        'image_id' => $recipe->id
+                    ])->toArray());
+                }
+
+                foreach (range(1, random_int(1, 10)) as $order) {
+                    $recipe->directions()->create(Direction::factory()->make(['order' => $order])->toArray());
+                }
+
                 Ingredient::inRandomOrder()
                     ->limit(5)
-                    ->get()
                     ->each(function(Ingredient $ingredient) use ($recipe){
                         $recipe->ingredients()->attach($ingredient->id, [
                             'quantity' => fake()->numberBetween(1, 300),

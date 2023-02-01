@@ -32,7 +32,7 @@ class RecipeUpdateRequest extends FormRequest
             'time_to_prepare' => 'nullable|date_format:H:i:s',
             'yield_quantity' => 'nullable',
             'yield_unit_measure' => 'nullable',
-            'wallpaper' => 'nullable|image',
+            'wallpaper' => 'nullable',
             'images' => 'nullable|array',
         ];
     }
